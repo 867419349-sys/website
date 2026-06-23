@@ -1,0 +1,6 @@
+{
+  "name": "Yang Zhilin Portfolio & AI Sandbox",
+  "description": "An exquisite interactive designer portfolio replication for Yang Zhilin containing custom GSAP timelines, Web Audio synthetics, draggable sticker canvases, client-tilt social cards, and an integrated server-side Gemini AI response playground.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

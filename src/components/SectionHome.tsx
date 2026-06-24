@@ -49,11 +49,6 @@ function SequenceVideo() {
 }
 
 const textGradientStyle = `
-  @keyframes gradientShine {
-    0% { background-position: 0% 30%; }
-    50% { background-position: 0% 70%; }
-    100% { background-position: 0% 30%; }
-  }
   @keyframes textFloat {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
@@ -69,40 +64,17 @@ function AnimatedTextLayer() {
       transition={{ duration: 1, ease: 'easeOut' }}
     >
       <style>{textGradientStyle}</style>
-      <div className="relative w-full h-full">
-        {/* 底层：HI, I'm 纯黑 + 静止不动 */}
-        <div
+      <div
+        className="relative w-full h-full"
+        style={{ animation: 'textFloat 4s ease-in-out infinite' }}
+      >
+        <img
+          src="/assets/home/name-text.png"
+          alt=""
           className="absolute inset-0 w-full h-full"
           style={{
-            WebkitMaskImage: 'url(/assets/home/name-text.png)',
-            WebkitMaskSize: 'contain',
-            WebkitMaskRepeat: 'no-repeat',
-            WebkitMaskPosition: 'center',
-            maskImage: 'url(/assets/home/name-text.png)',
-            maskSize: 'contain',
-            maskRepeat: 'no-repeat',
-            maskPosition: 'center',
-            background: 'black',
-          }}
-        />
-        {/* 上层：仅杨芷琳区域显示流动渐变 + 浮动动画 */}
-        <div
-          className="absolute inset-0 w-full h-full"
-          style={{
-            clipPath: 'inset(44% 0 0 0)',
-            WebkitClipPath: 'inset(44% 0 0 0)',
-            WebkitMaskImage: 'url(/assets/home/name-text.png)',
-            WebkitMaskSize: 'contain',
-            WebkitMaskRepeat: 'no-repeat',
-            WebkitMaskPosition: 'center',
-            maskImage: 'url(/assets/home/name-text.png)',
-            maskSize: 'contain',
-            maskRepeat: 'no-repeat',
-            maskPosition: 'center',
-            background:
-              'linear-gradient(to bottom, #dbff76 0%, #afcc5c 25%, #dbff76 50%, #afcc5c 75%, #dbff76 100%)',
-            backgroundSize: '100% 200%',
-            animation: 'textFloat 4s ease-in-out infinite, gradientShine 5s ease-in-out infinite',
+            objectFit: 'contain',
+            filter: 'saturate(2.5) brightness(1.3) contrast(1.05)',
           }}
         />
       </div>
@@ -115,7 +87,7 @@ function BottomBackground() {
 
   return (
     <img
-      src="/assets/home/bottom-bg.jpg"
+      src="/assets/home/bottom-bg.png"
       alt=""
       className="absolute inset-0 w-full h-full"
       style={{

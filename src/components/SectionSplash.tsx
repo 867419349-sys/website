@@ -187,43 +187,43 @@ export default function SectionSplash() {
   };
 
   return (
-    <div className="w-full bg-[#103df6] text-white min-h-screen relative overflow-hidden py-16 px-4 md:px-12 lg:px-20 font-sans flex flex-col justify-between">
+    <div className="w-full bg-[#f5f5f0] text-neutral-900 min-h-screen relative overflow-hidden py-16 px-4 md:px-12 lg:px-20 font-sans flex flex-col justify-between">
       
       {/* Background Floating Geometric Shapes */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <svg className="absolute top-[15%] left-[5%] w-24 h-16 opacity-30 text-white" stroke="currentColor" fill="none" strokeWidth="3">
+        <svg className="absolute top-[15%] left-[5%] w-24 h-16 opacity-20 text-[#9669e6]" stroke="currentColor" fill="none" strokeWidth="3">
           <polyline points="0,0 20,30 40,0 60,30 80,0 100,30" />
         </svg>
-        <svg className="absolute bottom-[20%] right-[3%] w-24 h-16 opacity-30 text-white" stroke="currentColor" fill="none" strokeWidth="3">
+        <svg className="absolute bottom-[20%] right-[3%] w-24 h-16 opacity-20 text-[#9669e6]" stroke="currentColor" fill="none" strokeWidth="3">
           <polyline points="0,0 20,30 40,0 60,30 80,0 100,30" strokeDasharray="5,5" />
         </svg>
-        <div className="absolute top-[40%] right-[15%] w-12 h-12 rounded-full border-2 border-white/20" />
-        <div className="absolute bottom-[40%] left-[8%] w-16 h-16 rounded-full border-4 border-dashed border-white/10" />
+        <div className="absolute top-[40%] right-[15%] w-12 h-12 rounded-full border-2 border-black/10" />
+        <div className="absolute bottom-[40%] left-[8%] w-16 h-16 rounded-full border-4 border-dashed border-black/5" />
       </div>
 
       {/* GIANT HOLLOW TEXT OVERLAY */}
       <div className="absolute inset-y-0 inset-x-0 flex flex-col justify-center items-center z-0 select-none pointer-events-none">
-        <h1 className="text-[12vw] font-black tracking-tighter leading-[0.8] text-white/10 text-center font-sans uppercase">
+        <h1 className="text-[12vw] font-black tracking-tighter leading-[0.8] text-black/5 text-center font-sans uppercase">
           PROJECT
         </h1>
-        <h1 className="text-[12vw] font-black tracking-tighter leading-[0.8] text-white/10 text-center font-sans uppercase">
+        <h1 className="text-[12vw] font-black tracking-tighter leading-[0.8] text-black/5 text-center font-sans uppercase">
           CASES
         </h1>
       </div>
 
       {/* Title & Interactive Mode Switcher Header */}
-      <div className="max-w-7xl mx-auto w-full z-20 flex flex-col items-center justify-between gap-4 border-b border-white/10 pb-6 mb-4 mt-2">
+      <div className="max-w-7xl mx-auto w-full z-20 flex flex-col items-center justify-between gap-4 border-b border-black/10 pb-6 mb-4 mt-2">
         <div className="flex flex-col items-center text-center">
-          <span className="bg-[#d2ff55] text-black text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full border border-black rotate-[-1.5deg] block mb-2">
+          <span className="bg-[#9669e6] text-black text-[10px] font-mono font-black uppercase px-2.5 py-1 rounded-full border border-black rotate-[-1.5deg] block mb-2">
             DESIGN DEPLOYS · 展示切换
           </span>
-          <h2 className="text-3xl md:text-5xl font-black font-sans leading-none tracking-tight text-white select-none">
+          <h2 className="text-3xl md:text-5xl font-black font-sans leading-none tracking-tight text-neutral-900 select-none">
             创意视觉展示面板
           </h2>
         </div>
 
         {/* Dynamic Mode Switch Segment */}
-        <div className="flex bg-black/45 border border-white/15 p-1 rounded-full w-full max-w-sm mt-3 shadow-inner">
+        <div className="flex bg-black/5 border border-black/10 p-1 rounded-full w-full max-w-sm mt-3 shadow-inner">
           <button
             onClick={() => {
               sounds.playClick();
@@ -231,8 +231,8 @@ export default function SectionSplash() {
             }}
             className={`flex-1 py-2 rounded-full text-[11px] font-black tracking-wider transition-all select-none uppercase ${
               displayMode === 'card'
-                ? 'bg-white text-black font-black shadow-md'
-                : 'text-neutral-300 hover:text-white'
+                ? 'bg-[#9669e6] text-white font-black shadow-md'
+                : 'text-neutral-500 hover:text-neutral-900'
             }`}
           >
             📱 静态产品卡片
@@ -244,8 +244,8 @@ export default function SectionSplash() {
             }}
             className={`flex-1 py-2 rounded-full text-[11px] font-black tracking-wider transition-all flex items-center justify-center space-x-1 select-none uppercase ${
               displayMode === 'trail'
-                ? 'bg-[#d2ff55] text-black font-black shadow-md'
-                : 'text-[#8da3fe] hover:text-white'
+                ? 'bg-[#9669e6] text-white font-black shadow-md'
+                : 'text-neutral-500 hover:text-neutral-900'
             }`}
           >
             <span className="animate-pulse">🌌</span>
@@ -264,12 +264,12 @@ export default function SectionSplash() {
             {/* LEFT COLUMN: INTERACTIVE SWITCHER + DETAILS */}
             <div className="reveal-on-scroll lg:col-span-4 flex flex-col items-start text-left space-y-6 z-20">
               
-              <h3 className="text-xl md:text-2xl font-black font-sans text-[#d2ff55] select-none leading-none">
+              <h3 className="text-xl md:text-2xl font-black font-sans text-[#9669e6] select-none leading-none">
                 智能交互·真实产品落地
               </h3>
 
               {/* Tab buttons */}
-              <div className="w-full flex flex-col space-y-2.5 bg-black/35 p-3 rounded-[18px] border border-white/15">
+              <div className="w-full flex flex-col space-y-2.5 bg-white p-3 rounded-[18px] border border-black/10 shadow-sm">
                 {PROJECT_CASES.map((proj) => {
                   const isActive = activeProject.id === proj.id;
                   return (
@@ -279,8 +279,8 @@ export default function SectionSplash() {
                       onMouseEnter={() => sounds.playHover()}
                       className={`w-full flex items-center justify-between p-3 rounded-xl border font-sans font-bold text-xs tracking-wider uppercase transition-all ${
                         isActive
-                          ? 'bg-[#d2ff55] text-black border-[#d2ff55] shadow-lg translate-x-1'
-                          : 'bg-neutral-900/60 text-white border-neutral-800 hover:bg-neutral-800/80'
+                          ? 'bg-[#9669e6] text-white border-[#9669e6] shadow-lg translate-x-1'
+                          : 'bg-neutral-50 text-neutral-700 border-neutral-100 hover:bg-neutral-100'
                       }`}
                     >
                       <span className="flex items-center space-x-2">
@@ -288,7 +288,7 @@ export default function SectionSplash() {
                         <span>{proj.title}</span>
                       </span>
                       <span className={`text-[9px] font-mono font-extrabold px-1.5 py-0.5 rounded ${
-                        isActive ? 'bg-black text-[#d2ff55]' : 'bg-white/10 text-neutral-400'
+                        isActive ? 'bg-white text-[#9669e6]' : 'bg-neutral-100 text-neutral-500'
                       }`}>
                         {proj.badge}
                       </span>
@@ -305,24 +305,24 @@ export default function SectionSplash() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.4 }}
-                  className="bg-black/35 border border-white/10 rounded-2xl p-5 w-full relative"
+                  className="bg-white border border-black/10 rounded-2xl p-5 w-full relative shadow-sm"
                 >
-                  <div className="flex items-center space-x-2 text-[#d2ff55] font-mono text-[10px] uppercase font-black mb-2">
+                  <div className="flex items-center space-x-2 text-[#9669e6] font-mono text-[10px] uppercase font-black mb-2">
                     <span>✦</span>
                     <span>{activeProject.tag}</span>
                   </div>
-                  <h4 className="text-lg font-black font-sans mb-2 text-[#d2ff55]">
+                  <h4 className="text-lg font-black font-sans mb-2 text-neutral-900">
                     {activeProject.subtitle}
                   </h4>
-                  <p className="text-xs text-neutral-200 leading-relaxed font-sans mb-3">
+                  <p className="text-xs text-neutral-600 leading-relaxed font-sans mb-3">
                     {activeProject.desc}
                   </p>
-                  
-                  <div className="border-t border-white/10 pt-2 flex flex-col space-y-1">
-                    <span className="text-[9px] font-mono text-neutral-400 font-extrabold uppercase">
+
+                  <div className="border-t border-black/10 pt-2 flex flex-col space-y-1">
+                    <span className="text-[9px] font-mono text-neutral-500 font-extrabold uppercase">
                       核心设计控制点 / KEY DELIVERABLES
                     </span>
-                    <span className="text-xs text-[#ff55bb] font-sans font-bold">
+                    <span className="text-xs text-[#9669e6] font-sans font-bold">
                       {activeProject.spec}
                     </span>
                   </div>
@@ -382,7 +382,7 @@ export default function SectionSplash() {
                             <span className="text-[7.5px] text-neutral-400 font-mono">CN / SHANGHAI</span>
                           </div>
                         </div>
-                        <span className="font-extrabold text-[#103df6]">●</span>
+                        <span className="font-extrabold text-[#f5f5f0]">●</span>
                       </div>
 
                       {/* PROJECT CAN / POST IMAGE */}
@@ -393,7 +393,7 @@ export default function SectionSplash() {
                           className="w-full h-full object-cover select-none pointer-events-none filter brightness-95"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute bottom-2 left-2 bg-[#103df6] text-[#d2ff55] px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-extrabold uppercase shadow">
+                        <div className="absolute bottom-2 left-2 bg-[#f5f5f0] text-[#9669e6] px-2 py-0.5 rounded text-[8px] font-mono tracking-wider font-extrabold uppercase shadow">
                           {activeProject.id === 'case-1' ? 'COMFYUI SYSTEM' : activeProject.id === 'case-2' ? 'EMOTION DESK' : 'SCENARIO UX'}
                         </div>
                       </div>
@@ -413,7 +413,7 @@ export default function SectionSplash() {
                           <span className="text-md">💬</span>
                           <span className="text-md">✈️</span>
                         </div>
-                        <span className="bg-[#d2ff55] border border-black/10 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold">SAVE</span>
+                        <span className="bg-[#9669e6] border border-black/10 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold">SAVE</span>
                       </div>
 
                       {/* Caption */}
@@ -453,7 +453,7 @@ export default function SectionSplash() {
                 {/* Header / Sponsored info */}
                 <div className="flex items-center justify-between mb-3 border-b border-neutral-100 pb-2.5">
                   <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 rounded-full bg-[#103df6] flex items-center justify-center text-[8px] font-black text-white">
+                    <div className="w-5 h-5 rounded-full bg-[#9669e6] flex items-center justify-center text-[8px] font-black text-white">
                       ✦
                     </div>
                     <div className="flex flex-col text-left">
@@ -478,7 +478,7 @@ export default function SectionSplash() {
                     <span className="text-[9px] bg-white text-black px-1.5 py-0.5 rounded border border-black w-max tracking-wide">
                       COMPLETED
                     </span>
-                    <span className="text-[9px] text-[#d2ff55] bg-black/80 px-2 py-0.5 rounded backdrop-blur border border-white/10 tracking-wider">
+                    <span className="text-[9px] text-[#9669e6] bg-black/80 px-2 py-0.5 rounded backdrop-blur border border-white/10 tracking-wider">
                       {activeProject.id === 'case-1' ? '车机端 100% 还原' : '可控、复用设计资产'}
                     </span>
                   </div>
@@ -504,9 +504,9 @@ export default function SectionSplash() {
             {/* Top Toolbar / Controllers of Canvas */}
             <div className="w-full flex flex-wrap items-center justify-between gap-3 mb-4 select-none px-2">
               <div className="text-left">
-                <span className="text-[10px] font-mono tracking-wider text-neutral-400 uppercase">Interactive Workspace</span>
-                <p className="text-xs text-slate-100 font-semibold">
-                  已喷薄灵感画布：<span className="text-[#d2ff55] font-black font-mono text-sm">{trailImages.length}</span> / 25
+                <span className="text-[10px] font-mono tracking-wider text-neutral-500 uppercase">Interactive Workspace</span>
+                <p className="text-xs text-neutral-700 font-semibold">
+                  已喷薄灵感画布：<span className="text-[#9669e6] font-black font-mono text-sm">{trailImages.length}</span> / 25
                 </p>
               </div>
 
@@ -532,12 +532,12 @@ export default function SectionSplash() {
 
               {/* Decorative instructions behind floating assets */}
               <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none text-center z-0 p-6">
-                <span className="text-[12vw] font-black tracking-tighter text-[#d2ff55]/5 font-sans leading-none">
+                <span className="text-[12vw] font-black tracking-tighter text-[#9669e6]/5 font-sans leading-none">
                   ZHILIN LAB
                 </span>
                 <div className="mt-4 max-w-sm bg-black/65 border border-white/5 backdrop-blur-md px-6 py-4 rounded-2xl">
                   <p className="text-[11px] md:text-xs text-neutral-300 font-semibold leading-relaxed space-y-1">
-                    <span className="text-[#d2ff55] font-black block text-sm">🌌 灵感魔幻喷涌舱</span>
+                    <span className="text-[#9669e6] font-black block text-sm">🌌 灵感魔幻喷涌舱</span>
                     <span>双击画布快速清屏</span>
                     <span className="block text-neutral-500 font-mono text-[9px]">SPAWNED ASSETS ARE FULLY DRAGGABLE</span>
                   </p>
@@ -604,7 +604,7 @@ export default function SectionSplash() {
       </div>
 
       {/* BOTTOM TICKER MARQUEE */}
-      <div className="w-full overflow-hidden border-t-2 border-dashed border-white/10 pt-4 z-10 select-none">
+      <div className="w-full overflow-hidden border-t-2 border-dashed border-black/10 pt-4 z-10 select-none">
         <div className="whitespace-nowrap flex py-2 uppercase font-sans font-black text-4xl md:text-5xl tracking-tight select-none">
           <motion.div
             animate={{ x: [0, -800] }}
@@ -617,9 +617,9 @@ export default function SectionSplash() {
           >
             {[...Array(6)].map((_, index) => (
               <span key={index} className="flex items-center space-x-8">
-                <span className="text-[#d2ff55]">CONTROL & INTEGRATION</span>
-                <span className="text-transparent stroke-text font-black text-white/50">NOT RANDOM DROPS</span>
-                <span className="text-white">COCKPIT INTERACTION v2.00</span>
+                <span className="text-[#9669e6]">CONTROL & INTEGRATION</span>
+                <span className="text-transparent stroke-text font-black text-neutral-400">NOT RANDOM DROPS</span>
+                <span className="text-neutral-900">COCKPIT INTERACTION v2.00</span>
               </span>
             ))}
           </motion.div>

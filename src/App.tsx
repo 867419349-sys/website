@@ -6,20 +6,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
 import { gsap } from 'gsap';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './gsap-setup';
 import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
 import SectionHome from './components/SectionHome';
 import SectionPortfolio from './components/SectionPortfolio';
+import SectionWorksGrid from './components/SectionWorksGrid';
 import SectionSplash from './components/SectionSplash';
 import SectionDesignOps from './components/SectionDesignOps';
 import SectionSandbox from './components/SectionSandbox';
 import SectionContact from './components/SectionContact';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollToPlugin, ScrollTrigger);
 
 export default function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
@@ -163,6 +160,9 @@ export default function App() {
               </div>
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionPortfolio />
+              </div>
+              <div id="works-grid" className="scroll-mt-14 md:scroll-mt-16 w-full">
+                <SectionWorksGrid />
               </div>
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionSplash />

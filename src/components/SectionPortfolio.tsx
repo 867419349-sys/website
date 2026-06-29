@@ -8,7 +8,7 @@
  * GSAP 动效：逐层入场 + 呼吸感 + 鼠标视差
  */
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import gsap from 'gsap';
 
 export default function SectionPortfolio() {

@@ -22,7 +22,7 @@ const SPREAD: Partial<Record<CardId, { x: number; y: number }>> = {
   card01: { x: 2.8, y: 1.2 },
 };
 
-const RISE = -70;
+const RISE = -90;
 const SPREAD_D = 18;
 const SCALE = 1.08;
 const INFLUENCE = 30;
@@ -221,13 +221,27 @@ export default function SectionHome() {
         })}
 
         {/* Layer 8: 毛玻璃收纳盒 — Figma: 40:294 at (1627.5,614) 601×1265.5 */}
-        <img src="/assets/home/box/figma-glass.png" alt="" className="absolute pointer-events-none"
+        <div className="absolute pointer-events-none"
           style={{
             left: pct(1627.5, REF_W), top: pct(614, REF_H),
             width: pct(601, REF_W), height: pct(1265.5, REF_H),
             zIndex: 7,
-          }}
-          draggable={false} onLoad={onAssetLoad} />
+          }}>
+          <div
+            style={{
+              position: 'absolute', inset: 0,
+              backdropFilter: 'blur(12px)',
+              WebkitBackdropFilter: 'blur(12px)',
+              maskImage: 'url(/assets/home/box/figma-glass.png)',
+              WebkitMaskImage: 'url(/assets/home/box/figma-glass.png)',
+              maskSize: '100% 100%',
+              WebkitMaskSize: '100% 100%',
+            }}
+          />
+          <img src="/assets/home/box/figma-glass.png" alt=""
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+            draggable={false} onLoad={onAssetLoad} />
+        </div>
 
         {/* Layer 9: 收纳盒前框 — Figma: 13:244 at (2217,1135) 757×708 */}
         <img src="/assets/home/box/figma-front.png" alt="" className="absolute pointer-events-none"

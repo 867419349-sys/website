@@ -1,0 +1,72 @@
+.chroma-overlay {
+  position: absolute;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.chroma-zone {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.chroma-spot {
+  position: absolute;
+  border-radius: 12px;
+  overflow: visible;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+/* 每个卡片上的紫色聚光 ::before */
+.chroma-spot::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 180px at var(--mx, 50%) var(--my, 50%), rgba(140, 80, 210, 0.35), transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  border-radius: 12px;
+}
+
+.chroma-spot:hover::before {
+  opacity: 1;
+}
+
+.chroma-spot:hover {
+  box-shadow: 0 0 30px rgba(140, 80, 210, 0.12), 0 0 60px rgba(140, 80, 210, 0.06);
+}
+
+/* 全局暗色蒙版：鼠标周围变亮 */
+.chroma-fade-mask {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  backdrop-filter: brightness(0.88) hue-rotate(10deg);
+  -webkit-backdrop-filter: brightness(0.88) hue-rotate(10deg);
+  mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 8%,
+    rgba(0,0,0,0.06) 22%,
+    rgba(0,0,0,0.15) 40%,
+    rgba(0,0,0,0.3) 62%,
+    rgba(0,0,0,0.5) 85%,
+    black 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 8%,
+    rgba(0,0,0,0.06) 22%,
+    rgba(0,0,0,0.15) 40%,
+    rgba(0,0,0,0.3) 62%,
+    rgba(0,0,0,0.5) 85%,
+    black 100%
+  );
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}

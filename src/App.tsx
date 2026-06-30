@@ -11,7 +11,7 @@ import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
 import SectionHome from './components/SectionHome';
-import SectionPortfolio from './components/SectionPortfolio';
+import SectionAbout from './components/SectionAbout';
 import SectionWorksGrid from './components/SectionWorksGrid';
 import SectionSplash from './components/SectionSplash';
 import SectionDesignOps from './components/SectionDesignOps';
@@ -159,7 +159,7 @@ export default function App() {
                 <SectionHome />
               </div>
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionPortfolio />
+                <SectionAbout />
               </div>
               <div id="works-grid" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionWorksGrid />

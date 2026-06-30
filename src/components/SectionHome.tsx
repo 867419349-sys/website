@@ -23,9 +23,10 @@ const SPREAD: Partial<Record<CardId, { x: number; y: number }>> = {
 };
 
 const RISE = -70;
-const SPREAD_D = 20;
-const SCALE = 1.06;
-const INFLUENCE = 25;
+const SPREAD_D = 18;
+const SCALE = 1.08;
+const INFLUENCE = 30;
+const FOCUS_Y = 0.08;
 
 const pct = (px: number, ref: number) => `${(px / ref) * 100}%`;
 
@@ -117,38 +118,32 @@ export default function SectionHome() {
 
       let best: CardId | null = null;
       let bestDist = Infinity;
-      for (let i = CARD_ORDER.length - 1; i >= 0; i--) {
-        const id = CARD_ORDER[i];
+      const eases: Partial<Record<CardId, number>> = {};
+      for (const id of CARD_ORDER) {
         const c = CARD[id];
-        const cx = c.x / REF_W * 100 + c.w / REF_W * 100 / 2;
-        const cy = c.y / REF_H * 100 + c.h / REF_H * 100 / 2;
+        const cx = (c.x + c.w / 2) / REF_W * 100;
+        const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
         const dist = Math.hypot(rx - cx, ry - cy);
+        const t = Math.max(0, 1 - dist / INFLUENCE);
+        eases[id] = t * t * (3 - 2 * t);
         if (dist < bestDist) { bestDist = dist; best = id; }
       }
 
-      let anyReacting = false;
+      const targetEase = best ? (eases[best] || 0) : 0;
+      const anyReacting = targetEase > 0.03;
       for (const id of CARD_ORDER) {
         const el = cardRefs.current[id];
         if (!el) continue;
-        const c = CARD[id];
-        const cx = c.x / REF_W * 100 + c.w / REF_W * 100 / 2;
-        const cy = c.y / REF_H * 100 + c.h / REF_H * 100 / 2;
-        const dist = Math.hypot(rx - cx, ry - cy);
-
-        const t = Math.max(0, 1 - dist / INFLUENCE);
-        const ease = t * t * (3 - 2 * t);
-
-        if (ease > 0.001) anyReacting = true;
-
         const isTarget = id === best;
         const s = SPREAD[id] || { x: 0, y: 0 };
+        const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
 
         gsap.killTweensOf(el);
         gsap.to(el, {
-          x: isTarget ? 0 : s.x * SPREAD_D * ease,
-          y: isTarget ? RISE * ease : s.y * SPREAD_D * ease,
-          scale: isTarget ? 1 + (SCALE - 1) * ease : 1,
-          duration: 0.3,
+          x: isTarget ? 0 : s.x * SPREAD_D * spreadEase,
+          y: isTarget ? RISE * (eases[id] || 0) : s.y * SPREAD_D * spreadEase,
+          scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
+          duration: 0.35,
           ease: 'power2.out',
           overwrite: 'auto',
         });

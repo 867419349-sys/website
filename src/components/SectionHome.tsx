@@ -16,21 +16,19 @@ const CARD: Record<CardId, { x: number; y: number; w: number; h: number; file: s
 };
 
 const SPREAD: Partial<Record<CardId, { x: number; y: number }>> = {
-  card04: { x: -1.2, y: 0.5 },
-  card03: { x: 0.6, y: -1 },
-  card02: { x: 1, y: -0.4 },
-  card01: { x: 1.8, y: 1.2 },
+  card04: { x: -2.2, y: 0.8 },
+  card03: { x: -0.6, y: -2.4 },
+  card02: { x: 1.4, y: -2.0 },
+  card01: { x: 2.8, y: 1.2 },
 };
 
-const RISE = -38;
-const SPREAD_D = 16;
-const SCALE = 1.04;
-const INFLUENCE = 28; // 影响半径（百分比），光标在此范围内卡片开始反应
+const RISE = -120;
+const SPREAD_D = 18;
+const SCALE = 1.08;
+const INFLUENCE = 30;
+const FOCUS_Y = 0.08; // 焦点在卡片顶部 8% 处（不被前框/毛玻璃遮挡的可见区域）
 
 const pct = (px: number, ref: number) => `${(px / ref) * 100}%`;
-
-// 所有卡片的包围盒（百分比坐标）
-const CARD_GROUP = { l: 39.1, t: 25.0, r: 65.5, b: 78.8 };
 
 export default function SectionHome() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -73,17 +71,17 @@ export default function SectionHome() {
     );
   }, [loaded]);
 
-  // 启动呼吸动画（从当前卡片位置开始）
   const startBreathing = useCallback(() => {
     if (idleTween.current) idleTween.current.kill();
     const tl = gsap.timeline({ repeat: -1, yoyo: true });
-    CARD_ORDER.forEach((id) => {
+    const durations = [2.8, 3.2, 3.0, 3.5];
+    CARD_ORDER.forEach((id, i) => {
       const el = cardRefs.current[id];
       if (!el) return;
       const s = SPREAD[id] || { x: 0, y: 0 };
       tl.to(el, {
-        x: s.x * 10, y: s.y * 10,
-        duration: 2.5 + Math.random() * 1.5,
+        x: s.x * 8, y: s.y * 8,
+        duration: durations[i],
         ease: 'sine.inOut',
       }, 0);
     });
@@ -96,7 +94,6 @@ export default function SectionHome() {
     return () => { idleTween.current?.kill(); };
   }, [loaded, startBreathing]);
 
-  // 连续光标追踪
   useEffect(() => {
     if (!loaded) return;
 
@@ -107,52 +104,44 @@ export default function SectionHome() {
       const rx = (e.clientX - rect.left) / rect.width * 100;
       const ry = (e.clientY - rect.top) / rect.height * 100;
 
-      const inGroup =
-        rx >= CARD_GROUP.l - INFLUENCE && rx <= CARD_GROUP.r + INFLUENCE &&
-        ry >= CARD_GROUP.t - INFLUENCE && ry <= CARD_GROUP.b + INFLUENCE;
+      // 每张卡独立计算 ease，距离最近的卡片为主目标
+      let best: CardId | null = null;
+      let bestDist = Infinity;
+      const eases: Partial<Record<CardId, number>> = {};
+      for (const id of CARD_ORDER) {
+        const c = CARD[id];
+        const cx = (c.x + c.w / 2) / REF_W * 100;
+        const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
+        const dist = Math.hypot(rx - cx, ry - cy);
+        const t = Math.max(0, 1 - dist / INFLUENCE);
+        eases[id] = t * t * (3 - 2 * t);
+        if (dist < bestDist) { bestDist = dist; best = id; }
+      }
 
-      if (inGroup) {
+      const targetEase = best ? (eases[best] || 0) : 0;
+      const anyReacting = targetEase > 0.03;
+      for (const id of CARD_ORDER) {
+        const el = cardRefs.current[id];
+        if (!el) continue;
+        const isTarget = id === best;
+        const s = SPREAD[id] || { x: 0, y: 0 };
+        const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
+
+        gsap.killTweensOf(el);
+        gsap.to(el, {
+          x: isTarget ? 0 : s.x * SPREAD_D * spreadEase,
+          y: isTarget ? RISE * (eases[id] || 0) : s.y * SPREAD_D * spreadEase,
+          scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
+          duration: 0.35,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        });
+      }
+
+      if (anyReacting) {
         idleTween.current?.pause();
-
-        let best: CardId | null = null;
-        let bestDist = Infinity;
-        for (let i = CARD_ORDER.length - 1; i >= 0; i--) {
-          const id = CARD_ORDER[i];
-          const c = CARD[id];
-          const cx = c.x / REF_W * 100 + c.w / REF_W * 100 / 2;
-          const cy = c.y / REF_H * 100 + c.h / REF_H * 100 / 2;
-          const dist = Math.hypot(rx - cx, ry - cy);
-          if (dist < bestDist) { bestDist = dist; best = id; }
-        }
-
-        for (const id of CARD_ORDER) {
-          const el = cardRefs.current[id];
-          if (!el) continue;
-          const c = CARD[id];
-          const cx = c.x / REF_W * 100 + c.w / REF_W * 100 / 2;
-          const cy = c.y / REF_H * 100 + c.h / REF_H * 100 / 2;
-          const dist = Math.hypot(rx - cx, ry - cy);
-
-          const t = Math.max(0, 1 - dist / INFLUENCE);
-          const ease = t * t * (3 - 2 * t);
-
-          const isTarget = id === best && dist < 20;
-          const s = SPREAD[id] || { x: 0, y: 0 };
-
-          gsap.killTweensOf(el);
-          gsap.to(el, {
-            x: s.x * SPREAD_D * ease,
-            y: (isTarget ? RISE : 0) * ease + s.y * SPREAD_D * ease,
-            scale: isTarget ? 1 + (SCALE - 1) * ease : 1,
-            duration: 0.25,
-            ease: 'power2.out',
-            overwrite: 'auto',
-          });
-        }
-      } else {
-        if (idleTween.current && !idleTween.current.isActive()) {
-          startBreathing();
-        }
+      } else if (idleTween.current && !idleTween.current.isActive()) {
+        startBreathing();
       }
     };
 

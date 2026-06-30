@@ -38,6 +38,7 @@ export default function SectionHome() {
   const [loaded, setLoaded] = useState(false);
   const loadedCount = useRef(0);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
+  const textIdleTween = useRef<gsap.core.Timeline | null>(null);
 
   const onAssetLoad = () => {
     loadedCount.current++;
@@ -65,10 +66,21 @@ export default function SectionHome() {
 
   useEffect(() => {
     if (!loaded || !textRef.current) return;
-    gsap.fromTo(textRef.current,
+    const tl = gsap.timeline();
+    tl.fromTo(textRef.current,
       { opacity: 0, y: 50, scale: 0.9 },
       { opacity: 1, y: 0, scale: 1, duration: 1, ease: 'power3.out', delay: 0.25 }
     );
+    // 入场后启动文字呼吸动画
+    tl.to(textRef.current, {
+      y: -8, scale: 1.025,
+      duration: 2.5,
+      ease: 'sine.inOut',
+      repeat: -1,
+      yoyo: true,
+    }, '>');
+    textIdleTween.current = tl;
+    return () => { textIdleTween.current?.kill(); };
   }, [loaded]);
 
   const startBreathing = useCallback(() => {

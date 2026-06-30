@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ChatMessage } from '../types';
 import { PRESET_AI_RESPONSES } from '../data';
 import { sounds } from '../utils/audio';
+import GradualBlur from './GradualBlur';
 
 const STICKERS = [
   { id: 'st-1', content: '🌟', label: 'STAR', color: 'bg-[#d2ff55]', x: 50, y: 120 },
@@ -251,6 +252,7 @@ export default function SectionSandbox() {
 
       </div>
 
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </div>
   );
 }

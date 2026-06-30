@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
-import ChromaOverlay from './ChromaOverlay';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import TiltedCard from './TiltedCard';
+import BentoGlow from './BentoGlow';
+import GradualBlur from './GradualBlur';
+import AnimatedContent from './AnimatedContent';
+
+gsap.registerPlugin(ScrollTrigger);
 
 /*
  * 坐标系统匹配新背景 bg.png (4418×2066)
@@ -16,6 +23,8 @@ interface Layer {
   cx: string; cy: string; cw: string; ch: string;
   z: number;
   rot?: number;
+  isCharacter?: boolean;
+  isText?: boolean;
 }
 
 const LAYERS: Layer[] = [
@@ -28,31 +37,15 @@ const LAYERS: Layer[] = [
   { src: '/assets/about/character.png',
     cx: pct(427, REF_W), cy: pct(0, REF_H),
     cw: pct(3539, REF_W), ch: pct(2066, REF_H),
-    z: 2 },
-  { src: '/assets/about/education.png',
-    cx: pct(2772, REF_W), cy: pct(342, REF_H),
-    cw: pct(1046, REF_W), ch: pct(389, REF_H),
-    z: 3 },
-  { src: '/assets/about/work.png',
-    cx: pct(2772, REF_W), cy: pct(759, REF_H),
-    cw: pct(1093, REF_W), ch: pct(515, REF_H),
-    z: 3 },
-  { src: '/assets/about/skills.png',
-    cx: pct(2733, REF_W), cy: pct(1296, REF_H),
-    cw: pct(503, REF_W), ch: pct(483, REF_H),
-    z: 3 },
-  { src: '/assets/about/tools.png',
-    cx: pct(3266, REF_W), cy: pct(1296, REF_H),
-    cw: pct(552, REF_W), ch: pct(483, REF_H),
-    z: 3 },
+    z: 2, isCharacter: true },
   { src: '/assets/about/hello.png',
     cx: pct(586, REF_W), cy: pct(520, REF_H),
     cw: pct(485, REF_W), ch: pct(431, REF_H),
-    z: 4 },
+    z: 4, isText: true },
   { src: '/assets/about/name.png',
     cx: pct(998, REF_W), cy: pct(758, REF_H),
     cw: pct(646, REF_W), ch: pct(200, REF_H),
-    z: 4 },
+    z: 4, isText: true },
   { src: '/assets/about/title.png',
     cx: pct(715.5, REF_W), cy: pct(997.74, REF_H),
     cw: pct(651, REF_W), ch: pct(100, REF_H),
@@ -83,19 +76,24 @@ const LAYERS: Layer[] = [
     z: 6 },
 ];
 
-const TOTAL = LAYERS.length;
+const TOTAL = LAYERS.length + 4; // 12 图层 + 4 张 TiltedCard 图片
 
-// 卡片区域：用于 ChromaOverlay 发光效果
-const CARDS = [
-  { id: 'edu', x: 2772, y: 342, w: 1046, h: 389 },
-  { id: 'work', x: 2772, y: 759, w: 1093, h: 515 },
-  { id: 'skills', x: 2733, y: 1296, w: 503, h: 483 },
-  { id: 'tools', x: 3266, y: 1296, w: 552, h: 483 },
+const CARD_WRAPPERS = [
+  { src: '/assets/about/education.png', x: 2772, y: 342, w: 1046, h: 389, alt: '教育背景' },
+  { src: '/assets/about/work.png', x: 2772, y: 759, w: 1093, h: 515, alt: '工作经历' },
+  { src: '/assets/about/skills.png', x: 2733, y: 1296, w: 503, h: 483, alt: '技能' },
+  { src: '/assets/about/tools.png', x: 3266, y: 1296, w: 552, h: 483, alt: '工具' },
 ];
 
 export default function SectionAbout() {
   const sectionRef = useRef<HTMLElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const characterRef = useRef<HTMLImageElement>(null);
+  const helloRef = useRef<HTMLImageElement>(null);
+  const nameRef = useRef<HTMLImageElement>(null);
+  const titleRef = useRef<HTMLImageElement>(null);
+  const descRef = useRef<HTMLImageElement>(null);
+  const aiDecoRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
   const loadedCount = useRef(0);
 
@@ -123,6 +121,50 @@ export default function SectionAbout() {
     return () => window.removeEventListener('resize', syncSize);
   }, [syncSize]);
 
+  // 持续微浮动呼吸动画
+  useEffect(() => {
+    if (!loaded) return;
+    const character = characterRef.current;
+    const hello = helloRef.current;
+    const tweens: gsap.core.Tween[] = [];
+    if (character) {
+      tweens.push(gsap.to(character, {
+        y: -10, duration: 3.5, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 1.8,
+      }));
+    }
+    if (hello) {
+      tweens.push(gsap.to(hello, {
+        y: -3, duration: 5, ease: 'sine.inOut', repeat: -1, yoyo: true, delay: 2,
+      }));
+    }
+    return () => { tweens.forEach(t => t.kill()); };
+  }, [loaded]);
+
+  // 人物鼠标视差效果
+  useEffect(() => {
+    const section = sectionRef.current;
+    const character = characterRef.current;
+    if (!section || !character) return;
+
+    const handleParallax = (e: MouseEvent) => {
+      const rect = section.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / rect.width;
+      const dy = (e.clientY - cy) / rect.height;
+      gsap.to(character, {
+        x: dx * 8,
+        y: dy * 6,
+        duration: 1.2,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      });
+    };
+
+    window.addEventListener('mousemove', handleParallax);
+    return () => window.removeEventListener('mousemove', handleParallax);
+  }, []);
+
   return (
     <section
       ref={sectionRef}
@@ -137,6 +179,14 @@ export default function SectionAbout() {
         {LAYERS.map((a, i) => (
           <img
             key={i}
+            ref={(el) => {
+              if (a.isCharacter) characterRef.current = el;
+              else if (a.isText && a.src.includes('hello')) helloRef.current = el;
+              else if (a.isText && a.src.includes('name')) nameRef.current = el;
+              else if (a.src.includes('title.png')) titleRef.current = el;
+              else if (a.src.includes('description.png')) descRef.current = el;
+              else if (a.src.includes('ai-deco.png')) aiDecoRef.current = el;
+            }}
             src={a.src}
             alt=""
             className="absolute pointer-events-none"
@@ -153,9 +203,33 @@ export default function SectionAbout() {
           />
         ))}
 
-        {/* Chroma 紫色发光交互覆盖层 */}
-        <ChromaOverlay cards={CARDS} refW={REF_W} refH={REF_H} />
+        {/* Bento 全局微光效果 */}
+        <BentoGlow containerRef={sectionRef} glowColor="140, 80, 210" />
+
+        {/* 3D 倾斜卡片 — 各自独立滑入，自然错开 */}
+        {CARD_WRAPPERS.map((c, i) => (
+          <AnimatedContent
+            key={c.alt}
+            distance={24}
+            direction="horizontal"
+            duration={0.4}
+            ease="power3.out"
+            delay={i * 0.05}
+            threshold={0.08}
+            className="glow-card magic-bento-card--border-glow"
+            style={{ position: 'absolute', left: pct(c.x, REF_W), top: pct(c.y, REF_H), width: pct(c.w, REF_W), height: pct(c.h, REF_H), zIndex: 3 }}
+          >
+            <TiltedCard
+              imageSrc={c.src}
+              rotateAmplitude={8}
+              scaleOnHover={1.05}
+              altText={c.alt}
+              onLoad={onAssetLoad}
+            />
+          </AnimatedContent>
+        ))}
       </div>
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </section>
   );
 }

@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { sounds } from '../utils/audio';
+import GradualBlur from './GradualBlur';
 
 export default function SectionDesignOps() {
   const [activeStep, setActiveStep] = useState(0);
@@ -310,6 +311,7 @@ export default function SectionDesignOps() {
         </div>
       </div>
 
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </div>
   );
 }

@@ -12,11 +12,12 @@ interface ChromaOverlayProps {
   cards: CardZone[];
   refW: number;
   refH: number;
+  zoneRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 const pct = (px: number, ref: number) => `${(px / ref) * 100}%`;
 
-export default function ChromaOverlay({ cards, refW, refH }: ChromaOverlayProps) {
+export default function ChromaOverlay({ cards, refW, refH, zoneRef }: ChromaOverlayProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const fadeRef = useRef<HTMLDivElement>(null);
   const setX = useRef<((v: number) => void) | null>(null);
@@ -26,6 +27,7 @@ export default function ChromaOverlay({ cards, refW, refH }: ChromaOverlayProps)
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
+    if (zoneRef) zoneRef.current = el;
     setX.current = gsap.quickSetter(el, '--x', 'px');
     setY.current = gsap.quickSetter(el, '--y', 'px');
     const { width, height } = el.getBoundingClientRect();

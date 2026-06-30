@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
+import GradualBlur from './GradualBlur';
 
 const REF_W = 4500;
 const REF_H = 2089;
@@ -252,6 +253,7 @@ export default function SectionHome() {
           }}
           draggable={false} onLoad={onAssetLoad} />
       </div>
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </section>
   );
 }

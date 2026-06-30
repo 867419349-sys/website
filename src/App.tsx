@@ -18,6 +18,7 @@ import SectionDesignOps from './components/SectionDesignOps';
 import SectionSandbox from './components/SectionSandbox';
 import SectionContact from './components/SectionContact';
 
+
 export default function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
@@ -161,10 +162,8 @@ export default function App() {
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionAbout />
               </div>
-              <div id="works-grid" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionWorksGrid />
-              </div>
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
+                <SectionWorksGrid />
                 <SectionSplash />
               </div>
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
@@ -201,29 +200,29 @@ export default function App() {
                 01 个人简介
               </button>
               <span>|</span>
-              <button 
-                onClick={() => handleTabChange('splash')} 
+              <button
+                onClick={() => handleTabChange('splash')}
                 className={`hover:text-white transition-colors uppercase ${activeTab === 'splash' ? 'text-[#d2ff55] font-black' : ''}`}
               >
                 02 创意作品
               </button>
               <span>|</span>
-              <button 
-                onClick={() => handleTabChange('designops')} 
+              <button
+                onClick={() => handleTabChange('designops')}
                 className={`hover:text-white transition-colors uppercase ${activeTab === 'designops' ? 'text-[#d2ff55] font-black' : ''}`}
               >
                 03 设计工程
               </button>
               <span>|</span>
-              <button 
-                onClick={() => handleTabChange('sandbox')} 
+              <button
+                onClick={() => handleTabChange('sandbox')}
                 className={`hover:text-white transition-colors uppercase ${activeTab === 'sandbox' ? 'text-[#d2ff55] font-black' : ''}`}
               >
                 04 AI实验室
               </button>
               <span>|</span>
-              <button 
-                onClick={() => handleTabChange('contact')} 
+              <button
+                onClick={() => handleTabChange('contact')}
                 className={`hover:text-white transition-colors uppercase ${activeTab === 'contact' ? 'text-[#d2ff55] font-black' : ''}`}
               >
                 05 联络合作

@@ -6,6 +6,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, useMotionValue, AnimatePresence } from 'motion/react';
 import { sounds } from '../utils/audio';
+import GradualBlur from './GradualBlur';
 
 interface ProjectCase {
   id: string;
@@ -625,7 +626,8 @@ export default function SectionSplash() {
           </motion.div>
         </div>
       </div>
-      
+
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </div>
   );
 }

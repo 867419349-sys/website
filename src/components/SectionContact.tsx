@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { sounds } from '../utils/audio';
+import GradualBlur from './GradualBlur';
 
 export default function SectionContact() {
   const [copied, setCopied] = useState(false);
@@ -178,6 +179,7 @@ export default function SectionContact() {
         </div>
       </div>
 
+      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </div>
   );
 }

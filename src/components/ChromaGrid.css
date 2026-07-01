@@ -1,0 +1,90 @@
+.chroma-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "edu edu"
+    "work work"
+    "skills tools";
+  gap: 0;
+  box-sizing: border-box;
+  --x: 50%;
+  --y: 50%;
+  --r: 220px;
+}
+
+.chroma-card--edu  { grid-area: edu; }
+.chroma-card--work { grid-area: work; }
+.chroma-card--skills { grid-area: skills; }
+.chroma-card--tools { grid-area: tools; }
+
+.chroma-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: transparent;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(140, 80, 210, 0.4);
+  transition: filter 0.4s ease, box-shadow 0.4s ease;
+}
+
+.chroma-card:hover {
+  box-shadow: 0 0 30px rgba(140, 80, 210, 0.15), 0 0 60px rgba(140, 80, 210, 0.08);
+}
+
+.chroma-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 180px at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.chroma-card:hover::before {
+  opacity: 1;
+}
+
+.chroma-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.chroma-grid-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  backdrop-filter: brightness(0.9) hue-rotate(15deg);
+  -webkit-backdrop-filter: brightness(0.9) hue-rotate(15deg);
+  mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 10%,
+    rgba(0,0,0,0.08) 25%,
+    rgba(0,0,0,0.18) 45%,
+    rgba(0,0,0,0.35) 65%,
+    rgba(0,0,0,0.5) 85%,
+    black 100%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle var(--r) at var(--x) var(--y),
+    transparent 0%,
+    transparent 10%,
+    rgba(0,0,0,0.08) 25%,
+    rgba(0,0,0,0.18) 45%,
+    rgba(0,0,0,0.35) 65%,
+    rgba(0,0,0,0.5) 85%,
+    black 100%
+  );
+}

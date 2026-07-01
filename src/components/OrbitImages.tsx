@@ -158,8 +158,8 @@ export default function OrbitImages({
     return () => controls.stop();
   }, [progress, duration, easing, direction, paused]);
 
-  const containerWidth = responsive ? '100%' : (typeof width === 'number' ? width : '100%');
-  const containerHeight = responsive ? 'auto' : (typeof height === 'number' ? height : (typeof width === 'number' ? width : 'auto'));
+  const containerWidth = responsive ? '100%' : (typeof width === 'number' ? `${width}px` : width);
+  const containerHeight = responsive ? 'auto' : (typeof height === 'number' ? `${height}px` : height);
 
   const items = images.map((src, idx) => (
     <img

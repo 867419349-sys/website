@@ -181,6 +181,8 @@ export default function SectionHome() {
 
         gsap.set(overlayRef.current, {
           background: 'rgba(0, 0, 0, 0)',
+          backdropFilter: 'blur(0px)',
+          WebkitBackdropFilter: 'blur(0px)',
         });
 
         gsap.to(cardFrontRef.current, {
@@ -201,8 +203,10 @@ export default function SectionHome() {
         });
 
         gsap.to(overlayRef.current, {
-          background: 'rgba(0, 0, 0, 0.3)',
-          duration: 0.5,
+          background: 'rgba(0, 0, 0, 0.15)',
+          backdropFilter: 'blur(4px)',
+          WebkitBackdropFilter: 'blur(4px)',
+          duration: 0.6,
           ease: 'power2.out',
         });
       });
@@ -219,7 +223,7 @@ export default function SectionHome() {
     const originalEl = cardRefs.current[selectedCard];
     if (!originalEl) {
       gsap.to(cardFrontRef.current, { opacity: 0, duration: 0.3 });
-      gsap.to(overlayRef.current, { background: 'rgba(0,0,0,0)', duration: 0.3 });
+      gsap.to(overlayRef.current, { background: 'rgba(0,0,0,0)', backdropFilter: 'blur(0px)', WebkitBackdropFilter: 'blur(0px)', duration: 0.3 });
       setTimeout(() => {
         setSelectedCard(null);
         setIsAnimating(false);
@@ -267,6 +271,8 @@ export default function SectionHome() {
 
     gsap.to(overlayRef.current, {
       background: 'rgba(0, 0, 0, 0)',
+      backdropFilter: 'blur(0px)',
+      WebkitBackdropFilter: 'blur(0px)',
       duration: 0.4,
       ease: 'power2.in',
     });
@@ -407,8 +413,10 @@ export default function SectionHome() {
             ref={overlayRef}
             onClick={handleDismiss}
             style={{
-              position: 'fixed', inset: 0, zIndex: 1000,
+              position: 'fixed', top: '3.5rem', right: 0, bottom: 0, left: 0, zIndex: 1000,
               background: 'rgba(0, 0, 0, 0)', cursor: 'pointer',
+              backdropFilter: 'blur(0px)',
+              WebkitBackdropFilter: 'blur(0px)',
             }}
           />
           <img

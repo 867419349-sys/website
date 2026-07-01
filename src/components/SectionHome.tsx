@@ -61,6 +61,7 @@ export default function SectionHome() {
   const [isAnimating, setIsAnimating] = useState(false);
   const cardFrontRef = useRef<HTMLImageElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const bestCardRef = useRef<CardId | null>(null);
 
   const onAssetLoad = () => {
     loadedCount.current++;
@@ -344,6 +345,9 @@ export default function SectionHome() {
       }
       const targetEase = best ? (eases[best] || 0) : 0;
       const anyReacting = targetEase > 0.03;
+
+      bestCardRef.current = best;
+
       for (const id of CARD_ORDER) {
         const el = cardRefs.current[id];
         if (!el) continue;
@@ -383,9 +387,12 @@ export default function SectionHome() {
     };
   }, [loaded, startBreathing, selectedCard, handleCardClick]);
 
-  const onCardClick = (id: CardId) => (e: React.MouseEvent) => {
-    e.stopPropagation();
-    handleCardClick(id);
+  const handleWrapperClick = (e: React.MouseEvent) => {
+    const cardId = bestCardRef.current;
+    if (cardId) {
+      e.stopPropagation();
+      handleCardClick(cardId);
+    }
   };
 
   const setCardRef = (id: string) => (el: HTMLImageElement | null) => {
@@ -428,6 +435,7 @@ export default function SectionHome() {
     >
       <div
         ref={wrapperRef}
+        onClick={handleWrapperClick}
         className="relative overflow-hidden select-none"
         style={{
           opacity: loaded ? 1 : 0,
@@ -458,7 +466,6 @@ export default function SectionHome() {
           const c = CARD[id];
           return (
             <img key={id} ref={setCardRef(id)} src={`/assets/home/box/${c.file}`} alt=""
-              onClick={onCardClick(id)}
               style={{
                 position: 'absolute',
                 left: pct(c.x, REF_W), top: pct(c.y, REF_H),

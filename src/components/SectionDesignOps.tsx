@@ -12,14 +12,15 @@ const CARD_IMAGES = [
   '/assets/design-thinking/AI-design-system.png',
 ];
 
-/* 椭圆轨道参数 — 相对于容器的百分比（匹配 Figma 圆圈中心 51%, 58%） */
-const ORBIT_CX = 51;   // 轨道中心 X %
-const ORBIT_CY = 58;   // 轨道中心 Y %
-const ORBIT_RX = 35;   // 水平半径 %
-const ORBIT_RY = 25;   // 垂直半径 %
-const DURATION = 50;   // 一圈秒数
-const ITEM_W = 14;     // 卡片宽度 %
-const ITEM_H = 30;     // 卡片高度 %
+/* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
+const ORBIT_CX = 52;       // 轨道中心 X %
+const ORBIT_CY = 47;       // 轨道中心 Y %
+const ORBIT_RX = 34;      // 水平半径 %（Figma 卡片 X: 17~79%, 轨道 12~80%）
+const ORBIT_RY = 16;      // 垂直半径 %（Figma 卡片 Y: 34~74%, 轨道 38~70%）
+const DURATION = 50;      // 一圈秒数
+const ITEM_W = 15;        // 卡片宽度 %
+const ITEM_H = 35;        // 卡片高度 %
+const TILT = -6.12;       // 轨道倾斜角 °（Figma 圆圈 rotate）
 
 function OrbitCard({
   src,
@@ -85,17 +86,27 @@ function OrbitCard({
 
   const left = useTransform(
     angle,
-    (a) => `${ORBIT_CX + ORBIT_RX * Math.cos(a + phase)}%`,
+    (a) => {
+      const xo = ORBIT_RX * Math.cos(a + phase);
+      const yo = ORBIT_RY * Math.sin(a + phase);
+      const rad = TILT * Math.PI / 180;
+      return `${ORBIT_CX + xo * Math.cos(rad) - yo * Math.sin(rad)}%`;
+    },
   );
   const top = useTransform(
     angle,
-    (a) => `${ORBIT_CY + ORBIT_RY * Math.sin(a + phase)}%`,
+    (a) => {
+      const xo = ORBIT_RX * Math.cos(a + phase);
+      const yo = ORBIT_RY * Math.sin(a + phase);
+      const rad = TILT * Math.PI / 180;
+      return `${ORBIT_CY + xo * Math.sin(rad) + yo * Math.cos(rad)}%`;
+    },
   );
 
   /* 深度透视：sin 值越大越靠近观众，卡片越大越亮 */
   const depthScale = useTransform(
     angle,
-    (a) => 0.85 + 0.2 * Math.sin(a + phase),
+    (a) => 0.9 + 0.1 * Math.sin(a + phase),
   );
   const scale = useTransform(
     [depthScale, hoverScale] as const,
@@ -103,7 +114,7 @@ function OrbitCard({
   );
   const depthOpacity = useTransform(
     angle,
-    (a) => 0.45 + 0.55 * ((Math.sin(a + phase) + 1) / 2),
+    (a) => 0.6 + 0.4 * ((Math.sin(a + phase) + 1) / 2),
   );
   const opacity = useTransform(
     [depthOpacity, hoverValue] as const,
@@ -187,21 +198,22 @@ export default function SectionDesignOps() {
       {/* 按 Figma 4500:2453 比例缩放 */}
       <div className="relative w-full overflow-visible" style={{ aspectRatio: '4500 / 2453' }}>
 
-        {/* 圆圈 - 对齐卡片轨道 (中心 51%,58% Rx=35% Ry=25%) */}
+        {/* 圆圈 — Figma 坐标: left=103(2.29%) top=685.32(27.94%) w=3957(87.93%) h=1298.76(52.95%) */}
         <div
           className="absolute flex items-center justify-center pointer-events-none"
           style={{
-            left: `${ORBIT_CX - ORBIT_RX}%`,
-            top: `${ORBIT_CY - ORBIT_RY}%`,
-            width: `${ORBIT_RX * 2}%`,
-            height: `${ORBIT_RY * 2}%`,
+            left: '16%',
+            top: '29%',
+            width: '72%',
+            height: '36%',
           }}
         >
           <img
             src="/assets/design-thinking/circle.png"
             alt=""
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain opacity-30"
             draggable={false}
+            style={{ transform: `rotate(${TILT}deg)`, objectFit: 'fill' }}
           />
         </div>
 
@@ -234,8 +246,8 @@ export default function SectionDesignOps() {
               width: '100%',
               height: '100%',
               transformStyle: 'preserve-3d',
-              rotateX: 55,
-              rotateY: 8,
+              rotateX: 45,
+              rotateY: 5,
             }}
           >
             {CARD_IMAGES.map((src, i) => (

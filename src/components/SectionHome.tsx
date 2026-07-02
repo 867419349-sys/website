@@ -18,7 +18,7 @@ const CARD: Record<CardId, { x: number; y: number; w: number; h: number; file: s
 };
 
 const CARD_FRONT: Record<CardId, string> = {
-  card01: '/assets/home/box/card-front-01.png',
+  card01: '/assets/home/box/01卡片正面背景.png',
   card02: '/assets/home/box/card-front-02.png',
   card03: '/assets/home/box/card-front-03.png',
   card04: '/assets/home/box/card-front-04.png',
@@ -59,7 +59,7 @@ export default function SectionHome() {
   // 卡片弹出状态
   const [selectedCard, setSelectedCard] = useState<CardId | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const cardFrontRef = useRef<HTMLImageElement | null>(null);
+  const cardFrontRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const bestCardRef = useRef<CardId | null>(null);
 
@@ -160,7 +160,6 @@ export default function SectionHome() {
         const startScaleY = cardH / targetH;
 
         gsap.killTweensOf(cardFrontRef.current);
-        gsap.killTweensOf(overlayRef.current);
 
         gsap.set(cardFrontRef.current, {
           visibility: 'visible',
@@ -248,7 +247,6 @@ export default function SectionHome() {
     const endScaleY = targetH > 0 ? cardH / targetH : 1;
 
     gsap.killTweensOf(cardFrontRef.current);
-    gsap.killTweensOf(overlayRef.current);
 
     gsap.to(cardFrontRef.current, {
       x: endX,
@@ -432,17 +430,39 @@ export default function SectionHome() {
               WebkitBackdropFilter: 'blur(0px)',
             }}
           />
-          <img
-            ref={cardFrontRef}
-            src={CARD_FRONT[selectedCard]}
-            alt=""
-            draggable={false}
-            style={{
-              position: 'fixed', left: '50%', top: '50%', zIndex: 1001,
-              willChange: 'transform', pointerEvents: 'none',
-              opacity: 0, visibility: 'hidden',
-            }}
-          />
+          {selectedCard === 'card01' ? (
+            <div
+              ref={cardFrontRef}
+              style={{
+                position: 'fixed', left: '50%', top: '50%', zIndex: 1001,
+                willChange: 'transform', opacity: 0, visibility: 'hidden',
+              }}
+            >
+              <img src={CARD_FRONT[selectedCard]} alt="" draggable={false}
+                style={{ width: '100%', height: '100%', display: 'block', pointerEvents: 'none' }} />
+              <img src="/assets/home/box/01按钮.png" alt="" draggable={false}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedCard(null);
+                  setIsAnimating(false);
+                  document.getElementById('profile')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                style={{
+                  position: 'absolute', right: '12%', bottom: '14%',
+                  width: '34%', height: 'auto', cursor: 'pointer',
+                }} />
+            </div>
+          ) : (
+            <img
+              ref={cardFrontRef as any}
+              src={CARD_FRONT[selectedCard]} alt="" draggable={false}
+              style={{
+                position: 'fixed', left: '50%', top: '50%', zIndex: 1001,
+                willChange: 'transform', pointerEvents: 'none',
+                opacity: 0, visibility: 'hidden',
+              }}
+            />
+          )}
         </>,
         document.body,
       )

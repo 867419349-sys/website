@@ -1,7 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import ScrollFloat from './ScrollFloat';
 
 const FW = 4480;
 const FH = 2318;
@@ -129,17 +128,14 @@ export default function SectionPortfolioCases() {
         <img src={`${A}/PROJECT.png`} alt="" className="absolute"
           style={{ left:pct(104.5,FW), top:pct(201,FH), width:pct(2396,FW), height:pct(369,FH) }}
           draggable={false} />
-        <div className="absolute" style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}>
-          <ScrollFloat
-            animationDuration={1}
-            ease="back.inOut(2)"
-            scrollStart="top bottom-=10%"
-            scrollEnd="bottom top+=10%"
-            stagger={0.15}
-          >
-            精选作品
-          </ScrollFloat>
-        </div>
+        <img src={`${A}/精选作品.png`} alt="精选作品" className="absolute"
+          style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}
+          draggable={false} />
+
+        {CARDS.map((c, i) => (
+          <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute cursor-pointer"
+            data-card={i}
+            style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full pointer-events-none" draggable={false} />
             {[...c.works, ...c.texts].map(l => (
               <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute pointer-events-none" draggable={false}

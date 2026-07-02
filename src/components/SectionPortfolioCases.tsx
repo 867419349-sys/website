@@ -1,6 +1,7 @@
 import { useRef, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ScrollFloat from './ScrollFloat';
 
 const FW = 4480;
 const FH = 2318;
@@ -42,14 +43,17 @@ export default function SectionPortfolioCases() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lastHovered = useRef<number | null>(null);
+  const dropDone = useRef(false);
 
   const resetCards = useCallback(() => {
+    if (!dropDone.current) return;
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
     gsap.to(cards, { x: 0, y: 0, scale: 1, zIndex: 0, duration: 0.4, ease: 'power2.out' });
     lastHovered.current = null;
   }, []);
 
   const scatterFrom = useCallback((hoveredIndex: number) => {
+    if (!dropDone.current) return;
     if (lastHovered.current === hoveredIndex) return;
     lastHovered.current = hoveredIndex;
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
@@ -74,6 +78,8 @@ export default function SectionPortfolioCases() {
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
     if (cards.length === 0 || !sectionRef.current) return;
 
+    let dropTimer: ReturnType<typeof setTimeout> | null = null;
+
     const ctx = gsap.context(() => {
       // 初始状态
       gsap.set(cards, { y: -400, opacity: 0 });
@@ -82,24 +88,33 @@ export default function SectionPortfolioCases() {
         trigger: sectionRef.current,
         start: 'top bottom',
         onEnter: () => {
+          dropDone.current = false;
+          if (dropTimer) clearTimeout(dropTimer);
           cards.forEach((card, i) => {
             const tl = gsap.timeline({ delay: i * 0.18 });
-            // 下落 + 渐显
             tl.fromTo(card,
               { y: -400, opacity: 0, scale: 0.92 },
               { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power4.in' },
               0
             );
-            // 着地弹跳
             tl.to(card, { scale: 1.05, duration: 0.08, ease: 'power2.out' });
             tl.to(card, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
           });
+          const totalTime = (cards.length - 1) * 0.18 + 0.8 + 0.08 + 0.2 + 0.1;
+          dropTimer = setTimeout(() => { dropDone.current = true; }, totalTime * 1000);
         },
-        onLeaveBack: () => gsap.set(cards, { y: -400, opacity: 0 }),
+        onLeaveBack: () => {
+          dropDone.current = false;
+          if (dropTimer) clearTimeout(dropTimer);
+          gsap.set(cards, { y: -400, opacity: 0 });
+        },
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      if (dropTimer) clearTimeout(dropTimer);
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -114,14 +129,17 @@ export default function SectionPortfolioCases() {
         <img src={`${A}/PROJECT.png`} alt="" className="absolute"
           style={{ left:pct(104.5,FW), top:pct(201,FH), width:pct(2396,FW), height:pct(369,FH) }}
           draggable={false} />
-        <img src={`${A}/精选作品.png`} alt="精选作品" className="absolute"
-          style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}
-          draggable={false} />
-
-        {CARDS.map((c, i) => (
-          <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute cursor-pointer"
-            data-card={i}
-            style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
+        <div className="absolute" style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}>
+          <ScrollFloat
+            animationDuration={1}
+            ease="back.inOut(2)"
+            scrollStart="top bottom-=10%"
+            scrollEnd="bottom top+=10%"
+            stagger={0.15}
+          >
+            精选作品
+          </ScrollFloat>
+        </div>
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full pointer-events-none" draggable={false} />
             {[...c.works, ...c.texts].map(l => (
               <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute pointer-events-none" draggable={false}

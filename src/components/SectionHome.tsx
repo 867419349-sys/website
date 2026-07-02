@@ -395,10 +395,23 @@ export default function SectionHome() {
 
   const handleWrapperClick = (e: React.MouseEvent) => {
     const cardId = bestCardRef.current;
-    if (cardId) {
-      e.stopPropagation();
-      handleCardClick(cardId);
-    }
+    if (!cardId) return;
+
+    // 验证点击位置确实在卡片范围内
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
+    const rx = (e.clientX - rect.left) / rect.width * 100;
+    const ry = (e.clientY - rect.top) / rect.height * 100;
+
+    const c = CARD[cardId];
+    const cx = (c.x + c.w / 2) / REF_W * 100;
+    const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
+    const dist = Math.hypot(rx - cx, ry - cy);
+    if (dist > INFLUENCE * 0.6) return;
+
+    e.stopPropagation();
+    handleCardClick(cardId);
   };
 
   const setCardRef = (id: string) => (el: HTMLImageElement | null) => {

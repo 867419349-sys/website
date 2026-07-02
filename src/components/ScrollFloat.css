@@ -4,10 +4,11 @@
 
 .scroll-float-text {
   display: inline-block;
-  font-size: clamp(1.6rem, 8vw, 10rem);
+  font-size: clamp(32px, 7vw, 320px);
   font-weight: 900;
-  text-align: center;
-  line-height: 1.5;
+  font-style: italic;
+  line-height: 1;
+  font-family: 'PP Agrandir', 'Arial Black', sans-serif;
 }
 
 .char {

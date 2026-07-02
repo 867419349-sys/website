@@ -1,0 +1,139 @@
+import { useRef, useEffect, useCallback } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+const FW = 4480;
+const FH = 2318;
+const pct = (v: number, base: number) => `${((v / base) * 100).toFixed(3)}%`;
+const A = '/assets/portfolio-cases';
+
+interface Layer { file: string; iw: number; ih: number; cx: number; cy: number }
+interface Card {
+  id: string; iw: number; ih: number; x: number; y: number;
+  works: Layer[];
+  texts: Layer[];
+}
+
+const CARDS: Card[] = [
+  { id:'01', iw:1065, ih:1287, x:136, y:764,
+    works:[{ file:'01作品.png', iw:790, ih:576, cx:617.88, cy:1639.32 }],
+    texts:[{ file:'01文字.png', iw:718, ih:189, cx:649.12, cy:1216.09 }] },
+  { id:'02', iw:1186, ih:1377, x:520, y:941,
+    works:[{ file:'02作品.png', iw:762, ih:618, cx:1140.77, cy:1883.94 }],
+    texts:[{ file:'02字体.png', iw:724, ih:392, cx:1077.94, cy:1450.63 }] },
+  { id:'03', iw:1021, ih:1378, x:1177, y:372,
+    works:[{ file:'03作品.png', iw:721, ih:546, cx:1706.24, cy:1356.93 }],
+    texts:[{ file:'03字体.png', iw:726, ih:359, cx:1673.73, cy:878.77 }] },
+  { id:'04', iw:1024, ih:1279, x:1572, y:972,
+    works:[{ file:'04作品.png', iw:710, ih:514, cx:2055.85, cy:1882.62 }],
+    texts:[{ file:'04字体.png', iw:701, ih:484, cx:2110.67, cy:1411.33 }] },
+  { id:'05', iw:1172, ih:1418, x:2198.13, y:518.96,
+    works:[{ file:'05作品.png', iw:688, ih:487, cx:2755.69, cy:1488.57 }],
+    texts:[{ file:'05字体.png', iw:691, ih:424, cx:2760.21, cy:1047.96 }] },
+  { id:'06', iw:1160, ih:1333, x:2663, y:972,
+    works:[{ file:'06作品.png', iw:813, ih:635, cx:3273.04, cy:1867.46 }],
+    texts:[{ file:'06字体.png', iw:663, ih:332, cx:3192.38, cy:1418.98 }] },
+  { id:'07', iw:1108, ih:1378, x:3243, y:552,
+    works:[{ file:'07作品.png', iw:697, ih:523, cx:3738.36, cy:1537.75 }],
+    texts:[{ file:'07字体.png', iw:725, ih:614, cx:3741.95, cy:1084.96 }] },
+];
+
+export default function SectionPortfolioCases() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lastHovered = useRef<number | null>(null);
+
+  const resetCards = useCallback(() => {
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    gsap.to(cards, { x: 0, y: 0, scale: 1, zIndex: 0, duration: 0.4, ease: 'power2.out' });
+    lastHovered.current = null;
+  }, []);
+
+  const scatterFrom = useCallback((hoveredIndex: number) => {
+    if (lastHovered.current === hoveredIndex) return;
+    lastHovered.current = hoveredIndex;
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    const hc = CARDS[hoveredIndex];
+    const cx = hc.x + hc.iw / 2;
+    const cy = hc.y + hc.ih / 2;
+
+    cards.forEach((card, i) => {
+      if (i === hoveredIndex) {
+        gsap.to(card, { scale: 1.08, zIndex: 10, duration: 0.3, ease: 'power2.out' });
+      } else {
+        const tc = CARDS[i];
+        const dx = tc.x + tc.iw / 2 - cx;
+        const dy = tc.y + tc.ih / 2 - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        gsap.to(card, { x: (dx / dist) * 150, y: (dy / dist) * 150, scale: 0.95, zIndex: 0, duration: 0.35, ease: 'power2.out' });
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (cards.length === 0 || !sectionRef.current) return;
+
+    const ctx = gsap.context(() => {
+      // 初始状态
+      gsap.set(cards, { y: -400, opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        onEnter: () => {
+          cards.forEach((card, i) => {
+            const tl = gsap.timeline({ delay: i * 0.18 });
+            // 下落 + 渐显
+            tl.fromTo(card,
+              { y: -400, opacity: 0, scale: 0.92 },
+              { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power4.in' },
+              0
+            );
+            // 着地弹跳
+            tl.to(card, { scale: 1.05, duration: 0.08, ease: 'power2.out' });
+            tl.to(card, { scale: 1, duration: 0.2, ease: 'back.out(2)' });
+          });
+        },
+        onLeaveBack: () => gsap.set(cards, { y: -400, opacity: 0 }),
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="relative w-full" style={{ background: '#ededed', overflow: 'visible' }}>
+      <div className="relative w-full overflow-visible" style={{ aspectRatio: `${FW} / ${FH}` }}
+        onMouseOver={(e) => {
+          const target = (e.target as HTMLElement).closest('[data-card]');
+          if (target) scatterFrom(Number((target as HTMLElement).dataset.card));
+        }}
+        onMouseLeave={resetCards}
+      >
+        <img src={`${A}/PROJECT.png`} alt="" className="absolute"
+          style={{ left:pct(104.5,FW), top:pct(201,FH), width:pct(2396,FW), height:pct(369,FH) }}
+          draggable={false} />
+        <img src={`${A}/精选作品.png`} alt="精选作品" className="absolute"
+          style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}
+          draggable={false} />
+
+        {CARDS.map((c, i) => (
+          <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute cursor-pointer"
+            data-card={i}
+            style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
+            <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full pointer-events-none" draggable={false} />
+            {[...c.works, ...c.texts].map(l => (
+              <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute pointer-events-none" draggable={false}
+                style={{
+                  width: pct(l.iw, c.iw), height: pct(l.ih, c.ih),
+                  left: pct(l.cx - l.iw/2 - c.x, c.iw),
+                  top: pct(l.cy - l.ih/2 - c.y, c.ih),
+                }} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}

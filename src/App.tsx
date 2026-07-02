@@ -12,6 +12,7 @@ import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
 import SectionHome from './components/SectionHome';
 import SectionAbout from './components/SectionAbout';
+import SectionPortfolioCases from './components/SectionPortfolioCases';
 import SectionWorksGrid from './components/SectionWorksGrid';
 import SectionSplash from './components/SectionSplash';
 import SectionDesignOps from './components/SectionDesignOps';
@@ -164,6 +165,7 @@ export default function App() {
               </div>
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionWorksGrid />
+                <SectionPortfolioCases />
                 <SectionSplash />
               </div>
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">

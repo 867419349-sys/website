@@ -75,8 +75,8 @@ export default function SectionPortfolioCases() {
         const dx = tc.x + tc.iw / 2 - cx;
         const dy = tc.y + tc.ih / 2 - cy;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const tx = (dx / dist) * 200;
-        const ty = (dy / dist) * 200;
+        const tx = (dx / dist) * 100;
+        const ty = (dy / dist) * 100;
         card.style.setProperty('--tx', String(tx));
         card.style.setProperty('--ty', String(ty));
         gsap.to(card, { x: tx, y: ty, scale: 0.92, duration: 0.4, ease: 'power2.out' });

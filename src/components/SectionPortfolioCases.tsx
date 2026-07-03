@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect, useCallback, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -43,6 +43,9 @@ export default function SectionPortfolioCases() {
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const lastHovered = useRef<number | null>(null);
   const dropDone = useRef(false);
+  const scatterTime = useRef(0);
+  const currentScore = useRef(Infinity);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
   const resetCards = useCallback(() => {
     if (!dropDone.current) return;
@@ -56,6 +59,7 @@ export default function SectionPortfolioCases() {
     if (!dropDone.current) return;
     if (lastHovered.current === hoveredIndex) return;
     lastHovered.current = hoveredIndex;
+    scatterTime.current = Date.now();
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
     const hc = CARDS[hoveredIndex];
     const cx = hc.x + hc.iw / 2;
@@ -146,9 +150,10 @@ export default function SectionPortfolioCases() {
             const score = dx * dx + dy * dy; // 归一化距离平方
             if (score < bestScore && score < 0.7) { bestScore = score; best = i; }
           });
-          if (best >= 0) {
+          if (best >= 0 && best !== lastHovered.current) {
+            currentScore.current = bestScore;
             scatterFrom(best);
-          } else {
+          } else if (best < 0 && Date.now() - scatterTime.current > 400) {
             resetCards();
           }
         }}
@@ -166,11 +171,16 @@ export default function SectionPortfolioCases() {
             style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
               onMouseEnter={() => { if (dropDone.current) scatterFrom(i); }}
+              onClick={() => {
+                if (c.id === '02') setVideoSrc(`${A}/videos/节日彩蛋.mp4`);
+                if (c.id === '04') setVideoSrc(`${A}/videos/情景模式.mp4`);
+              }}
+              style={{ cursor: (c.id === '02' || c.id === '04') ? 'pointer' : undefined }}
               draggable={false} />
             {[...c.works, ...c.texts].map(l => (
               <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute" draggable={false}
-                style={{ pointerEvents: 'none' }}
                 style={{
+                  pointerEvents: 'none',
                   width: pct(l.iw, c.iw), height: pct(l.ih, c.ih),
                   left: pct(l.cx - l.iw/2 - c.x, c.iw),
                   top: pct(l.cy - l.ih/2 - c.y, c.ih),
@@ -179,6 +189,20 @@ export default function SectionPortfolioCases() {
           </div>
         ))}
       </div>
+      {videoSrc && (
+        <div
+          className="absolute inset-0 z-50 flex items-center justify-center bg-black/80"
+          onClick={() => setVideoSrc(null)}
+        >
+          <video
+            src={videoSrc}
+            controls
+            autoPlay
+            className="max-w-[80%] max-h-[80%]"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
     </section>
   );
 }

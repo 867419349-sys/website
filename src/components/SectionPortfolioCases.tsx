@@ -45,7 +45,7 @@ export default function SectionPortfolioCases() {
   const dropDone = useRef(false);
   const scatterTime = useRef(0);
   const currentScore = useRef(Infinity);
-  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const [mediaSrc, setMediaSrc] = useState<string | null>(null);
 
   const resetCards = useCallback(() => {
     if (!dropDone.current) return;
@@ -172,10 +172,12 @@ export default function SectionPortfolioCases() {
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
               onMouseEnter={() => { if (dropDone.current) scatterFrom(i); }}
               onClick={() => {
-                if (c.id === '02') setVideoSrc(`${A}/videos/节日彩蛋.mp4`);
-                if (c.id === '04') setVideoSrc(`${A}/videos/情景模式.mp4`);
+                if (c.id === '02') setMediaSrc(`${A}/videos/节日彩蛋.mp4`);
+                if (c.id === '03') setMediaSrc(`${A}/videos/3D渲染.mp4`);
+                if (c.id === '04') setMediaSrc(`${A}/videos/情景模式.mp4`);
+                if (c.id === '07') setMediaSrc(`${A}/videos/三维动画.png`);
               }}
-              style={{ cursor: (c.id === '02' || c.id === '04') ? 'pointer' : undefined }}
+              style={{ cursor: (c.id === '02' || c.id === '03' || c.id === '04' || c.id === '07') ? 'pointer' : undefined }}
               draggable={false} />
             {[...c.works, ...c.texts].map(l => (
               <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute" draggable={false}
@@ -189,18 +191,27 @@ export default function SectionPortfolioCases() {
           </div>
         ))}
       </div>
-      {videoSrc && (
+      {mediaSrc && (
         <div
           className="absolute inset-0 z-50 flex items-center justify-center bg-black/80"
-          onClick={() => setVideoSrc(null)}
+          onClick={() => setMediaSrc(null)}
         >
-          <video
-            src={videoSrc}
-            controls
-            autoPlay
-            className="max-w-[80%] max-h-[80%]"
-            onClick={(e) => e.stopPropagation()}
-          />
+          {mediaSrc.endsWith('.mp4') ? (
+            <video
+              src={mediaSrc}
+              controls
+              autoPlay
+              className="max-w-[80%] max-h-[80%]"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img
+              src={mediaSrc}
+              alt=""
+              className="max-w-[80%] max-h-[80%] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          )}
         </div>
       )}
     </section>

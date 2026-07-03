@@ -12,24 +12,24 @@ const CARD_ORDER = ['card04', 'card03', 'card02', 'card01'] as const;
 type CardId = (typeof CARD_ORDER)[number];
 
 const CARD: Record<CardId, { x: number; y: number; w: number; h: number; file: string; z: number }> = {
-  card04: { x: 1759, y: 523,  w: 780,  h: 1005, file: 'ps-card04.png', z: 3 },
-  card03: { x: 1866, y: 626,  w: 785,  h: 979,  file: 'ps-card03.png', z: 4 },
-  card02: { x: 1965, y: 669,  w: 821,  h: 1028, file: 'ps-card02.png', z: 5 },
+  card04: { x: 1759, y: 523,  w: 780,  h: 1005, file: '04卡片.png', z: 3 },
+  card03: { x: 1866, y: 626,  w: 785,  h: 979,  file: '03卡片_改.png', z: 4 },
+  card02: { x: 1965, y: 669,  w: 821,  h: 1028, file: '02卡片_改.png', z: 5 },
   card01: { x: 2133, y: 819,  w: 746,  h: 914,  file: 'ps-card01.png', z: 6 },
 };
 
 const CARD_FRONT: Record<CardId, string> = {
   card01: '/assets/home/box/01卡片正面背景.png',
-  card02: '/assets/home/box/card-front-02.png',
-  card03: '/assets/home/box/card-front-03.png',
-  card04: '/assets/home/box/card-front-04.png',
+  card02: '/assets/home/box/02卡片正面_改.png',
+  card03: '/assets/home/box/03卡片正面.png',
+  card04: '/assets/home/box/04卡片正面.png',
 };
 
-const CARD_FRONT_DIMS: Record<CardId, { w: number; h: number }> = {
-  card01: { w: 1251, h: 1351 },
-  card02: { w: 1059, h: 1247 },
-  card03: { w: 1070, h: 1328 },
-  card04: { w: 1078, h: 1370 },
+const CARD_FRONT_DIMS: Record<CardId, { w: number; h: number; s: number }> = {
+  card01: { w: 1251, h: 1351, s: 1 },
+  card02: { w: 1078, h: 1263, s: 0.79 },
+  card03: { w: 1040, h: 1237, s: 0.8 },
+  card04: { w: 1075, h: 1286, s: 0.8 },
 };
 
 const SPREAD: Partial<Record<CardId, { x: number; y: number }>> = {
@@ -151,7 +151,7 @@ export default function SectionHome() {
         const cardH = cardRect.height;
 
         const fdim = CARD_FRONT_DIMS[cardId];
-        const targetW = Math.min(vw * 0.35, vh * 0.55 * (fdim.w / fdim.h));
+        const targetW = Math.min(vw * 0.35, vh * 0.55 * (fdim.w / fdim.h)) * fdim.s;
         const targetH = targetW * (fdim.h / fdim.w);
 
         const startX = cardRect.left + cardW / 2 - vw / 2;
@@ -431,7 +431,7 @@ export default function SectionHome() {
               WebkitBackdropFilter: 'blur(0px)',
             }}
           />
-          {selectedCard === 'card01' ? (
+          {(selectedCard === 'card01' || selectedCard === 'card02' || selectedCard === 'card03' || selectedCard === 'card04') ? (
             <div
               ref={cardFrontRef}
               style={{
@@ -441,20 +441,24 @@ export default function SectionHome() {
             >
               <TiltedCard
                 imageSrc={CARD_FRONT[selectedCard]}
-                altText="游戏设计"
+                altText=""
                 rotateAmplitude={5}
                 scaleOnHover={1.06}
               >
-                <img src="/assets/home/box/01按钮.png" alt="" draggable={false}
+                <img src={`/assets/home/box/${selectedCard === 'card01' ? '01' : selectedCard === 'card02' ? '02' : selectedCard === 'card03' ? '03' : '04'}按钮.png`} alt="" draggable={false}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedCard(null);
                     setIsAnimating(false);
-                    document.getElementById('profile')?.scrollIntoView({ behavior: 'smooth' });
+                    const target = selectedCard === 'card01' ? 'profile' : selectedCard === 'card02' ? 'splash' : selectedCard === 'card03' ? 'designops' : 'contact';
+                    document.getElementById(target)?.scrollIntoView({ behavior: 'smooth' });
                   }}
                   style={{
-                    position: 'absolute', right: '12%', bottom: '14%',
-                    width: '34%', height: 'auto', cursor: 'pointer', zIndex: 2,
+                    position: 'absolute',
+                    right: selectedCard === 'card02' ? '8%' : selectedCard === 'card03' ? '5%' : selectedCard === 'card04' ? '5%' : '12%',
+                    bottom: selectedCard === 'card02' ? '6%' : selectedCard === 'card03' ? '3%' : selectedCard === 'card04' ? '3%' : '14%',
+                    width: selectedCard === 'card02' ? '43%' : selectedCard === 'card03' ? '42.5%' : selectedCard === 'card04' ? '42.5%' : '34%',
+                    height: 'auto', cursor: 'pointer', zIndex: 2,
                   }}
                 />
               </TiltedCard>

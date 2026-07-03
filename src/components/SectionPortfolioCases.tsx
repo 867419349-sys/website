@@ -47,7 +47,8 @@ export default function SectionPortfolioCases() {
   const resetCards = useCallback(() => {
     if (!dropDone.current) return;
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
-    gsap.to(cards, { x: 0, y: 0, scale: 1, zIndex: 0, duration: 0.4, ease: 'power2.out' });
+    cards.forEach(c => { c.style.removeProperty('--tx'); c.style.removeProperty('--ty'); });
+    gsap.to(cards, { x: 0, y: 0, scale: 1, duration: 0.4, ease: 'power2.out' });
     lastHovered.current = null;
   }, []);
 
@@ -62,13 +63,19 @@ export default function SectionPortfolioCases() {
 
     cards.forEach((card, i) => {
       if (i === hoveredIndex) {
-        gsap.to(card, { scale: 1.08, zIndex: 10, duration: 0.3, ease: 'power2.out' });
+        card.style.setProperty('--tx', '0');
+        card.style.setProperty('--ty', '0');
+        gsap.to(card, { scale: 1.08, duration: 0.35, ease: 'power2.out' });
       } else {
         const tc = CARDS[i];
         const dx = tc.x + tc.iw / 2 - cx;
         const dy = tc.y + tc.ih / 2 - cy;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        gsap.to(card, { x: (dx / dist) * 150, y: (dy / dist) * 150, scale: 0.95, zIndex: 0, duration: 0.35, ease: 'power2.out' });
+        const tx = (dx / dist) * 200;
+        const ty = (dy / dist) * 200;
+        card.style.setProperty('--tx', String(tx));
+        card.style.setProperty('--ty', String(ty));
+        gsap.to(card, { x: tx, y: ty, scale: 0.92, duration: 0.4, ease: 'power2.out' });
       }
     });
   }, []);
@@ -119,9 +126,31 @@ export default function SectionPortfolioCases() {
   return (
     <section ref={sectionRef} className="relative w-full" style={{ background: '#ededed', overflow: 'visible' }}>
       <div className="relative w-full overflow-visible" style={{ aspectRatio: `${FW} / ${FH}` }}
-        onMouseOver={(e) => {
-          const target = (e.target as HTMLElement).closest('[data-card]');
-          if (target) scatterFrom(Number((target as HTMLElement).dataset.card));
+        onMouseMove={(e) => {
+          if (!dropDone.current) return;
+          const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+          const rect = e.currentTarget.getBoundingClientRect();
+          const scaleX = FW / rect.width;
+          const scaleY = FH / rect.height;
+          const mx = (e.clientX - rect.left) * scaleX;
+          const my = (e.clientY - rect.top) * scaleY;
+          let best = -1, bestScore = Infinity;
+          CARDS.forEach((c, i) => {
+            const el = cards[i];
+            const ox = el ? parseFloat(el.style.getPropertyValue('--tx') || '0') : 0;
+            const oy = el ? parseFloat(el.style.getPropertyValue('--ty') || '0') : 0;
+            const cx = c.x + c.iw / 2 + ox;
+            const cy = c.y + c.ih / 2 + oy;
+            const dx = (mx - cx) / (c.iw / 2);
+            const dy = (my - cy) / (c.ih / 2);
+            const score = dx * dx + dy * dy; // 归一化距离平方
+            if (score < bestScore && score < 0.7) { bestScore = score; best = i; }
+          });
+          if (best >= 0) {
+            scatterFrom(best);
+          } else {
+            resetCards();
+          }
         }}
         onMouseLeave={resetCards}
       >
@@ -133,12 +162,14 @@ export default function SectionPortfolioCases() {
           draggable={false} />
 
         {CARDS.map((c, i) => (
-          <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute cursor-pointer"
-            data-card={i}
+          <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute"
             style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
-            <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full pointer-events-none" draggable={false} />
+            <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
+              onMouseEnter={() => { if (dropDone.current) scatterFrom(i); }}
+              draggable={false} />
             {[...c.works, ...c.texts].map(l => (
-              <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute pointer-events-none" draggable={false}
+              <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute" draggable={false}
+                style={{ pointerEvents: 'none' }}
                 style={{
                   width: pct(l.iw, c.iw), height: pct(l.ih, c.ih),
                   left: pct(l.cx - l.iw/2 - c.x, c.iw),

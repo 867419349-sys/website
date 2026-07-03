@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import GradualBlur from './GradualBlur';
+import TiltedCard from './TiltedCard';
 
 const REF_W = 4500;
 const REF_H = 2089;
@@ -438,19 +439,25 @@ export default function SectionHome() {
                 willChange: 'transform', opacity: 0, visibility: 'hidden',
               }}
             >
-              <img src={CARD_FRONT[selectedCard]} alt="" draggable={false}
-                style={{ width: '100%', height: '100%', display: 'block', pointerEvents: 'none' }} />
-              <img src="/assets/home/box/01按钮.png" alt="" draggable={false}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedCard(null);
-                  setIsAnimating(false);
-                  document.getElementById('profile')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                style={{
-                  position: 'absolute', right: '12%', bottom: '14%',
-                  width: '34%', height: 'auto', cursor: 'pointer',
-                }} />
+              <TiltedCard
+                imageSrc={CARD_FRONT[selectedCard]}
+                altText="游戏设计"
+                rotateAmplitude={5}
+                scaleOnHover={1.06}
+              >
+                <img src="/assets/home/box/01按钮.png" alt="" draggable={false}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedCard(null);
+                    setIsAnimating(false);
+                    document.getElementById('profile')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  style={{
+                    position: 'absolute', right: '12%', bottom: '14%',
+                    width: '34%', height: 'auto', cursor: 'pointer', zIndex: 2,
+                  }}
+                />
+              </TiltedCard>
             </div>
           ) : (
             <img

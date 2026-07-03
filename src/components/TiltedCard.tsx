@@ -13,6 +13,7 @@ interface TiltedCardProps {
   rotateAmplitude?: number;
   onLoad?: () => void;
   innerClassName?: string;
+  children?: React.ReactNode;
 }
 
 export default function TiltedCard({
@@ -24,6 +25,7 @@ export default function TiltedCard({
   rotateAmplitude = 12,
   onLoad,
   innerClassName,
+  children,
 }: TiltedCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const rotateX = useSpring(useMotionValue(0), springValues);
@@ -71,6 +73,7 @@ export default function TiltedCard({
           draggable={false}
           onLoad={onLoad}
         />
+        {children}
       </motion.div>
     </figure>
   );

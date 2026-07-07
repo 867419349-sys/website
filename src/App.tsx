@@ -17,6 +17,7 @@ import SectionWorksGrid from './components/SectionWorksGrid';
 import SectionSplash from './components/SectionSplash';
 import SectionDesignOps from './components/SectionDesignOps';
 import SectionSandbox from './components/SectionSandbox';
+import SectionContactNew from './components/SectionContactNew';
 import SectionContact from './components/SectionContact';
 
 
@@ -163,19 +164,22 @@ export default function App() {
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionAbout />
               </div>
-              <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionWorksGrid />
-                <SectionPortfolioCases />
-                <SectionSplash />
-              </div>
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionDesignOps />
               </div>
               <div id="sandbox" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionSandbox />
               </div>
+              <div id="contact-new" className="scroll-mt-14 md:scroll-mt-16 w-full">
+                <SectionContactNew />
+              </div>
               <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionContact />
+              </div>
+              <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
+                <SectionWorksGrid />
+                <SectionPortfolioCases />
+                <SectionSplash />
               </div>
             </motion.div>
           </main>

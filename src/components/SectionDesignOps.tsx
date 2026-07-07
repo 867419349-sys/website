@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion, useMotionValue, useTransform, useSpring, animate } from 'motion/react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, animate } from 'motion/react';
 
 const CARD_IMAGES = [
   '/assets/design-thinking/AI-selection.png',
@@ -11,6 +12,16 @@ const CARD_IMAGES = [
   '/assets/design-thinking/AI-gesture.png',
   '/assets/design-thinking/AI-design-system.png',
 ];
+
+/* 卡片缩略图 → 点击弹出的详情大图 */
+const POPUP_MAP: Record<string, string> = {
+  '/assets/design-thinking/AI-gain.png': '/assets/design-thinking/content/01.png',        // 增益
+  '/assets/design-thinking/AI-operation-1.png': '/assets/design-thinking/content/02.png',  // 运营-1
+  '/assets/design-thinking/AI-design-system.png': '/assets/design-thinking/content/03.png',// 设计系统
+  '/assets/design-thinking/AI-gesture.png': '/assets/design-thinking/content/04.png',      // 手势
+  '/assets/design-thinking/AI-works.png': '/assets/design-thinking/content/05.png',        // 作品
+  '/assets/design-thinking/AI-operation.png': '/assets/design-thinking/content/06.png',    // 运营
+};
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
 const ORBIT_CX = 52;       // 轨道中心 X %
@@ -29,6 +40,7 @@ function OrbitCard({
   total,
   paused,
   onHover,
+  onOpen,
 }: {
   src: string;
   alt: string;
@@ -36,7 +48,9 @@ function OrbitCard({
   total: number;
   paused: boolean;
   onHover: (v: boolean) => void;
+  onOpen: (popupSrc: string) => void;
 }) {
+  const popupSrc = POPUP_MAP[src];
   const rawAngle = useMotionValue(0);
   const angle = useSpring(rawAngle, { stiffness: 100, damping: 16, mass: 0.2 });
   const phase = (index / total) * Math.PI * 2;
@@ -144,7 +158,7 @@ function OrbitCard({
 
   return (
     <motion.div
-      className="absolute overflow-hidden cursor-pointer"
+      className="absolute overflow-hidden"
       style={{
         left,
         top,
@@ -155,9 +169,11 @@ function OrbitCard({
         x: '-50%',
         y: '-50%',
         zIndex,
+        cursor: popupSrc ? 'pointer' : 'default',
       }}
       onMouseOver={() => { setHovered(true); onHover(true); }}
       onMouseOut={() => { setHovered(false); onHover(false); }}
+      onClick={() => { if (popupSrc) onOpen(popupSrc); }}
     >
       <img
         src={src}
@@ -172,6 +188,7 @@ function OrbitCard({
 export default function SectionDesignOps() {
   const sectionRef = useRef<HTMLElement>(null);
   const [paused, setPaused] = useState(false);
+  const [popup, setPopup] = useState<string | null>(null);
   const hoverCount = useRef(0);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -188,6 +205,19 @@ export default function SectionDesignOps() {
       }
     }
   };
+
+  // 弹窗打开时锁定滚动 + Esc 关闭
+  useEffect(() => {
+    if (!popup) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPopup(null); };
+    window.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [popup]);
 
   return (
     <section
@@ -257,8 +287,9 @@ export default function SectionDesignOps() {
                 alt={`卡片 ${i + 1}`}
                 index={i}
                 total={CARD_IMAGES.length}
-                paused={paused}
+                paused={paused || !!popup}
                 onHover={handleHover}
+                onOpen={setPopup}
               />
             ))}
           </div>
@@ -286,6 +317,46 @@ export default function SectionDesignOps() {
           </div>
         </div>
       </div>
+      {/* 卡片详情弹窗 — Portal 到 body，避免被带 filter 的祖先容器困住 */}
+      {createPortal(
+        <AnimatePresence>
+          {popup && (
+            <motion.div
+              className="fixed inset-0 z-[100] overflow-y-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              style={{ background: 'rgba(3,2,12,0.82)', backdropFilter: 'blur(6px)', perspective: 1600 }}
+              onClick={() => setPopup(null)}
+            >
+              <div className="min-h-full flex items-start justify-center px-4 py-8 md:py-14">
+                <motion.img
+                  src={popup}
+                  alt="项目详情"
+                  draggable={false}
+                  initial={{ scale: 0.9, opacity: 0, rotateX: -12, y: 24 }}
+                  animate={{ scale: 1, opacity: 1, rotateX: 0, y: 0 }}
+                  exit={{ scale: 0.92, opacity: 0, y: 12 }}
+                  transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-[min(94vw,1040px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+                  style={{ cursor: 'default' }}
+                />
+              </div>
+              <button
+                onClick={() => setPopup(null)}
+                className="fixed top-5 right-6 z-[101] w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xl font-light flex items-center justify-center transition-colors"
+                aria-label="关闭"
+              >
+                ✕
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+
     </section>
   );
 }

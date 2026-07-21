@@ -1,4 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -46,6 +48,19 @@ export default function SectionPortfolioCases() {
   const scatterTime = useRef(0);
   const currentScore = useRef(Infinity);
   const [mediaSrc, setMediaSrc] = useState<string | null>(null);
+
+  // 弹窗打开时锁定滚动 + Esc 关闭（参考 SectionDesignOps）
+  useEffect(() => {
+    if (!mediaSrc) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMediaSrc(null); };
+    window.addEventListener('keydown', onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [mediaSrc]);
 
   const resetCards = useCallback(() => {
     if (!dropDone.current) return;
@@ -172,12 +187,15 @@ export default function SectionPortfolioCases() {
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
               onMouseEnter={() => { if (dropDone.current) scatterFrom(i); }}
               onClick={() => {
+                if (c.id === '01') setMediaSrc(`${A}/popup/游戏制作.png`);
                 if (c.id === '02') setMediaSrc(`${A}/videos/节日彩蛋.mp4`);
-                if (c.id === '03') setMediaSrc(`${A}/videos/3D渲染.mp4`);
+                if (c.id === '03') setMediaSrc(`${A}/popup/Pats IP.png`);
                 if (c.id === '04') setMediaSrc(`${A}/videos/情景模式.mp4`);
-                if (c.id === '07') setMediaSrc(`${A}/videos/三维动画.png`);
+                if (c.id === '05') setMediaSrc(`${A}/popup/福灵仔.png`);
+                if (c.id === '06') setMediaSrc(`${A}/popup/3D作品.png`);
+                if (c.id === '07') setMediaSrc(`${A}/popup/3D影音.png`);
               }}
-              style={{ cursor: (c.id === '02' || c.id === '03' || c.id === '04' || c.id === '07') ? 'pointer' : undefined }}
+              style={{ cursor: 'pointer' }}
               draggable={false} />
             {[...c.works, ...c.texts].map(l => (
               <img key={l.file} src={`${A}/${l.file}`} alt="" className="absolute" draggable={false}
@@ -191,28 +209,58 @@ export default function SectionPortfolioCases() {
           </div>
         ))}
       </div>
-      {mediaSrc && (
-        <div
-          className="absolute inset-0 z-50 flex items-center justify-center bg-black/80"
-          onClick={() => setMediaSrc(null)}
-        >
-          {mediaSrc.endsWith('.mp4') ? (
-            <video
-              src={mediaSrc}
-              controls
-              autoPlay
-              className="max-w-[80%] max-h-[80%]"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <img
-              src={mediaSrc}
-              alt=""
-              className="max-w-[80%] max-h-[80%] object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
+      {/* 卡片详情弹窗 — Portal 到 body（参考 SectionDesignOps 模式） */}
+      {createPortal(
+        <AnimatePresence>
+          {mediaSrc && (
+            <motion.div
+              className="fixed inset-0 z-[100] overflow-y-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              style={{ background: 'rgba(0,0,0,0.82)', backdropFilter: 'blur(6px)' }}
+              onClick={() => setMediaSrc(null)}
+            >
+              {mediaSrc.endsWith('.mp4') ? (
+                <div className="min-h-screen flex items-center justify-center px-4">
+                  <motion.video
+                    src={mediaSrc}
+                    controls autoPlay
+                    initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.92, opacity: 0, y: 12 }}
+                    transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-[min(94vw,1200px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+                  />
+                </div>
+              ) : (
+                <div className="min-h-full flex items-start justify-center px-4 py-8 md:py-14">
+                  <motion.img
+                    src={mediaSrc}
+                    alt="作品详情"
+                    draggable={false}
+                    initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.92, opacity: 0, y: 12 }}
+                    transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="w-[min(94vw,1200px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+                  />
+                </div>
+              )}
+              <button
+                onClick={() => setMediaSrc(null)}
+                className="fixed top-5 right-6 z-[101] w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xl font-light flex items-center justify-center transition-colors"
+                aria-label="关闭"
+              >
+                ✕
+              </button>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>,
+        document.body
       )}
     </section>
   );

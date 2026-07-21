@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { useRef, useState, useLayoutEffect } from 'react';
+import { motion, useMotionValue } from 'motion/react';
 import { sounds } from '../utils/audio';
 
 /* Figma Frame 50: 5106×2342 */
@@ -33,11 +33,86 @@ const COPY_ITEMS = [
   { label: '微信', value: 'abc18038344629', x: 1660, y: 1702, size: 131 },
 ];
 
-const cardBase: React.CSSProperties = {
-  cursor: 'grab',
-  transformStyle: 'preserve-3d',
-  willChange: 'transform',
-};
+/* 悬挂工牌钟摆（拖拽驱动）：默认静止，鼠标拖动卡片时，带子+卡片作为一个刚体、
+   以带子最顶端为同一固定支点整体跟手旋转；松手后按单摆物理方程惯性摆动、衰减回静止。
+   支点(带子顶端中心)在运行时实测，并换算成卡片盒内的比例作为卡片 transformOrigin，
+   确保卡片与带子绕完全相同的世界点旋转、始终连在一起。位置静止时不变。*/
+function usePendulumDrag() {
+  const swing = useMotionValue(0);
+  const cardRef = useRef<HTMLImageElement>(null);
+  const strapRef = useRef<HTMLImageElement>(null);
+  const frac = useRef({ fx: 0.5, fy: 0 });
+  const [origin, setOrigin] = useState('50% 0%');
+  const st = useRef({ dragging: false, ax: 0, ay: 0, lastA: 0, lastT: 0, vel: 0, raf: 0 });
+
+  // 实测带子顶端中心(真实支点)，换算成卡片盒内比例；仅在静止(swing≈0)时测量才准确
+  useLayoutEffect(() => {
+    const measure = () => {
+      const card = cardRef.current, strap = strapRef.current;
+      if (!card || !strap || Math.abs(swing.get()) > 0.5) return;
+      const c = card.getBoundingClientRect();
+      const s = strap.getBoundingClientRect();
+      if (!c.width || !s.width) return;
+      const anchorX = s.left + s.width / 2;
+      const anchorY = s.top;
+      const fx = (anchorX - c.left) / c.width;
+      const fy = (anchorY - c.top) / c.height;
+      frac.current = { fx, fy };
+      setOrigin(`${(fx * 100).toFixed(3)}% ${(fy * 100).toFixed(3)}%`);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [swing]);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    const card = cardRef.current;
+    if (!card) return;
+    cancelAnimationFrame(st.current.raf);
+    // 支点视口坐标 = 卡片盒内比例点（与卡片 transformOrigin 完全一致，静止时 rect 准确）
+    const r = card.getBoundingClientRect();
+    const ax = r.left + r.width * frac.current.fx;
+    const ay = r.top + r.height * frac.current.fy;
+    const deg = -Math.atan2(e.clientX - ax, Math.max(1, e.clientY - ay)) * (180 / Math.PI);
+    st.current = { dragging: true, ax, ay, lastA: deg, lastT: performance.now(), vel: 0, raf: 0 };
+    swing.set(deg);
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    const s = st.current;
+    if (!s.dragging) return;
+    let deg = -Math.atan2(e.clientX - s.ax, Math.max(1, e.clientY - s.ay)) * (180 / Math.PI);
+    deg = Math.max(-75, Math.min(75, deg));
+    const now = performance.now();
+    const dt = (now - s.lastT) / 1000;
+    if (dt > 0) s.vel = (deg - s.lastA) / dt;   // 记录角速度(度/秒)，作松手初速度
+    s.lastA = deg;
+    s.lastT = now;
+    swing.set(deg);
+  };
+  const onPointerUp = () => {
+    const s = st.current;
+    if (!s.dragging) return;
+    s.dragging = false;
+    // 从当前角度+角速度开始单摆物理衰减：端点减速、中段加速，摆几下自然停下
+    let angle = swing.get();
+    let vel = s.vel;
+    const K = 12, damping = 1.8, DEG = 180 / Math.PI;
+    let last = performance.now();
+    const loop = (now: number) => {
+      const dt = Math.min(0.032, (now - last) / 1000);
+      last = now;
+      const acc = -K * Math.sin(angle / DEG) * DEG - damping * vel;
+      vel += acc * dt;
+      angle += vel * dt;
+      swing.set(angle);
+      if (Math.abs(angle) < 0.15 && Math.abs(vel) < 1) { swing.set(0); return; }
+      s.raf = requestAnimationFrame(loop);
+    };
+    s.raf = requestAnimationFrame(loop);
+  };
+  return { swing, cardRef, strapRef, origin, onPointerDown, onPointerMove, onPointerUp };
+}
 
 export default function SectionContactNew() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -50,34 +125,9 @@ export default function SectionContactNew() {
     setTimeout(() => setCopied(null), 2000);
   };
 
-  // 二维码卡片拖拽位移（与带子共享）：卡片自由拖，带子头部固定、尾部跟随、中段拉伸
-  const qrX = useMotionValue(0);
-  const qrY = useMotionValue(0);
-  const strapImgRef = useRef<HTMLImageElement>(null);
-  const strapLenRef = useRef(360); // 带子渲染高度(px)，运行时测量
-  // 带子以弹簧跟随卡片，产生柔性甩动手感
-  const fx = useSpring(qrX, { stiffness: 240, damping: 24, mass: 0.7 });
-  const fy = useSpring(qrY, { stiffness: 240, damping: 24, mass: 0.7 });
-  const strapRotate = useTransform([fx, fy], (v: number[]) => {
-    const L = strapLenRef.current, x = v[0], y = Math.max(-L * 0.6, v[1]);
-    return -Math.atan2(x, L + y) * (180 / Math.PI);
-  });
-  const strapScaleY = useTransform([fx, fy], (v: number[]) => {
-    const L = strapLenRef.current, x = v[0], y = Math.max(-L * 0.6, v[1]);
-    return Math.max(0.4, Math.hypot(x, L + y) / L);
-  });
-  // 卡片拖拽时轻微倾斜，增强悬挂摆动感
-  const cardTilt = useTransform(qrX, (x) => Math.max(-9, Math.min(9, x * 0.03)));
-
-  useEffect(() => {
-    const el = strapImgRef.current;
-    if (!el) return;
-    const measure = () => { if (el.offsetHeight) strapLenRef.current = el.offsetHeight; };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
+  // 两张悬挂工牌：带子+卡片一体，默认静止，拖动卡片才绕带子顶端钟摆（松手惯性回落）
+  const person = usePendulumDrag();
+  const qr = usePendulumDrag();
 
   return (
     <section ref={sectionRef} className="relative w-full overflow-hidden bg-white">
@@ -91,57 +141,65 @@ export default function SectionContactNew() {
             zIndex: 1,
           }} />
 
-        {/* 人物卡片 - 3D 透视倾斜 + 拖拽 */}
+        {/* 人物卡片 - 拖动才动，带子+卡片一体绕带子顶端钟摆，松手惯性回落 */}
         <div className="absolute" style={{
-          left: pct(365, FW), top: pct(25, FH),
-          width: pct(4223, FW), height: pct(2317, FH),
-          zIndex: 2, perspective: 1200,
-          pointerEvents: 'auto',
+          left: pct(2312, FW), top: pct(444, FH),
+          width: pct(1082, FW), height: pct(1622, FH),
+          zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img src={`${A}/人物卡片.png`} alt="" className="absolute"
-            drag dragMomentum dragElastic={0.15}
-            dragTransition={{ power: 0.3, timeConstant: 200 }}
-            whileHover={{ rotateX: -8, rotateY: 3, y: -12, scale: 1.02 }}
-            whileDrag={{ scale: 1.03, cursor: 'grabbing' as const, zIndex: 10 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+          <motion.img ref={person.cardRef} src={`${A}/人物卡片.png`} alt="" className="absolute" draggable={false}
+            onPointerDown={person.onPointerDown}
+            onPointerMove={person.onPointerMove}
+            onPointerUp={person.onPointerUp}
             style={{
               left: 0, top: 0,
               width: '100%', height: '100%',
-              cursor: 'grab', transformOrigin: 'center bottom',
-              ...cardBase,
+              rotate: person.swing,
+              transformOrigin: person.origin,
+              cursor: 'grab', touchAction: 'none',
+              willChange: 'transform',
             }}
           />
         </div>
 
-        {/* 二维码卡片 - 拖拽后弹回原位（钟摆回落），带子跟随 */}
+        {/* 人物带子 - 与卡片一体，绕带子顶端同步旋转 */}
+        <motion.img ref={person.strapRef} src={`${A}/人物带子.png`} alt="" className="absolute" draggable={false}
+          style={{
+            left: pct(2586, FW), top: pct(-64, FH),
+            width: pct(478, FW), height: pct(734, FH),
+            zIndex: 2, pointerEvents: 'none',
+            rotate: person.swing,
+            transformOrigin: '50% 0%', willChange: 'transform',
+          }} />
+
+        {/* 二维码卡片 - 拖动才动，带子+卡片一体绕带子顶端钟摆，松手惯性回落 */}
         <div className="absolute" style={{
           left: pct(3444, FW), top: pct(720, FH),
           width: pct(1087, FW), height: pct(1610, FH),
-          zIndex: 2, perspective: 1400,
-          pointerEvents: 'auto',
+          zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img src={`${A}/二维码卡片.png`} alt="" className="absolute"
-            drag dragElastic={0.6} dragSnapToOrigin
-            whileHover={{ scale: 1.015 }}
-            whileDrag={{ cursor: 'grabbing' as const, zIndex: 10 }}
-            transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+          <motion.img ref={qr.cardRef} src={`${A}/二维码卡片.png`} alt="" className="absolute" draggable={false}
+            onPointerDown={qr.onPointerDown}
+            onPointerMove={qr.onPointerMove}
+            onPointerUp={qr.onPointerUp}
             style={{
               left: 0, top: 0,
               width: '100%', height: '100%',
-              x: qrX, y: qrY, rotateZ: cardTilt,
-              cursor: 'grab', transformOrigin: 'center top',
-              ...cardBase,
+              rotate: qr.swing,
+              transformOrigin: qr.origin,
+              cursor: 'grab', touchAction: 'none',
+              willChange: 'transform',
             }}
           />
         </div>
 
-        {/* 二维码带子 - 头部固定，尾部随卡片旋转+拉伸 */}
-        <motion.img ref={strapImgRef} src={`${A}/二维码带子.png`} alt="" className="absolute" draggable={false}
+        {/* 二维码带子 - 与卡片一体，绕带子顶端同步旋转 */}
+        <motion.img ref={qr.strapRef} src={`${A}/二维码带子.png`} alt="" className="absolute" draggable={false}
           style={{
             left: pct(3680, FW), top: pct(0, FH),
             width: pct(478, FW), height: pct(976, FH),
             zIndex: 2, pointerEvents: 'none',
-            rotate: strapRotate, scaleY: strapScaleY,
+            rotate: qr.swing,
             transformOrigin: '50% 0%', willChange: 'transform',
           }} />
 

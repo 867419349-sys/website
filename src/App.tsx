@@ -19,6 +19,7 @@ import SectionDesignOps from './components/SectionDesignOps';
 import SectionSandbox from './components/SectionSandbox';
 import SectionContactNew from './components/SectionContactNew';
 import SectionContact from './components/SectionContact';
+import SectionIPVideos from './components/SectionIPVideos';
 
 
 export default function App() {
@@ -158,29 +159,37 @@ export default function App() {
               }}
               className="w-full flex flex-col"
             >
+              {/* 00 探索首页 */}
               <div id="home" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionHome />
               </div>
+              {/* 01 个人简介 */}
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionAbout />
               </div>
+              {/* 02 创意作品 */}
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionWorksGrid />
                 <SectionPortfolioCases />
               </div>
+              {/* IP形象动画作品 */}
+              <SectionIPVideos />
+              {/* 03 设计工程 */}
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionDesignOps />
               </div>
+              {/* 04 联络合作 */}
               <div id="contact-new" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionContactNew />
+              </div>
+              {/* 05 AI实验室 */}
+              <div id="sandbox" className="scroll-mt-14 md:scroll-mt-16 w-full">
+                <SectionSandbox />
               </div>
               <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionContact />
               </div>
               <SectionSplash />
-              <div id="sandbox" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionSandbox />
-              </div>
             </motion.div>
           </main>
 

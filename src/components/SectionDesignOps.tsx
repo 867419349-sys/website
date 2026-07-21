@@ -21,6 +21,7 @@ const POPUP_MAP: Record<string, string> = {
   '/assets/design-thinking/AI-gesture.png': '/assets/design-thinking/content/04.png',      // 手势
   '/assets/design-thinking/AI-works.png': '/assets/design-thinking/content/05.png',        // 作品
   '/assets/design-thinking/AI-operation.png': '/assets/design-thinking/content/06.png',    // 运营
+  '/assets/design-thinking/AI-ui.png': '/assets/design-thinking/content/07.png',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */

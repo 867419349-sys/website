@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Lazy initialization keeper for Gemini SDK
 let aiClient: GoogleGenAI | null = null;

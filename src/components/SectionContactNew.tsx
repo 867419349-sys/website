@@ -68,6 +68,7 @@ function usePendulumDrag() {
   const onPointerDown = (e: React.PointerEvent) => {
     const card = cardRef.current;
     if (!card) return;
+    sounds.playHover();
     cancelAnimationFrame(st.current.raf);
     // 支点视口坐标 = 卡片盒内比例点（与卡片 transformOrigin 完全一致，静止时 rect 准确）
     const r = card.getBoundingClientRect();
@@ -136,7 +137,7 @@ export default function SectionContactNew() {
         {/* 背景 */}
         <img src={`${A}/背景.png`} alt="" className="absolute" draggable={false}
           style={{
-            left: pct(0, FW), top: pct(3, FH),
+            left: pct(0, FW), top: pct(0, FH),
             width: pct(5106, FW), height: pct(2339, FH),
             zIndex: 1,
           }} />
@@ -214,17 +215,26 @@ export default function SectionContactNew() {
         ))}
 
         {/* 邮箱/电话/微信/按钮 - hover 上浮动效 */}
-        {HOVER_IMGS.map((img, i) => (
-          <motion.img key={`h-${i}`} src={`${A}/${img.file}`} alt="" className="absolute" draggable={false}
-            whileHover={{ y: -4, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-            style={{
-              left: pct(img.x, FW), top: pct(img.y, FH),
-              width: pct(img.iw, FW), height: pct(img.ih, FH),
-              zIndex: 3, cursor: 'pointer', opacity: 0.7,
-            }}
-          />
-        ))}
+        {HOVER_IMGS.map((img, i) => {
+          const copyItem = i < 6 ? COPY_ITEMS[Math.floor(i / 2)] : null;
+          const isPortfolio = i === 6;
+          const handleClick = isPortfolio
+            ? () => { if (confirm('是否要下载杨芷琳的作品集？')) { window.open('/assets/contact-page/作品集.pdf', '_blank'); } }
+            : copyItem ? () => handleCopy(copyItem.label, copyItem.value) : undefined;
+          return (
+            <motion.img key={`h-${i}`} src={`${A}/${img.file}`} alt="" className="absolute" draggable={false}
+              whileHover={{ y: -4, opacity: 1 }}
+              whileTap={isPortfolio || copyItem ? { scale: 0.92, filter: 'brightness(0.7)' } : undefined}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              onClick={handleClick}
+              style={{
+                left: pct(img.x, FW), top: pct(img.y, FH),
+                width: pct(img.iw, FW), height: pct(img.ih, FH),
+                zIndex: 3, cursor: isPortfolio || copyItem ? 'pointer' : 'default', opacity: 0.7,
+              }}
+            />
+          );
+        })}
 
         {/* 复制圆点 - 邮箱/电话/微信 */}
         {COPY_ITEMS.map((item) => {
@@ -234,19 +244,20 @@ export default function SectionContactNew() {
               whileHover={{ scale: 1.15 }}
               onClick={() => handleCopy(item.label, item.value)}
               style={{
-                left: pct(item.x + item.size * 0.15, FW), top: pct(item.y + item.size * 0.15, FH),
-                width: pct(item.size * 0.7, FW), height: pct(item.size * 0.7, FH),
+                left: pct(item.x + item.size * 0.05, FW), top: pct(item.y + item.size * 0.05, FH),
+                width: pct(item.size * 0.9, FW), height: pct(item.size * 0.9, FH),
                 zIndex: 4, cursor: 'pointer',
-                backgroundColor: isCopied ? '#22c55e' : '#000',
+                backgroundColor: isCopied ? '#22c55e' : '#9b78e1',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
             >
               <span style={{
                 color: '#fff',
                 fontSize: pct(28, FW),
-                fontWeight: 900,
-                fontFamily: 'monospace',
+                fontWeight: 700,
+                fontFamily: '"Fredoka", "Baloo 2", "Nunito", sans-serif',
                 lineHeight: 1,
+                letterSpacing: '0.02em',
               }}>
                 {isCopied ? '✓' : 'COPY'}
               </span>

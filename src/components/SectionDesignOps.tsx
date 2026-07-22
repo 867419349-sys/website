@@ -15,6 +15,7 @@ const CARD_IMAGES = [
 
 /* 卡片缩略图 → 点击弹出的详情大图 */
 const POPUP_MAP: Record<string, string> = {
+  '/assets/design-thinking/AI-selection.png': 'download:/assets/design-thinking/AI工具分享.pdf',
   '/assets/design-thinking/AI-gain.png': '/assets/design-thinking/content/01.png',        // 增益
   '/assets/design-thinking/AI-operation-1.png': '/assets/design-thinking/content/02.png',  // 运营-1
   '/assets/design-thinking/AI-design-system.png': '/assets/design-thinking/content/03.png',// 设计系统
@@ -175,7 +176,19 @@ function OrbitCard({
       }}
       onMouseOver={() => { setHovered(true); onHover(true); sounds.playHoverDesign(); }}
       onMouseOut={() => { setHovered(false); onHover(false); }}
-      onClick={() => { if (popupSrc) { sounds.playPop(); onOpen(popupSrc); } }}
+      onClick={() => {
+        if (!popupSrc) return;
+        if (popupSrc.startsWith('download:')) {
+          sounds.playChime();
+          const path = popupSrc.replace('download:', '');
+          if (confirm('是否要下载 AIGC 工具分享 PPT？')) {
+            window.open(path, '_blank');
+          }
+        } else {
+          sounds.playPop();
+          onOpen(popupSrc);
+        }
+      }}
     >
       <img
         src={src}

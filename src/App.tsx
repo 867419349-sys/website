@@ -16,7 +16,6 @@ import SectionPortfolioCases from './components/SectionPortfolioCases';
 import SectionWorksGrid from './components/SectionWorksGrid';
 import SectionSplash from './components/SectionSplash';
 import SectionDesignOps from './components/SectionDesignOps';
-import SectionSandbox from './components/SectionSandbox';
 import SectionContactNew from './components/SectionContactNew';
 import SectionContact from './components/SectionContact';
 import SectionIPVideos from './components/SectionIPVideos';
@@ -32,7 +31,7 @@ export default function App() {
   useEffect(() => {
     if (!loadingComplete) return;
 
-    const sections = ['home', 'profile', 'splash', 'designops', 'sandbox', 'contact'];
+    const sections = ['home', 'profile', 'splash', 'designops', 'contact'];
     const observers = sections.map((id) => {
       const el = document.getElementById(id);
       if (!el) return null;
@@ -178,17 +177,9 @@ export default function App() {
                 <SectionDesignOps />
               </div>
               {/* 04 联络合作 */}
-              <div id="contact-new" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionContactNew />
               </div>
-              {/* 05 AI实验室 */}
-              <div id="sandbox" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionSandbox />
-              </div>
-              <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionContact />
-              </div>
-              <SectionSplash />
             </motion.div>
           </main>
 

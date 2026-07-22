@@ -17,9 +17,8 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
     { id: 'home', label: '探索首页', num: '00' },
     { id: 'profile', label: '个人简介', num: '01' },
     { id: 'splash', label: '创意作品', num: '02' },
-    { id: 'designops', label: '设计工程', num: '03' },
-    { id: 'sandbox', label: 'AI实验室', num: '04' },
-    { id: 'contact', label: '联络合作', num: '05' }
+    { id: 'designops', label: '设计思考', num: '03' },
+    { id: 'contact', label: '联络合作', num: '04' }
   ];
 
   const handleTabClick = (tabId: string) => {
@@ -74,7 +73,7 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
 
       {/* Right Synth Control & Contact details */}
       <div className="flex items-center space-x-4">
-        
+
         {/* Playable Synth soundboard button */}
         <AudioSynthesizer />
 

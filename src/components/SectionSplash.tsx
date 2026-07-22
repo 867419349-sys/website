@@ -116,7 +116,7 @@ export default function SectionSplash() {
     // If moved more than 75px, spawn a new picture!
     if (dist > 75 || trailImages.length === 0) {
       lastSpannedPos.current = { x, y };
-      sounds.playHover();
+      sounds.playHoverIP();
 
       const imageItem = TRAIL_SOURCE_IMAGES[nextImageIndex.current];
       nextImageIndex.current = (nextImageIndex.current + 1) % TRAIL_SOURCE_IMAGES.length;
@@ -277,7 +277,7 @@ export default function SectionSplash() {
                     <button
                       key={proj.id}
                       onClick={() => handleProjectSelect(proj)}
-                      onMouseEnter={() => sounds.playHover()}
+                      onMouseEnter={() => sounds.playHoverIP()}
                       className={`w-full flex items-center justify-between p-3 rounded-xl border font-sans font-bold text-xs tracking-wider uppercase transition-all ${
                         isActive
                           ? 'bg-[#9669e6] text-white border-[#9669e6] shadow-lg translate-x-1'

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { sounds } from '../utils/audio';
 
 const FW = 4480;
 const FH = 2318;
@@ -73,6 +74,7 @@ export default function SectionPortfolioCases() {
   const scatterFrom = useCallback((hoveredIndex: number) => {
     if (!dropDone.current) return;
     if (lastHovered.current === hoveredIndex) return;
+    sounds.playWhoosh();
     lastHovered.current = hoveredIndex;
     scatterTime.current = Date.now();
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
@@ -114,6 +116,7 @@ export default function SectionPortfolioCases() {
         start: 'top bottom',
         onEnter: () => {
           dropDone.current = false;
+          sounds.playReveal();
           if (dropTimer) clearTimeout(dropTimer);
           cards.forEach((card, i) => {
             const tl = gsap.timeline({ delay: i * 0.18 });
@@ -185,8 +188,9 @@ export default function SectionPortfolioCases() {
           <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute"
             style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
             <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
-              onMouseEnter={() => { if (dropDone.current) scatterFrom(i); }}
+              onMouseEnter={() => { if (dropDone.current) { sounds.playHoverPortfolio(); scatterFrom(i); } }}
               onClick={() => {
+                sounds.playPop();
                 if (c.id === '01') setMediaSrc(`${A}/popup/游戏制作.png`);
                 if (c.id === '02') setMediaSrc(`${A}/videos/节日彩蛋.mp4`);
                 if (c.id === '03') setMediaSrc(`${A}/popup/Pats IP.png`);
@@ -236,7 +240,7 @@ export default function SectionPortfolioCases() {
                   />
                 </div>
               ) : (
-                <div className="min-h-full flex items-start justify-center px-4 py-8 md:py-14">
+                <div className="min-h-full flex items-start justify-center px-2 py-8 md:py-12">
                   <motion.img
                     src={mediaSrc}
                     alt="作品详情"
@@ -246,7 +250,7 @@ export default function SectionPortfolioCases() {
                     exit={{ scale: 0.92, opacity: 0, y: 12 }}
                     transition={{ type: 'spring', stiffness: 220, damping: 22 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="w-[min(94vw,1200px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+                    className="w-[min(94vw,1500px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
                   />
                 </div>
               )}

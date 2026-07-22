@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useMotionValue, useSpring } from 'motion/react';
+import { sounds } from '../utils/audio';
 import './TiltedCard.css';
 
 const springValues = { damping: 15, stiffness: 400, mass: 0.5 };
@@ -44,6 +45,7 @@ export default function TiltedCard({
   }
 
   function handleMouseEnter() {
+    sounds.playHoverAbout();
     scale.set(scaleOnHover);
   }
 

@@ -1,12 +1,12 @@
 import { useRef, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, animate } from 'motion/react';
+import { sounds } from '../utils/audio';
 
 const CARD_IMAGES = [
   '/assets/design-thinking/AI-selection.png',
   '/assets/design-thinking/AI-ui.png',
   '/assets/design-thinking/AI-operation.png',
-  '/assets/design-thinking/AI-works.png',
   '/assets/design-thinking/AI-gain.png',
   '/assets/design-thinking/AI-operation-1.png',
   '/assets/design-thinking/AI-gesture.png',
@@ -19,20 +19,19 @@ const POPUP_MAP: Record<string, string> = {
   '/assets/design-thinking/AI-operation-1.png': '/assets/design-thinking/content/02.png',  // 运营-1
   '/assets/design-thinking/AI-design-system.png': '/assets/design-thinking/content/03.png',// 设计系统
   '/assets/design-thinking/AI-gesture.png': '/assets/design-thinking/content/04.png',      // 手势
-  '/assets/design-thinking/AI-works.png': '/assets/design-thinking/content/05.png',        // 作品
   '/assets/design-thinking/AI-operation.png': '/assets/design-thinking/content/06.png',    // 运营
   '/assets/design-thinking/AI-ui.png': '/assets/design-thinking/content/07.png',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
-const ORBIT_CX = 52;       // 轨道中心 X %
-const ORBIT_CY = 47;       // 轨道中心 Y %
+const ORBIT_CX = 54;       // 轨道中心 X %
+const ORBIT_CY = 45;       // 轨道中心 Y %
 const ORBIT_RX = 34;      // 水平半径 %（Figma 卡片 X: 17~79%, 轨道 12~80%）
 const ORBIT_RY = 16;      // 垂直半径 %（Figma 卡片 Y: 34~74%, 轨道 38~70%）
 const DURATION = 50;      // 一圈秒数
-const ITEM_W = 15;        // 卡片宽度 %
-const ITEM_H = 35;        // 卡片高度 %
-const TILT = -6.12;       // 轨道倾斜角 °（Figma 圆圈 rotate）
+const ITEM_W = 16;        // 卡片宽度 %
+const ITEM_H = 38;        // 卡片高度 %
+const TILT = -9;          // 轨道倾斜角 °（Figma 圆圈 rotate）
 
 function OrbitCard({
   src,
@@ -63,8 +62,10 @@ function OrbitCard({
   const hoverValue = useMotionValue(0);
   useEffect(() => {
     if (hovered) {
-      const cs = animate(hoverScale, 1.15, {
-        type: 'spring', stiffness: 300, damping: 20,
+      const cs = animate(hoverScale, [1.04, 1.08, 1.04], {
+        duration: 2.5,
+        ease: 'easeInOut',
+        repeat: Infinity,
       });
       const cv = animate(hoverValue, 1, {
         type: 'spring', stiffness: 300, damping: 20,
@@ -159,7 +160,7 @@ function OrbitCard({
 
   return (
     <motion.div
-      className="absolute overflow-hidden"
+      className="absolute"
       style={{
         left,
         top,
@@ -172,14 +173,14 @@ function OrbitCard({
         zIndex,
         cursor: popupSrc ? 'pointer' : 'default',
       }}
-      onMouseOver={() => { setHovered(true); onHover(true); }}
+      onMouseOver={() => { setHovered(true); onHover(true); sounds.playHoverDesign(); }}
       onMouseOut={() => { setHovered(false); onHover(false); }}
-      onClick={() => { if (popupSrc) onOpen(popupSrc); }}
+      onClick={() => { if (popupSrc) { sounds.playPop(); onOpen(popupSrc); } }}
     >
       <img
         src={src}
         alt={alt}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain"
         draggable={false}
       />
     </motion.div>

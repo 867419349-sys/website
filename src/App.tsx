@@ -170,10 +170,9 @@ export default function App() {
               {/* 02 创意作品 */}
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionWorksGrid />
+                <SectionIPVideos />
                 <SectionPortfolioCases />
               </div>
-              {/* IP形象动画作品 */}
-              <SectionIPVideos />
               {/* 03 设计工程 */}
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
                 <SectionDesignOps />

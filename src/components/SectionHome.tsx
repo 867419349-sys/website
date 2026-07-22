@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import gsap from 'gsap';
 import GradualBlur from './GradualBlur';
 import TiltedCard from './TiltedCard';
+import { sounds } from '../utils/audio';
 
 const REF_W = 4500;
 const REF_H = 2089;
@@ -63,6 +64,7 @@ export default function SectionHome() {
   const cardFrontRef = useRef<HTMLDivElement | null>(null);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const bestCardRef = useRef<CardId | null>(null);
+  const prevHoveredRef = useRef<CardId | null>(null);
 
   const onAssetLoad = () => {
     loadedCount.current++;
@@ -134,6 +136,7 @@ export default function SectionHome() {
     (cardId: CardId) => {
       if (isAnimating || selectedCard) return;
 
+      sounds.playChime();
       setIsAnimating(true);
       setSelectedCard(cardId);
 
@@ -352,6 +355,11 @@ export default function SectionHome() {
       const anyReacting = targetEase > 0.03;
 
       bestCardRef.current = best;
+      if (best && best !== prevHoveredRef.current) {
+        sounds.playHover();
+        prevHoveredRef.current = best;
+      }
+      if (!best) prevHoveredRef.current = null;
 
       for (const id of CARD_ORDER) {
         const el = cardRefs.current[id];

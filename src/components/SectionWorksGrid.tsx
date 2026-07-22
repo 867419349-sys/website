@@ -1,5 +1,6 @@
 import { useRef, useEffect, useMemo } from 'react';
 import gsap from 'gsap';
+import { sounds } from '../utils/audio';
 
 const TOTAL = 15;
 const IMAGES = Array.from({ length: TOTAL }, (_, i) => ({
@@ -211,7 +212,7 @@ export default function SectionWorksGrid() {
             style={{ width: 'max-content' }}
           >
             {row.map((card, ci) => (
-              <div key={`${ri}-${ci}-a`} className="wcard flex-shrink-0">
+              <div key={`${ri}-${ci}-a`} className="wcard flex-shrink-0" onMouseEnter={() => sounds.playHoverWorks()}>
                 <img
                   src={card.src} alt={card.alt}
                   className="h-full w-full object-cover pointer-events-none"
@@ -220,7 +221,7 @@ export default function SectionWorksGrid() {
               </div>
             ))}
             {row.map((card, ci) => (
-              <div key={`${ri}-${ci}-b`} className="wcard flex-shrink-0">
+              <div key={`${ri}-${ci}-b`} className="wcard flex-shrink-0" onMouseEnter={() => sounds.playHoverWorks()}>
                 <img
                   src={card.src} alt={card.alt}
                   className="h-full w-full object-cover pointer-events-none"

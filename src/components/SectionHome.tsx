@@ -395,24 +395,27 @@ export default function SectionHome() {
   }, [startBreathing, selectedCard, handleCardClick]);
 
   const handleWrapperClick = (e: React.MouseEvent) => {
-    const cardId = bestCardRef.current;
-    if (!cardId) return;
-
-    // 验证点击位置确实在卡片范围内
     const wrapper = wrapperRef.current;
     if (!wrapper) return;
     const rect = wrapper.getBoundingClientRect();
     const rx = (e.clientX - rect.left) / rect.width * 100;
     const ry = (e.clientY - rect.top) / rect.height * 100;
 
-    const c = CARD[cardId];
-    const cx = (c.x + c.w / 2) / REF_W * 100;
-    const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
-    const dist = Math.hypot(rx - cx, ry - cy);
-    if (dist > INFLUENCE * 0.6) return;
+    /* 直接计算点击位置最近的卡片（手机端无 mousemove，bestCardRef 为 null） */
+    let best: CardId | null = null;
+    let bestDist = Infinity;
+    for (const id of CARD_ORDER) {
+      const c = CARD[id];
+      const cx = (c.x + c.w / 2) / REF_W * 100;
+      const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
+      const dist = Math.hypot(rx - cx, ry - cy);
+      if (dist < bestDist) { bestDist = dist; best = id; }
+    }
+
+    if (!best || bestDist > INFLUENCE * 0.6) return;
 
     e.stopPropagation();
-    handleCardClick(cardId);
+    handleCardClick(best);
   };
 
   const setCardRef = (id: string) => (el: HTMLImageElement | null) => {

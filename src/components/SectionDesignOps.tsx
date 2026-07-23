@@ -250,7 +250,7 @@ export default function SectionDesignOps() {
     <section
       ref={sectionRef}
       className="relative w-full text-white overflow-x-hidden"
-      style={{ background: '#03020c' }}
+      style={{ background: '#03020c', paddingTop: 'clamp(24px, 5vw, 80px)' }}
     >
       {/* 按 Figma 4500:2453 比例缩放 */}
       <div className="relative w-full overflow-visible" style={{ aspectRatio: '4500 / 2453' }}>

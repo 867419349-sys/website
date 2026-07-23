@@ -69,7 +69,7 @@ export default function SectionHome() {
 
   const onAssetLoad = () => {
     loadedCount.current++;
-    if (loadedCount.current >= 13) setLoaded(true);
+    if (loadedCount.current >= 12) setLoaded(true);
   };
   const onAssetError = onAssetLoad;
   const onTextLoad = () => { setTextReady(true); };
@@ -330,8 +330,6 @@ export default function SectionHome() {
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
-
     const handleMouseMove = (e: MouseEvent) => {
       if (selectedCard) return;
 

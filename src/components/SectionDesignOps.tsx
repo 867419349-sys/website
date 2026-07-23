@@ -20,8 +20,8 @@ const POPUP_MAP: Record<string, string> = {
   '/assets/design-thinking/AI-operation-1.webp': '/assets/design-thinking/content/02.webp',  // 运营-1
   '/assets/design-thinking/AI-design-system.webp': '/assets/design-thinking/content/03.webp',// 设计系统
   '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/04.webp',      // 手势
-  '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/06.webp',    // 运营
-  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/07.webp',            // UI设计
+  '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/ip内容.png',    // IP
+  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/宠物IP内容.png',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */

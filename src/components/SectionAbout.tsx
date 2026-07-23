@@ -3,7 +3,6 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TiltedCard from './TiltedCard';
 import BentoGlow from './BentoGlow';
-import GradualBlur from './GradualBlur';
 import AnimatedContent from './AnimatedContent';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -252,7 +251,6 @@ export default function SectionAbout() {
           </AnimatedContent>
         ))}
       </div>
-      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
     </section>
   );
 }

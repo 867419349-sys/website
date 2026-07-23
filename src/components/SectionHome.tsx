@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import gsap from 'gsap';
-import GradualBlur from './GradualBlur';
 import TiltedCard from './TiltedCard';
 import { sounds } from '../utils/audio';
 
@@ -599,7 +598,6 @@ export default function SectionHome() {
           }}
           loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
       </div>
-      <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
 
       {/* Portal 渲染的遮罩+卡片正面 */}
       {cardOverlay}

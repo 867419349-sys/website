@@ -355,6 +355,11 @@ export default function SectionHome() {
       }
       if (!best) prevHoveredRef.current = null;
 
+      /* 按 wrapper 实际宽度缩放悬停偏移量，手机端自动等比缩小 */
+      const hoverScale = rect.width / REF_W;
+      const rise = RISE * hoverScale;
+      const spreadD = SPREAD_D * hoverScale;
+
       for (const id of CARD_ORDER) {
         const el = cardRefs.current[id];
         if (!el) continue;
@@ -364,8 +369,8 @@ export default function SectionHome() {
 
         gsap.killTweensOf(el);
         gsap.to(el, {
-          x: isTarget ? 0 : s.x * SPREAD_D * spreadEase,
-          y: isTarget ? RISE * (eases[id] || 0) : s.y * SPREAD_D * spreadEase,
+          x: isTarget ? 0 : s.x * spreadD * spreadEase,
+          y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
           scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
           duration: 0.35,
           ease: 'power2.out',

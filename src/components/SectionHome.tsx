@@ -69,10 +69,21 @@ export default function SectionHome() {
 
   const onAssetLoad = () => {
     loadedCount.current++;
-    if (loadedCount.current >= 12) setLoaded(true);
+    if (loadedCount.current >= 8) setLoaded(true);
   };
   const onAssetError = onAssetLoad;
   const onTextLoad = () => { setTextReady(true); };
+
+  /* 预加载卡片正面大图（JS new Image，不参与 loaded 计数） */
+  useEffect(() => {
+    Object.values(CARD_FRONT).forEach(src => { const img = new Image(); img.src = src; });
+  }, []);
+
+  /* 安全兜底：8 秒后若图片仍未被计数，强制激活动画 */
+  useEffect(() => {
+    const timer = setTimeout(() => { setLoaded(true); }, 8000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const syncSize = useCallback(() => {
     const section = sectionRef.current;
@@ -506,7 +517,7 @@ export default function SectionHome() {
         {/* Layer 1: 底部背景 */}
         <img src="/assets/home/box/ref-bg.webp" alt="" className="absolute pointer-events-none"
           style={{ inset: 0, width: '100%', height: '100%', zIndex: 0 }}
-          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
+          loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* Layer 2: HI,I'm 杨芷琳 */}
         <img ref={textRef} src="/assets/home/box/figma-text.webp" alt="" className="absolute pointer-events-none"
@@ -515,12 +526,12 @@ export default function SectionHome() {
             width: pct(2924, REF_W), height: pct(637, REF_H),
             zIndex: 1, opacity: 0,
           }}
-          draggable={false} onLoad={onTextLoad} onError={onTextLoad} />
+          loading="eager" draggable={false} onLoad={onTextLoad} onError={onTextLoad} />
 
         {/* Layer 3: 收纳盒 */}
         <img src="/assets/home/box/ps-box.webp" alt="" className="absolute pointer-events-none"
           style={{ inset: 0, width: '100%', height: '100%', zIndex: 2 }}
-          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
+          loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* Layer 4-7: 卡片 */}
         {CARD_ORDER.map((id) => {
@@ -534,7 +545,7 @@ export default function SectionHome() {
                 zIndex: c.z, willChange: 'transform',
                 cursor: 'pointer',
               }}
-              draggable={false} onLoad={onAssetLoad} onError={onAssetError}
+              loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError}
             />
           );
         })}
@@ -559,7 +570,7 @@ export default function SectionHome() {
           />
           <img src="/assets/home/box/figma-glass.webp" alt=""
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-            draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
+            loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
         </div>
 
         {/* Layer 9: 收纳盒前框 */}
@@ -569,13 +580,7 @@ export default function SectionHome() {
             width: pct(757, REF_W), height: pct(708, REF_H),
             zIndex: 8,
           }}
-          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
-
-        {/* 预加载：卡片正面图（隐藏） */}
-        {Object.values(CARD_FRONT).map((src) => (
-          <img key={src} src={src} alt="" style={{ display: 'none' }}
-            onLoad={onAssetLoad} onError={onAssetError} />
-        ))}
+          loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
       </div>
       <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />
 

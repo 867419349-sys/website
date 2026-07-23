@@ -3,22 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
 import { gsap } from 'gsap';
 import './gsap-setup';
 import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
-import SectionHome from './components/SectionHome';
-import SectionAbout from './components/SectionAbout';
-import SectionPortfolioCases from './components/SectionPortfolioCases';
-import SectionWorksGrid from './components/SectionWorksGrid';
-import SectionSplash from './components/SectionSplash';
-import SectionDesignOps from './components/SectionDesignOps';
-import SectionContactNew from './components/SectionContactNew';
-import SectionContact from './components/SectionContact';
-import SectionIPVideos from './components/SectionIPVideos';
+/* 首屏章节也用懒加载但优先预取，减小初始 JS bundle */
+const SectionHome = lazy(() => import('./components/SectionHome'));
+const SectionAbout = lazy(() => import('./components/SectionAbout'));
+const SectionPortfolioCases = lazy(() => import('./components/SectionPortfolioCases'));
+const SectionWorksGrid = lazy(() => import('./components/SectionWorksGrid'));
+const SectionSplash = lazy(() => import('./components/SectionSplash'));
+const SectionDesignOps = lazy(() => import('./components/SectionDesignOps'));
+const SectionContactNew = lazy(() => import('./components/SectionContactNew'));
+const SectionContact = lazy(() => import('./components/SectionContact'));
+const SectionIPVideos = lazy(() => import('./components/SectionIPVideos'));
+
+/* 懒加载章节的占位容器，保持页面布局稳定 */
+const SectionFallback = () => <div style={{ minHeight: '100vh', background: '#0c0c0e' }} />;
 
 
 export default function App() {
@@ -158,27 +162,27 @@ export default function App() {
               }}
               className="w-full flex flex-col"
             >
-              {/* 00 探索首页 */}
+              {/* 00 探索首页 — 懒加载但 Vite 自动 modulepreload 优先加载 */}
               <div id="home" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionHome />
+                <Suspense fallback={<SectionFallback />}><SectionHome /></Suspense>
               </div>
               {/* 01 个人简介 */}
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionAbout />
+                <Suspense fallback={<SectionFallback />}><SectionAbout /></Suspense>
               </div>
               {/* 02 创意作品 */}
               <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionWorksGrid />
-                <SectionIPVideos />
-                <SectionPortfolioCases />
+                <Suspense fallback={<SectionFallback />}><SectionWorksGrid /></Suspense>
+                <Suspense fallback={<div style={{ minHeight: '60vh' }} />}><SectionIPVideos /></Suspense>
+                <Suspense fallback={<SectionFallback />}><SectionPortfolioCases /></Suspense>
               </div>
               {/* 03 设计工程 */}
               <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionDesignOps />
+                <Suspense fallback={<SectionFallback />}><SectionDesignOps /></Suspense>
               </div>
               {/* 04 联络合作 */}
               <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionContactNew />
+                <Suspense fallback={<SectionFallback />}><SectionContactNew /></Suspense>
               </div>
             </motion.div>
           </main>

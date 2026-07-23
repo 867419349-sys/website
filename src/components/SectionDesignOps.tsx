@@ -4,24 +4,24 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, anima
 import { sounds } from '../utils/audio';
 
 const CARD_IMAGES = [
-  '/assets/design-thinking/AI-selection.png',
-  '/assets/design-thinking/AI-ui.png',
-  '/assets/design-thinking/AI-operation.png',
-  '/assets/design-thinking/AI-gain.png',
-  '/assets/design-thinking/AI-operation-1.png',
-  '/assets/design-thinking/AI-gesture.png',
-  '/assets/design-thinking/AI-design-system.png',
+  '/assets/design-thinking/AI-selection.webp',
+  '/assets/design-thinking/AI-ui.webp',
+  '/assets/design-thinking/AI-operation.webp',
+  '/assets/design-thinking/AI-gain.webp',
+  '/assets/design-thinking/AI-operation-1.webp',
+  '/assets/design-thinking/AI-gesture.webp',
+  '/assets/design-thinking/AI-design-system.webp',
 ];
 
 /* 卡片缩略图 → 点击弹出的详情大图 */
 const POPUP_MAP: Record<string, string> = {
-  '/assets/design-thinking/AI-selection.png': 'download:/assets/design-thinking/AI工具分享.pdf',
-  '/assets/design-thinking/AI-gain.png': '/assets/design-thinking/content/01.png',        // 增益
-  '/assets/design-thinking/AI-operation-1.png': '/assets/design-thinking/content/02.png',  // 运营-1
-  '/assets/design-thinking/AI-design-system.png': '/assets/design-thinking/content/03.png',// 设计系统
-  '/assets/design-thinking/AI-gesture.png': '/assets/design-thinking/content/04.png',      // 手势
-  '/assets/design-thinking/AI-operation.png': '/assets/design-thinking/content/06.png',    // 运营
-  '/assets/design-thinking/AI-ui.png': '/assets/design-thinking/content/07.png',            // UI设计
+  '/assets/design-thinking/AI-selection.webp': 'download:/assets/design-thinking/AI工具分享.pdf',
+  '/assets/design-thinking/AI-gain.webp': '/assets/design-thinking/content/01.webp',        // 增益
+  '/assets/design-thinking/AI-operation-1.webp': '/assets/design-thinking/content/02.webp',  // 运营-1
+  '/assets/design-thinking/AI-design-system.webp': '/assets/design-thinking/content/03.webp',// 设计系统
+  '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/04.webp',      // 手势
+  '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/06.webp',    // 运营
+  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/07.webp',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
@@ -186,7 +186,7 @@ function OrbitCard({
           }
         } else {
           sounds.playPop();
-          onOpen(popupSrc);
+          onOpen(popupSrc);  // openPopup -> setPopup + reset imgLoaded
         }
       }}
     >
@@ -204,6 +204,18 @@ export default function SectionDesignOps() {
   const sectionRef = useRef<HTMLElement>(null);
   const [paused, setPaused] = useState(false);
   const [popup, setPopup] = useState<string | null>(null);
+  const [imgLoaded, setImgLoaded] = useState(false);
+
+  /* 弹窗打开时重置加载状态 */
+  const openPopup = (src: string) => { setImgLoaded(false); setPopup(src); };
+  const closePopup = () => { setPopup(null); setImgLoaded(false); };
+
+  /* 预加载弹窗大图：组件挂载时就开始加载，点击时直接显示 */
+  useEffect(() => {
+    const imgs = Object.values(POPUP_MAP).filter(v => !v.startsWith('download:'));
+    imgs.forEach(src => { const img = new Image(); img.src = src; });
+  }, []);
+
   const hoverCount = useRef(0);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -224,7 +236,7 @@ export default function SectionDesignOps() {
   // 弹窗打开时锁定滚动 + Esc 关闭
   useEffect(() => {
     if (!popup) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setPopup(null); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closePopup(); };
     window.addEventListener('keydown', onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -254,7 +266,7 @@ export default function SectionDesignOps() {
           }}
         >
           <img
-            src="/assets/design-thinking/circle.png"
+            src="/assets/design-thinking/circle.webp"
             alt=""
             className="w-full h-full object-contain opacity-30"
             draggable={false}
@@ -274,7 +286,7 @@ export default function SectionDesignOps() {
           }}
         >
           <img
-            src="/assets/design-thinking/design-thinking-font.png"
+            src="/assets/design-thinking/design-thinking-font.webp"
             alt="设计碎片与思考"
             className="w-full h-full object-contain object-left"
             draggable={false}
@@ -304,7 +316,7 @@ export default function SectionDesignOps() {
                 total={CARD_IMAGES.length}
                 paused={paused || !!popup}
                 onHover={handleHover}
-                onOpen={setPopup}
+                onOpen={openPopup}
               />
             ))}
           </div>
@@ -343,24 +355,31 @@ export default function SectionDesignOps() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
               style={{ background: 'rgba(3,2,12,0.82)', backdropFilter: 'blur(6px)', perspective: 1600 }}
-              onClick={() => setPopup(null)}
+              onClick={closePopup}
             >
               <div className="min-h-full flex items-start justify-center px-4 py-8 md:py-14">
+                {/* 加载旋转指示器 */}
+                {!imgLoaded && (
+                  <div className="flex items-center justify-center" style={{ width: 'min(94vw,1040px)', minHeight: 300 }}>
+                    <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  </div>
+                )}
                 <motion.img
                   src={popup}
                   alt="项目详情"
                   draggable={false}
                   initial={{ scale: 0.9, opacity: 0, rotateX: -12, y: 24 }}
-                  animate={{ scale: 1, opacity: 1, rotateX: 0, y: 0 }}
+                  animate={imgLoaded ? { scale: 1, opacity: 1, rotateX: 0, y: 0 } : {}}
                   exit={{ scale: 0.92, opacity: 0, y: 12 }}
                   transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                  onLoad={() => setImgLoaded(true)}
                   onClick={(e) => e.stopPropagation()}
                   className="w-[min(94vw,1040px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
-                  style={{ cursor: 'default' }}
+                  style={{ cursor: 'default', display: imgLoaded ? 'block' : 'none' }}
                 />
               </div>
               <button
-                onClick={() => setPopup(null)}
+                onClick={closePopup}
                 className="fixed top-5 right-6 z-[101] w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xl font-light flex items-center justify-center transition-colors"
                 aria-label="关闭"
               >

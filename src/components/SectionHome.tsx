@@ -13,17 +13,17 @@ const CARD_ORDER = ['card04', 'card03', 'card02', 'card01'] as const;
 type CardId = (typeof CARD_ORDER)[number];
 
 const CARD: Record<CardId, { x: number; y: number; w: number; h: number; file: string; z: number }> = {
-  card04: { x: 1759, y: 523,  w: 780,  h: 1005, file: '04卡片.png', z: 3 },
-  card03: { x: 1866, y: 626,  w: 785,  h: 979,  file: '03卡片_改.png', z: 4 },
-  card02: { x: 1965, y: 669,  w: 821,  h: 1028, file: '02卡片_改.png', z: 5 },
-  card01: { x: 2133, y: 819,  w: 746,  h: 914,  file: 'ps-card01.png', z: 6 },
+  card04: { x: 1759, y: 523,  w: 780,  h: 1005, file: '04卡片.webp', z: 3 },
+  card03: { x: 1866, y: 626,  w: 785,  h: 979,  file: '03卡片_改.webp', z: 4 },
+  card02: { x: 1965, y: 669,  w: 821,  h: 1028, file: '02卡片_改.webp', z: 5 },
+  card01: { x: 2133, y: 819,  w: 746,  h: 914,  file: 'ps-card01.webp', z: 6 },
 };
 
 const CARD_FRONT: Record<CardId, string> = {
-  card01: '/assets/home/box/01卡片正面背景.png',
-  card02: '/assets/home/box/02卡片正面_改.png',
-  card03: '/assets/home/box/03卡片正面.png',
-  card04: '/assets/home/box/04卡片正面.png',
+  card01: '/assets/home/box/01卡片正面背景.webp',
+  card02: '/assets/home/box/02卡片正面_改.webp',
+  card03: '/assets/home/box/03卡片正面.webp',
+  card04: '/assets/home/box/04卡片正面.webp',
 };
 
 const CARD_FRONT_DIMS: Record<CardId, { w: number; h: number; s: number }> = {
@@ -54,6 +54,7 @@ export default function SectionHome() {
   const textRef = useRef<HTMLImageElement>(null);
   const cardRefs = useRef<Record<string, HTMLImageElement | null>>({});
   const [loaded, setLoaded] = useState(false);
+  const [timeoutFallback, setTimeoutFallback] = useState(false);
   const loadedCount = useRef(0);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
@@ -66,10 +67,17 @@ export default function SectionHome() {
   const bestCardRef = useRef<CardId | null>(null);
   const prevHoveredRef = useRef<CardId | null>(null);
 
-  const onAssetLoad = () => {
+  const markLoaded = () => {
     loadedCount.current++;
     if (loadedCount.current >= 13) setLoaded(true);
   };
+  const onAssetLoad = markLoaded;
+  const onAssetError = markLoaded;
+
+  useEffect(() => {
+    const t = setTimeout(() => { setTimeoutFallback(true); }, 5000);
+    return () => clearTimeout(t);
+  }, []);
 
   const syncSize = useCallback(() => {
     const section = sectionRef.current;
@@ -453,7 +461,7 @@ export default function SectionHome() {
                 rotateAmplitude={5}
                 scaleOnHover={1.06}
               >
-                <img src={`/assets/home/box/${selectedCard === 'card01' ? '01' : selectedCard === 'card02' ? '02' : selectedCard === 'card03' ? '03' : '04'}按钮.png`} alt="" draggable={false}
+                <img src={`/assets/home/box/${selectedCard === 'card01' ? '01' : selectedCard === 'card02' ? '02' : selectedCard === 'card03' ? '03' : '04'}按钮.webp`} alt="" draggable={false}
                   onClick={(e) => {
                     e.stopPropagation();
                     setSelectedCard(null);
@@ -498,28 +506,28 @@ export default function SectionHome() {
         onClick={handleWrapperClick}
         className="relative overflow-hidden select-none"
         style={{
-          opacity: loaded ? 1 : 0,
+          opacity: loaded || timeoutFallback ? 1 : 0,
           transition: 'opacity 0.4s',
         }}
       >
         {/* Layer 1: 底部背景 */}
-        <img src="/assets/home/box/ref-bg.png" alt="" className="absolute pointer-events-none"
+        <img src="/assets/home/box/ref-bg.webp" alt="" className="absolute pointer-events-none"
           style={{ inset: 0, width: '100%', height: '100%', zIndex: 0 }}
-          draggable={false} onLoad={onAssetLoad} />
+          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* Layer 2: HI,I'm 杨芷琳 */}
-        <img ref={textRef} src="/assets/home/box/figma-text.png" alt="" className="absolute pointer-events-none"
+        <img ref={textRef} src="/assets/home/box/figma-text.webp" alt="" className="absolute pointer-events-none"
           style={{
             left: pct(788, REF_W), top: pct(726, REF_H),
             width: pct(2924, REF_W), height: pct(637, REF_H),
             zIndex: 1, opacity: 0,
           }}
-          draggable={false} onLoad={onAssetLoad} />
+          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* Layer 3: 收纳盒 */}
-        <img src="/assets/home/box/ps-box.png" alt="" className="absolute pointer-events-none"
+        <img src="/assets/home/box/ps-box.webp" alt="" className="absolute pointer-events-none"
           style={{ inset: 0, width: '100%', height: '100%', zIndex: 2 }}
-          draggable={false} onLoad={onAssetLoad} />
+          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* Layer 4-7: 卡片 */}
         {CARD_ORDER.map((id) => {
@@ -533,7 +541,7 @@ export default function SectionHome() {
                 zIndex: c.z, willChange: 'transform',
                 cursor: 'pointer',
               }}
-              draggable={false} onLoad={onAssetLoad}
+              draggable={false} onLoad={onAssetLoad} onError={onAssetError}
             />
           );
         })}
@@ -550,30 +558,30 @@ export default function SectionHome() {
               position: 'absolute', inset: 0,
               backdropFilter: 'blur(12px)',
               WebkitBackdropFilter: 'blur(12px)',
-              maskImage: 'url(/assets/home/box/figma-glass.png)',
-              WebkitMaskImage: 'url(/assets/home/box/figma-glass.png)',
+              maskImage: 'url(/assets/home/box/figma-glass.webp)',
+              WebkitMaskImage: 'url(/assets/home/box/figma-glass.webp)',
               maskSize: '100% 100%',
               WebkitMaskSize: '100% 100%',
             }}
           />
-          <img src="/assets/home/box/figma-glass.png" alt=""
+          <img src="/assets/home/box/figma-glass.webp" alt=""
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
-            draggable={false} onLoad={onAssetLoad} />
+            draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
         </div>
 
         {/* Layer 9: 收纳盒前框 */}
-        <img src="/assets/home/box/figma-front.png" alt="" className="absolute pointer-events-none"
+        <img src="/assets/home/box/figma-front.webp" alt="" className="absolute pointer-events-none"
           style={{
             left: pct(2217, REF_W), top: pct(1135, REF_H),
             width: pct(757, REF_W), height: pct(708, REF_H),
             zIndex: 8,
           }}
-          draggable={false} onLoad={onAssetLoad} />
+          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
 
         {/* 预加载：卡片正面图（隐藏） */}
         {Object.values(CARD_FRONT).map((src) => (
           <img key={src} src={src} alt="" style={{ display: 'none' }}
-            onLoad={onAssetLoad} onError={onAssetLoad} />
+            onLoad={onAssetLoad} onError={onAssetError} onError={onAssetLoad} />
         ))}
       </div>
       <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />

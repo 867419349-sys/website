@@ -13,6 +13,7 @@ interface TiltedCardProps {
   scaleOnHover?: number;
   rotateAmplitude?: number;
   onLoad?: () => void;
+  onError?: () => void;
   innerClassName?: string;
   children?: React.ReactNode;
 }
@@ -25,6 +26,7 @@ export default function TiltedCard({
   scaleOnHover = 1.05,
   rotateAmplitude = 12,
   onLoad,
+  onError,
   innerClassName,
   children,
 }: TiltedCardProps) {
@@ -74,6 +76,7 @@ export default function TiltedCard({
           className="tilted-card-img"
           draggable={false}
           onLoad={onLoad}
+          onError={onError}
         />
         {children}
       </motion.div>

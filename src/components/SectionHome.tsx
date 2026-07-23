@@ -55,13 +55,6 @@ export default function SectionHome() {
   const [loaded, setLoaded] = useState(false);
   const [textReady, setTextReady] = useState(false);
   const loadedCount = useRef(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
 
@@ -91,34 +84,6 @@ export default function SectionHome() {
     return () => clearTimeout(timer);
   }, []);
 
-  const syncSize = useCallback(() => {
-    const section = sectionRef.current;
-    const wrapper = wrapperRef.current;
-    if (!section || !wrapper) return;
-    const maxW = section.clientWidth;
-    const maxH = section.clientHeight || window.innerHeight;
-    const mobile = window.innerWidth < 768;
-    let w: number, h: number;
-    if (mobile) {
-      /* 手机端等比放大：填满视口 52% 高度，保持宽高比（不是拉伸） */
-      h = maxH * 0.52;
-      w = h * RATIO;
-    } else if (maxW / maxH > RATIO) {
-      h = maxH;
-      w = h * RATIO;
-    } else {
-      w = maxW;
-      h = w / RATIO;
-    }
-    wrapper.style.width = `${w}px`;
-    wrapper.style.height = `${h}px`;
-  }, []);
-
-  useEffect(() => {
-    syncSize();
-    window.addEventListener('resize', syncSize);
-    return () => window.removeEventListener('resize', syncSize);
-  }, [syncSize]);
 
   useEffect(() => {
     if (!textReady || !textRef.current) return;
@@ -520,14 +485,14 @@ export default function SectionHome() {
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{ minHeight: isMobile ? 'auto' : '100vh', background: '#0a0a0f' }}
+      style={{ background: '#0a0a0f' }}
     >
       <div
         ref={wrapperRef}
         onClick={handleWrapperClick}
-        className="relative overflow-hidden select-none"
+        className="relative overflow-hidden select-none w-full"
         style={{
-          opacity: 1,
+          aspectRatio: `${REF_W} / ${REF_H}`,
         }}
       >
         {/* Layer 1: 底部背景 */}

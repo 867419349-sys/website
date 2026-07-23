@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import TiltedCard from './TiltedCard';
@@ -95,13 +95,6 @@ export default function SectionAbout() {
   const aiDecoRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
   const loadedCount = useRef(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
 
   const onAssetLoad = () => {
     loadedCount.current++;
@@ -109,34 +102,6 @@ export default function SectionAbout() {
   };
   const onAssetError = onAssetLoad;
 
-  const syncSize = useCallback(() => {
-    const section = sectionRef.current;
-    const wrapper = wrapperRef.current;
-    if (!section || !wrapper) return;
-    const maxW = section.clientWidth;
-    const maxH = section.clientHeight || window.innerHeight;
-    const mobile = window.innerWidth < 768;
-    let w: number, h: number;
-    if (mobile) {
-      /* 手机端等比放大：填满视口 52% 高度，保持宽高比（不是拉伸） */
-      h = maxH * 0.52;
-      w = h * RATIO;
-    } else if (maxW / maxH > RATIO) {
-      h = maxH;
-      w = h * RATIO;
-    } else {
-      w = maxW;
-      h = w / RATIO;
-    }
-    wrapper.style.width = `${w}px`;
-    wrapper.style.height = `${h}px`;
-  }, []);
-
-  useEffect(() => {
-    syncSize();
-    window.addEventListener('resize', syncSize);
-    return () => window.removeEventListener('resize', syncSize);
-  }, [syncSize]);
 
   // 持续微浮动呼吸动画（不依赖图片加载状态）
   useEffect(() => {
@@ -185,12 +150,12 @@ export default function SectionAbout() {
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{ minHeight: isMobile ? 'auto' : '100vh', background: '#06090e' }}
+      style={{ background: '#06090e' }}
     >
       <div
         ref={wrapperRef}
-        className="relative overflow-hidden select-none"
-        style={{ opacity: 1 }}
+        className="relative overflow-hidden select-none w-full"
+        style={{ aspectRatio: `${REF_W} / ${REF_H}` }}
       >
         {LAYERS.map((a, i) => (
           <img

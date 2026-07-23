@@ -355,8 +355,8 @@ export default function SectionHome() {
       }
       if (!best) prevHoveredRef.current = null;
 
-      /* 按 wrapper 实际宽度缩放悬停偏移量，手机端自动等比缩小 */
-      const hoverScale = rect.width / REF_W;
+      /* 按 wrapper 宽度等比缩放，但设下限避免手机端过小 */
+      const hoverScale = Math.max(rect.width / REF_W, 0.18);
       const rise = RISE * hoverScale;
       const spreadD = SPREAD_D * hoverScale;
 

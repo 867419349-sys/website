@@ -96,7 +96,7 @@ export default function SectionHome() {
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
     const maxW = section.clientWidth;
-    const maxH = section.clientHeight;
+    const maxH = section.clientHeight || window.innerHeight;
     const mobile = window.innerWidth < 768;
     let w: number, h: number;
     if (mobile) {

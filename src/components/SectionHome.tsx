@@ -341,8 +341,6 @@ export default function SectionHome() {
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
-
     const handleMouseMove = (e: MouseEvent) => {
       if (selectedCard) return;
 

@@ -581,7 +581,7 @@ export default function SectionHome() {
         {/* 预加载：卡片正面图（隐藏） */}
         {Object.values(CARD_FRONT).map((src) => (
           <img key={src} src={src} alt="" style={{ display: 'none' }}
-            onLoad={onAssetLoad} onError={onAssetError} onError={onAssetLoad} />
+            onLoad={onAssetLoad} onError={onAssetError} />
         ))}
       </div>
       <GradualBlur position="bottom" height="8rem" strength={2} divCount={6} curve="bezier" />

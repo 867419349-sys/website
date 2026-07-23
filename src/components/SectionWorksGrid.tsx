@@ -15,8 +15,8 @@ function createRows(): CardDef[][] {
   return [cards.slice(0, 5), cards.slice(5, 10), cards.slice(10, 15)];
 }
 
-const CARD_W = 'clamp(160px,18vw,280px)';
-const CARD_W_EXPANDED = 'clamp(270px,30vw,476px)';
+const CARD_W = 'clamp(110px,18vw,280px)';
+const CARD_W_EXPANDED = 'clamp(180px,30vw,476px)';
 const DRAG_THRESHOLD = 3;
 const BASE_SPEED = 50; // px/s，基准自动滚动速度
 

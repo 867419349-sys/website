@@ -114,10 +114,14 @@ export default function SectionAbout() {
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
     const maxW = section.clientWidth;
-    /* 手机端 section 为 auto 高度时，用视口高度作为初始参考 */
     const maxH = section.clientHeight || window.innerHeight;
+    const mobile = window.innerWidth < 768;
     let w: number, h: number;
-    if (maxW / maxH > RATIO) {
+    if (mobile) {
+      /* 手机端：优先填满高度，宽度按比例放大，两侧 overflow-hidden 自然裁剪 */
+      h = maxH;
+      w = h * RATIO;
+    } else if (maxW / maxH > RATIO) {
       h = maxH;
       w = h * RATIO;
     } else {
@@ -180,12 +184,10 @@ export default function SectionAbout() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden flex"
+      className="relative w-full overflow-hidden flex items-center justify-center"
       style={{
-        minHeight: isMobile ? 'auto' : '100vh',
+        minHeight: '100vh',
         background: '#06090e',
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingTop: isMobile ? '3.5rem' : 0,
       }}
     >

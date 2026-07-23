@@ -96,10 +96,14 @@ export default function SectionHome() {
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
     const maxW = section.clientWidth;
-    /* 手机端 section 为 auto 高度时，用视口高度作为初始参考 */
     const maxH = section.clientHeight || window.innerHeight;
+    const mobile = window.innerWidth < 768;
     let w: number, h: number;
-    if (maxW / maxH > RATIO) {
+    if (mobile) {
+      /* 手机端：优先填满高度，宽度按比例放大，两侧 overflow-hidden 自然裁剪 */
+      h = maxH;
+      w = h * RATIO;
+    } else if (maxW / maxH > RATIO) {
       h = maxH;
       w = h * RATIO;
     } else {
@@ -138,14 +142,12 @@ export default function SectionHome() {
     if (idleTween.current) idleTween.current.kill();
     const tl = gsap.timeline({ repeat: -1, yoyo: true });
     const durations = [2.8, 3.2, 3.0, 3.5];
-    const mobile = window.innerWidth < 768;
-    const M = mobile ? 3 : 8; // 手机端减小呼吸幅度，避免卡片跑出收纳盒
     CARD_ORDER.forEach((id, i) => {
       const el = cardRefs.current[id];
       if (!el) return;
       const s = SPREAD[id] || { x: 0, y: 0 };
       tl.to(el, {
-        x: s.x * M, y: s.y * M,
+        x: s.x * 8, y: s.y * 8,
         duration: durations[i],
         ease: 'sine.inOut',
       }, 0);
@@ -386,10 +388,6 @@ export default function SectionHome() {
       }
       if (!best) prevHoveredRef.current = null;
 
-      const mobile = window.innerWidth < 768;
-      const spreadD = mobile ? 8 : SPREAD_D;
-      const rise = mobile ? -40 : RISE;
-
       for (const id of CARD_ORDER) {
         const el = cardRefs.current[id];
         if (!el) continue;
@@ -399,8 +397,8 @@ export default function SectionHome() {
 
         gsap.killTweensOf(el);
         gsap.to(el, {
-          x: isTarget ? 0 : s.x * spreadD * spreadEase,
-          y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
+          x: isTarget ? 0 : s.x * SPREAD_D * spreadEase,
+          y: isTarget ? RISE * (eases[id] || 0) : s.y * SPREAD_D * spreadEase,
           scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
           duration: 0.35,
           ease: 'power2.out',
@@ -519,12 +517,10 @@ export default function SectionHome() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden flex"
+      className="relative w-full overflow-hidden flex items-center justify-center"
       style={{
-        minHeight: isMobile ? 'auto' : '100vh',
+        minHeight: '100vh',
         background: '#0a0a0f',
-        alignItems: 'center',
-        justifyContent: 'center',
         paddingTop: isMobile ? '3.5rem' : 0,
       }}
     >

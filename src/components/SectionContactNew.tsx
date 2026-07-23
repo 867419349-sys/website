@@ -11,20 +11,20 @@ const A = '/assets/contact-page';
 interface Img { file: string; x: number; y: number; iw: number; ih: number }
 
 const BG_IMGS: Img[] = [
-  { file: 'conntact装饰.png', x: 537, y: 319, iw: 548, ih: 190 },
-  { file: 'Contact Me.png', x: 507, y: 803, iw: 1356, ih: 191 },
-  { file: '联系方式.png', x: 525, y: 532, iw: 1426, ih: 349 },
-  { file: '我是AI体验设计师，如果你也在探索 AI 如何进入真实产品体验，欢迎和我交流！.png', x: 547, y: 1054, iw: 1321, ih: 145 },
+  { file: 'conntact装饰.webp', x: 537, y: 319, iw: 548, ih: 190 },
+  { file: 'Contact Me.webp', x: 507, y: 803, iw: 1356, ih: 191 },
+  { file: '联系方式.webp', x: 525, y: 532, iw: 1426, ih: 349 },
+  { file: '我是AI体验设计师，如果你也在探索 AI 如何进入真实产品体验，欢迎和我交流！.webp', x: 547, y: 1054, iw: 1321, ih: 145 },
 ];
 
 const HOVER_IMGS: Img[] = [
-  { file: '邮箱icon.png', x: 553, y: 1368, iw: 131, ih: 131 },
-  { file: '邮箱.png', x: 696, y: 1365, iw: 960, ih: 146 },
-  { file: '电话icon.png', x: 553, y: 1535, iw: 131, ih: 131 },
-  { file: '电话.png', x: 696, y: 1536, iw: 960, ih: 141 },
-  { file: '微信icon.png', x: 553, y: 1702, iw: 131, ih: 131 },
-  { file: '微信.png', x: 696, y: 1702, iw: 960, ih: 166 },
-  { file: '查看完整作品集.png', x: 547, y: 1943, iw: 770, ih: 193 },
+  { file: '邮箱icon.webp', x: 553, y: 1368, iw: 131, ih: 131 },
+  { file: '邮箱.webp', x: 696, y: 1365, iw: 960, ih: 146 },
+  { file: '电话icon.webp', x: 553, y: 1535, iw: 131, ih: 131 },
+  { file: '电话.webp', x: 696, y: 1536, iw: 960, ih: 141 },
+  { file: '微信icon.webp', x: 553, y: 1702, iw: 131, ih: 131 },
+  { file: '微信.webp', x: 696, y: 1702, iw: 960, ih: 166 },
+  { file: '查看完整作品集.webp', x: 547, y: 1943, iw: 770, ih: 193 },
 ];
 
 const COPY_ITEMS = [
@@ -135,7 +135,7 @@ export default function SectionContactNew() {
       <div className="relative w-full overflow-visible" style={{ aspectRatio: `${FW} / ${FH}` }}>
 
         {/* 背景 */}
-        <img src={`${A}/背景.png`} alt="" className="absolute" draggable={false}
+        <img src={`${A}/背景.webp`} alt="" className="absolute" draggable={false}
           style={{
             left: pct(0, FW), top: pct(0, FH),
             width: pct(5106, FW), height: pct(2339, FH),
@@ -148,7 +148,7 @@ export default function SectionContactNew() {
           width: pct(1082, FW), height: pct(1622, FH),
           zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img ref={person.cardRef} src={`${A}/人物卡片.png`} alt="" className="absolute" draggable={false}
+          <motion.img ref={person.cardRef} src={`${A}/人物卡片.webp`} alt="" className="absolute" draggable={false}
             onPointerDown={person.onPointerDown}
             onPointerMove={person.onPointerMove}
             onPointerUp={person.onPointerUp}
@@ -164,7 +164,7 @@ export default function SectionContactNew() {
         </div>
 
         {/* 人物带子 - 与卡片一体，绕带子顶端同步旋转 */}
-        <motion.img ref={person.strapRef} src={`${A}/人物带子.png`} alt="" className="absolute" draggable={false}
+        <motion.img ref={person.strapRef} src={`${A}/人物带子.webp`} alt="" className="absolute" draggable={false}
           style={{
             left: pct(2586, FW), top: pct(-64, FH),
             width: pct(478, FW), height: pct(734, FH),
@@ -179,7 +179,7 @@ export default function SectionContactNew() {
           width: pct(1087, FW), height: pct(1610, FH),
           zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img ref={qr.cardRef} src={`${A}/二维码卡片.png`} alt="" className="absolute" draggable={false}
+          <motion.img ref={qr.cardRef} src={`${A}/二维码卡片.webp`} alt="" className="absolute" draggable={false}
             onPointerDown={qr.onPointerDown}
             onPointerMove={qr.onPointerMove}
             onPointerUp={qr.onPointerUp}
@@ -195,7 +195,7 @@ export default function SectionContactNew() {
         </div>
 
         {/* 二维码带子 - 与卡片一体，绕带子顶端同步旋转 */}
-        <motion.img ref={qr.strapRef} src={`${A}/二维码带子.png`} alt="" className="absolute" draggable={false}
+        <motion.img ref={qr.strapRef} src={`${A}/二维码带子.webp`} alt="" className="absolute" draggable={false}
           style={{
             left: pct(3680, FW), top: pct(0, FH),
             width: pct(478, FW), height: pct(976, FH),
@@ -266,7 +266,7 @@ export default function SectionContactNew() {
         })}
 
         {/* 联系我合作按钮 - hover + 点击弹窗 */}
-        <motion.img src={`${A}/联系我合作.png`} alt="" className="absolute" draggable={false}
+        <motion.img src={`${A}/联系我合作.webp`} alt="" className="absolute" draggable={false}
           whileHover={{ y: -4, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           onClick={() => { sounds.playChime(); alert('💌 期待您的合作提案\n\n杨芷琳 / 智能座舱 AIGC 设计与 3D 概念设计师\n上海·中国\n867419349@qq.com'); }}

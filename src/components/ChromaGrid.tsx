@@ -67,16 +67,16 @@ export default function ChromaGrid({ onAllLoaded }: ChromaGridProps) {
       onPointerLeave={handleLeave}
     >
       <article className="chroma-card chroma-card--edu" onMouseMove={handleCardMove}>
-        <img src="/assets/about/education.png" alt="" draggable={false} onLoad={onImgLoad} />
+        <img src="/assets/about/education.webp" alt="" draggable={false} onLoad={onImgLoad} />
       </article>
       <article className="chroma-card chroma-card--work" onMouseMove={handleCardMove}>
-        <img src="/assets/about/work.png" alt="" draggable={false} onLoad={onImgLoad} />
+        <img src="/assets/about/work.webp" alt="" draggable={false} onLoad={onImgLoad} />
       </article>
       <article className="chroma-card chroma-card--skills" onMouseMove={handleCardMove}>
-        <img src="/assets/about/skills.png" alt="" draggable={false} onLoad={onImgLoad} />
+        <img src="/assets/about/skills.webp" alt="" draggable={false} onLoad={onImgLoad} />
       </article>
       <article className="chroma-card chroma-card--tools" onMouseMove={handleCardMove}>
-        <img src="/assets/about/tools.png" alt="" draggable={false} onLoad={onImgLoad} />
+        <img src="/assets/about/tools.webp" alt="" draggable={false} onLoad={onImgLoad} />
       </article>
 
       <div ref={fadeRef} className="chroma-grid-overlay" />

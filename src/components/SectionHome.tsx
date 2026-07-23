@@ -96,10 +96,9 @@ export default function SectionHome() {
     const section = sectionRef.current;
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
-    const mobile = window.innerWidth < 768;
     const maxW = section.clientWidth;
-    /* 手机端用视口高度，避免 section 高度不足时的循环依赖 */
-    const maxH = mobile ? window.innerHeight * 0.88 : section.clientHeight;
+    /* 手机端 section 为 auto 高度时，用视口高度作为初始参考 */
+    const maxH = section.clientHeight || window.innerHeight;
     let w: number, h: number;
     if (maxW / maxH > RATIO) {
       h = maxH;
@@ -107,10 +106,6 @@ export default function SectionHome() {
     } else {
       w = maxW;
       h = w / RATIO;
-      /* 手机竖屏：填满更多视口高度 */
-      if (mobile) {
-        h = Math.max(h, maxH);
-      }
     }
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;

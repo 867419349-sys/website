@@ -56,6 +56,13 @@ export default function SectionHome() {
   const [loaded, setLoaded] = useState(false);
   const [textReady, setTextReady] = useState(false);
   const loadedCount = useRef(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
 
@@ -89,11 +96,22 @@ export default function SectionHome() {
     const section = sectionRef.current;
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
+    const mobile = window.innerWidth < 768;
     const maxW = section.clientWidth;
-    const maxH = section.clientHeight;
+    /* 手机端用视口高度，避免 section 高度不足时的循环依赖 */
+    const maxH = mobile ? window.innerHeight * 0.88 : section.clientHeight;
     let w: number, h: number;
-    if (maxW / maxH > RATIO) { h = maxH; w = h * RATIO; }
-    else { w = maxW; h = w / RATIO; }
+    if (maxW / maxH > RATIO) {
+      h = maxH;
+      w = h * RATIO;
+    } else {
+      w = maxW;
+      h = w / RATIO;
+      /* 手机竖屏：填满更多视口高度 */
+      if (mobile) {
+        h = Math.max(h, maxH);
+      }
+    }
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
   }, []);
@@ -501,8 +519,14 @@ export default function SectionHome() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{ minHeight: '100vh', background: '#0a0a0f' }}
+      className="relative w-full overflow-hidden flex"
+      style={{
+        minHeight: isMobile ? 'auto' : '100vh',
+        background: '#0a0a0f',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: isMobile ? '3.5rem' : 0,
+      }}
     >
       <div
         ref={wrapperRef}

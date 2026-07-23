@@ -96,6 +96,13 @@ export default function SectionAbout() {
   const aiDecoRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
   const loadedCount = useRef(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const onAssetLoad = () => {
     loadedCount.current++;
@@ -107,11 +114,22 @@ export default function SectionAbout() {
     const section = sectionRef.current;
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
+    const mobile = window.innerWidth < 768;
     const maxW = section.clientWidth;
-    const maxH = section.clientHeight;
+    /* 手机端用视口高度，避免 section 高度不足时的循环依赖 */
+    const maxH = mobile ? window.innerHeight * 0.88 : section.clientHeight;
     let w: number, h: number;
-    if (maxW / maxH > RATIO) { h = maxH; w = h * RATIO; }
-    else { w = maxW; h = w / RATIO; }
+    if (maxW / maxH > RATIO) {
+      h = maxH;
+      w = h * RATIO;
+    } else {
+      w = maxW;
+      h = w / RATIO;
+      /* 手机竖屏：填满更多视口高度 */
+      if (mobile) {
+        h = Math.max(h, maxH);
+      }
+    }
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
   }, []);
@@ -122,9 +140,8 @@ export default function SectionAbout() {
     return () => window.removeEventListener('resize', syncSize);
   }, [syncSize]);
 
-  // 持续微浮动呼吸动画
+  // 持续微浮动呼吸动画（不依赖图片加载状态）
   useEffect(() => {
-    if (!loaded) return;
     const character = characterRef.current;
     const hello = helloRef.current;
     const tweens: gsap.core.Tween[] = [];
@@ -139,7 +156,7 @@ export default function SectionAbout() {
       }));
     }
     return () => { tweens.forEach(t => t.kill()); };
-  }, [loaded]);
+  }, []);
 
   // 人物鼠标视差效果
   useEffect(() => {
@@ -169,8 +186,14 @@ export default function SectionAbout() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{ minHeight: '100vh', background: '#06090e' }}
+      className="relative w-full overflow-hidden flex"
+      style={{
+        minHeight: isMobile ? 'auto' : '100vh',
+        background: '#06090e',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingTop: isMobile ? '3.5rem' : 0,
+      }}
     >
       <div
         ref={wrapperRef}

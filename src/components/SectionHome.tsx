@@ -55,13 +55,6 @@ export default function SectionHome() {
   const [loaded, setLoaded] = useState(false);
   const [textReady, setTextReady] = useState(false);
   const loadedCount = useRef(0);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
 
@@ -96,20 +89,10 @@ export default function SectionHome() {
     const wrapper = wrapperRef.current;
     if (!section || !wrapper) return;
     const maxW = section.clientWidth;
-    const maxH = section.clientHeight || window.innerHeight;
-    const mobile = window.innerWidth < 768;
+    const maxH = section.clientHeight;
     let w: number, h: number;
-    if (mobile) {
-      /* 手机端：优先填满高度，宽度按比例放大，两侧 overflow-hidden 自然裁剪 */
-      h = maxH;
-      w = h * RATIO;
-    } else if (maxW / maxH > RATIO) {
-      h = maxH;
-      w = h * RATIO;
-    } else {
-      w = maxW;
-      h = w / RATIO;
-    }
+    if (maxW / maxH > RATIO) { h = maxH; w = h * RATIO; }
+    else { w = maxW; h = w / RATIO; }
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
   }, []);
@@ -518,11 +501,7 @@ export default function SectionHome() {
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{
-        minHeight: '100vh',
-        background: '#0a0a0f',
-        paddingTop: isMobile ? '3.5rem' : 0,
-      }}
+      style={{ minHeight: '100vh', background: '#0a0a0f' }}
     >
       <div
         ref={wrapperRef}

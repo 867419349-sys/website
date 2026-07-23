@@ -54,7 +54,7 @@ export default function SectionHome() {
   const textRef = useRef<HTMLImageElement>(null);
   const cardRefs = useRef<Record<string, HTMLImageElement | null>>({});
   const [loaded, setLoaded] = useState(false);
-  const [timeoutFallback, setTimeoutFallback] = useState(false);
+  const [textReady, setTextReady] = useState(false);
   const loadedCount = useRef(0);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
@@ -67,17 +67,12 @@ export default function SectionHome() {
   const bestCardRef = useRef<CardId | null>(null);
   const prevHoveredRef = useRef<CardId | null>(null);
 
-  const markLoaded = () => {
+  const onAssetLoad = () => {
     loadedCount.current++;
     if (loadedCount.current >= 13) setLoaded(true);
   };
-  const onAssetLoad = markLoaded;
-  const onAssetError = markLoaded;
-
-  useEffect(() => {
-    const t = setTimeout(() => { setTimeoutFallback(true); }, 5000);
-    return () => clearTimeout(t);
-  }, []);
+  const onAssetError = onAssetLoad;
+  const onTextLoad = () => { setTextReady(true); };
 
   const syncSize = useCallback(() => {
     const section = sectionRef.current;
@@ -99,7 +94,7 @@ export default function SectionHome() {
   }, [syncSize]);
 
   useEffect(() => {
-    if (!loaded || !textRef.current) return;
+    if (!textReady || !textRef.current) return;
     const tl = gsap.timeline();
     tl.fromTo(textRef.current,
       { opacity: 0, y: 50, scale: 0.9 },
@@ -114,7 +109,7 @@ export default function SectionHome() {
     }, '>');
     textIdleTween.current = tl;
     return () => { textIdleTween.current?.kill(); };
-  }, [loaded]);
+  }, [textReady]);
 
   const startBreathing = useCallback(() => {
     if (idleTween.current) idleTween.current.kill();
@@ -134,10 +129,9 @@ export default function SectionHome() {
   }, []);
 
   useEffect(() => {
-    if (!loaded) return;
     startBreathing();
     return () => { idleTween.current?.kill(); };
-  }, [loaded, startBreathing]);
+  }, [startBreathing]);
 
   // ---- 卡片点击：3D 旋转弹出 ----
   const handleCardClick = useCallback(
@@ -406,7 +400,7 @@ export default function SectionHome() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [loaded, startBreathing, selectedCard, handleCardClick]);
+  }, [startBreathing, selectedCard, handleCardClick]);
 
   const handleWrapperClick = (e: React.MouseEvent) => {
     const cardId = bestCardRef.current;
@@ -506,8 +500,7 @@ export default function SectionHome() {
         onClick={handleWrapperClick}
         className="relative overflow-hidden select-none"
         style={{
-          opacity: loaded || timeoutFallback ? 1 : 0,
-          transition: 'opacity 0.4s',
+          opacity: 1,
         }}
       >
         {/* Layer 1: 底部背景 */}
@@ -522,7 +515,7 @@ export default function SectionHome() {
             width: pct(2924, REF_W), height: pct(637, REF_H),
             zIndex: 1, opacity: 0,
           }}
-          draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
+          draggable={false} onLoad={onTextLoad} onError={onTextLoad} />
 
         {/* Layer 3: 收纳盒 */}
         <img src="/assets/home/box/ps-box.webp" alt="" className="absolute pointer-events-none"

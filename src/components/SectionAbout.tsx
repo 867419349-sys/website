@@ -95,22 +95,13 @@ export default function SectionAbout() {
   const descRef = useRef<HTMLImageElement>(null);
   const aiDecoRef = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState(false);
-  const [timeoutFallback, setTimeoutFallback] = useState(false);
   const loadedCount = useRef(0);
 
-  /* 单张加载成功或失败都算完成，不因个别图片失败而卡死页面 */
-  const markLoaded = () => {
+  const onAssetLoad = () => {
     loadedCount.current++;
     if (loadedCount.current >= TOTAL) setLoaded(true);
   };
-  const onAssetLoad = markLoaded;
-  const onAssetError = markLoaded;
-
-  /* 5 秒超时兜底：不管图片有没有载完都显示页面 */
-  useEffect(() => {
-    const t = setTimeout(() => { setTimeoutFallback(true); }, 5000);
-    return () => clearTimeout(t);
-  }, []);
+  const onAssetError = onAssetLoad;
 
   const syncSize = useCallback(() => {
     const section = sectionRef.current;
@@ -184,7 +175,7 @@ export default function SectionAbout() {
       <div
         ref={wrapperRef}
         className="relative overflow-hidden select-none"
-        style={{ opacity: loaded || timeoutFallback ? 1 : 0, transition: 'opacity 0.4s' }}
+        style={{ opacity: 1 }}
       >
         {LAYERS.map((a, i) => (
           <img
@@ -200,6 +191,7 @@ export default function SectionAbout() {
             src={a.src}
             alt=""
             className="absolute pointer-events-none"
+            loading="lazy"
             style={{
               left: a.cx,
               top: a.cy,
@@ -235,6 +227,7 @@ export default function SectionAbout() {
               rotateAmplitude={8}
               scaleOnHover={1.05}
               altText={c.alt}
+              imgLoading="lazy"
               onLoad={onAssetLoad}
               onError={onAssetError}
             />

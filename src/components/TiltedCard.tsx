@@ -14,6 +14,7 @@ interface TiltedCardProps {
   rotateAmplitude?: number;
   onLoad?: () => void;
   onError?: () => void;
+  imgLoading?: 'eager' | 'lazy';
   innerClassName?: string;
   children?: React.ReactNode;
 }
@@ -27,6 +28,7 @@ export default function TiltedCard({
   rotateAmplitude = 12,
   onLoad,
   onError,
+  imgLoading,
   innerClassName,
   children,
 }: TiltedCardProps) {
@@ -75,6 +77,7 @@ export default function TiltedCard({
           alt={altText}
           className="tilted-card-img"
           draggable={false}
+          loading={imgLoading}
           onLoad={onLoad}
           onError={onError}
         />

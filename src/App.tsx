@@ -10,8 +10,9 @@ import './gsap-setup';
 import Preloader from './components/Preloader';
 import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
-/* 首屏章节也用懒加载但优先预取，减小初始 JS bundle */
-const SectionHome = lazy(() => import('./components/SectionHome'));
+import SectionHome from './components/SectionHome';
+
+/* 首屏外章节按需懒加载，减小初始 JS bundle */
 const SectionAbout = lazy(() => import('./components/SectionAbout'));
 const SectionPortfolioCases = lazy(() => import('./components/SectionPortfolioCases'));
 const SectionWorksGrid = lazy(() => import('./components/SectionWorksGrid'));
@@ -162,9 +163,9 @@ export default function App() {
               }}
               className="w-full flex flex-col"
             >
-              {/* 00 探索首页 — 懒加载但 Vite 自动 modulepreload 优先加载 */}
+              {/* 00 探索首页 */}
               <div id="home" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <Suspense fallback={<SectionFallback />}><SectionHome /></Suspense>
+                <SectionHome />
               </div>
               {/* 01 个人简介 */}
               <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">

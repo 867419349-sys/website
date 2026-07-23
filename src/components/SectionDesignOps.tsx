@@ -249,7 +249,7 @@ export default function SectionDesignOps() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full text-white overflow-hidden"
+      className="relative w-full text-white overflow-x-hidden"
       style={{ background: '#03020c' }}
     >
       {/* 按 Figma 4500:2453 比例缩放 */}

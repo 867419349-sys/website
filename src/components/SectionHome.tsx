@@ -55,6 +55,13 @@ export default function SectionHome() {
   const [loaded, setLoaded] = useState(false);
   const [textReady, setTextReady] = useState(false);
   const loadedCount = useRef(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const onResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   const idleTween = useRef<gsap.core.Timeline | null>(null);
   const textIdleTween = useRef<gsap.core.Timeline | null>(null);
 
@@ -90,9 +97,19 @@ export default function SectionHome() {
     if (!section || !wrapper) return;
     const maxW = section.clientWidth;
     const maxH = section.clientHeight;
+    const mobile = window.innerWidth < 768;
     let w: number, h: number;
-    if (maxW / maxH > RATIO) { h = maxH; w = h * RATIO; }
-    else { w = maxW; h = w / RATIO; }
+    if (mobile) {
+      /* 手机端等比放大：填满视口 52% 高度，保持宽高比（不是拉伸） */
+      h = maxH * 0.52;
+      w = h * RATIO;
+    } else if (maxW / maxH > RATIO) {
+      h = maxH;
+      w = h * RATIO;
+    } else {
+      w = maxW;
+      h = w / RATIO;
+    }
     wrapper.style.width = `${w}px`;
     wrapper.style.height = `${h}px`;
   }, []);
@@ -123,6 +140,8 @@ export default function SectionHome() {
 
   const startBreathing = useCallback(() => {
     if (idleTween.current) idleTween.current.kill();
+    const mobile = window.innerWidth < 768;
+    const MULT = mobile ? 4 : 8;
     const tl = gsap.timeline({ repeat: -1, yoyo: true });
     const durations = [2.8, 3.2, 3.0, 3.5];
     CARD_ORDER.forEach((id, i) => {
@@ -130,7 +149,7 @@ export default function SectionHome() {
       if (!el) return;
       const s = SPREAD[id] || { x: 0, y: 0 };
       tl.to(el, {
-        x: s.x * 8, y: s.y * 8,
+        x: s.x * MULT, y: s.y * MULT,
         duration: durations[i],
         ease: 'sine.inOut',
       }, 0);
@@ -501,7 +520,7 @@ export default function SectionHome() {
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden flex items-center justify-center"
-      style={{ minHeight: '100vh', background: '#0a0a0f' }}
+      style={{ minHeight: isMobile ? 'auto' : '100vh', background: '#0a0a0f' }}
     >
       <div
         ref={wrapperRef}

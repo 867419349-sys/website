@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import gsap from 'gsap';
 
@@ -23,48 +23,97 @@ const BRAND_KEYWORDS = [
   'INTELLIGENT EXPERIENCE COGNITION'
 ];
 
+const PRELOAD_IMAGES = [
+  // 首页
+  '/assets/home/box/ref-bg.webp',
+  '/assets/home/box/ps-box.webp',
+  '/assets/home/box/figma-text.webp',
+  '/assets/home/box/figma-glass.webp',
+  '/assets/home/box/figma-front.webp',
+  '/assets/home/box/ps-card01.webp',
+  '/assets/home/box/02卡片_改.webp',
+  '/assets/home/box/03卡片_改.webp',
+  '/assets/home/box/04卡片.webp',
+  // 创意作品第二页
+  '/assets/portfolio-cases/PROJECT.webp',
+  '/assets/portfolio-cases/精选作品.webp',
+  '/assets/portfolio-cases/01.webp',
+  '/assets/portfolio-cases/02.webp',
+  '/assets/portfolio-cases/03.webp',
+  '/assets/portfolio-cases/04.webp',
+  '/assets/portfolio-cases/05.webp',
+  '/assets/portfolio-cases/06.webp',
+  '/assets/portfolio-cases/07.webp',
+  '/assets/portfolio-cases/popup/游戏制作.webp',
+  '/assets/portfolio-cases/popup/Pats IP.webp',
+  '/assets/portfolio-cases/popup/福灵仔.webp',
+  '/assets/portfolio-cases/popup/3D作品.webp',
+  '/assets/portfolio-cases/popup/3D影音.webp',
+];
+
+const MIN_DISPLAY_MS = 1500;
+
 export default function Preloader({ onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [keywordIndex, setKeywordIndex] = useState(0);
   const [isDone, setIsDone] = useState(false);
+  const completedRef = useRef(false);
 
   useEffect(() => {
-    /* 后台预加载首页关键图片，利用预加载等待时间提前下载 */
-    const HOME_IMAGES = [
-      '/assets/home/box/ref-bg.webp',
-      '/assets/home/box/ps-box.webp',
-      '/assets/home/box/figma-text.webp',
-      '/assets/home/box/figma-glass.webp',
-      '/assets/home/box/figma-front.webp',
-      '/assets/home/box/ps-card01.webp',
-      '/assets/home/box/02卡片_改.webp',
-      '/assets/home/box/03卡片_改.webp',
-      '/assets/home/box/04卡片.webp',
-    ];
-    HOME_IMAGES.forEach(src => { const img = new Image(); img.src = src; });
+    if (completedRef.current) return;
+    const total = PRELOAD_IMAGES.length;
+    let loaded = 0;
+    const startTime = Date.now();
+    let keywordTimer: ReturnType<typeof setInterval> | null = null;
 
-    // Ticker progress count
-    let count = 0;
-    const interval = setInterval(() => {
-      const inc = Math.floor(Math.random() * 8) + 2;
-      count = Math.min(count + inc, 100);
-      setProgress(count);
+    const finish = () => {
+      if (completedRef.current) return;
+      completedRef.current = true;
+      if (keywordTimer) clearInterval(keywordTimer);
+      setProgress(100);
+      setTimeout(() => {
+        setIsDone(true);
+        setTimeout(onComplete, 800);
+      }, 200);
+    };
 
-      // Rotate brand phrases
-      if (count % 12 === 0 && count < 100) {
-        setKeywordIndex((prev) => (prev + 1) % BRAND_KEYWORDS.length);
+    const tryFinish = () => {
+      const elapsed = Date.now() - startTime;
+      if (loaded >= total && elapsed >= MIN_DISPLAY_MS) {
+        finish();
       }
+    };
 
-      if (count >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsDone(true);
-          setTimeout(onComplete, 800);
-        }, 300);
-      }
-    }, 80);
+    // 追踪每张图片加载
+    PRELOAD_IMAGES.forEach(src => {
+      const img = new Image();
+      img.onload = () => {
+        loaded++;
+        setProgress(Math.round((loaded / total) * 100));
+        tryFinish();
+      };
+      img.onerror = () => {
+        loaded++;
+        setProgress(Math.round((loaded / total) * 100));
+        tryFinish();
+      };
+      img.src = src;
+    });
 
-    return () => clearInterval(interval);
+    // 超过 8 秒强制结束
+    const forceTimer = setTimeout(() => {
+      if (!completedRef.current) finish();
+    }, 8000);
+
+    // 关键词轮换
+    keywordTimer = setInterval(() => {
+      setKeywordIndex((prev) => (prev + 1) % BRAND_KEYWORDS.length);
+    }, 600);
+
+    return () => {
+      clearTimeout(forceTimer);
+      if (keywordTimer) clearInterval(keywordTimer);
+    };
   }, [onComplete]);
 
   // GSAP animation for the counter or background

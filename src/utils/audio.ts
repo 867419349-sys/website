@@ -8,7 +8,7 @@
 
 class SoundSystem {
   private ctx: AudioContext | null = null;
-  private isMuted: boolean = true;
+  private isMuted: boolean = false;
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -22,6 +22,10 @@ class SoundSystem {
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
     }
+  }
+
+  public setMute(val: boolean) {
+    this.isMuted = val;
   }
 
   public toggleMute(): boolean {

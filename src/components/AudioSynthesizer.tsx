@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 import { sounds } from '../utils/audio';
 
 export default function AudioSynthesizer() {
-  const [muted, setMuted] = useState(true); // Default muted to comply with web standards auto-audio policy
+  const [muted, setMuted] = useState(false);
 
   const handleToggle = () => {
     const nextMuted = sounds.toggleMute();
@@ -23,7 +23,6 @@ export default function AudioSynthesizer() {
   };
 
   useEffect(() => {
-    // Sync local state with SoundSystem
     setMuted(sounds.getMuteStatus());
   }, []);
 

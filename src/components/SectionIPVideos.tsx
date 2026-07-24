@@ -160,18 +160,18 @@ export default function SectionIPVideos() {
       <div className="relative w-full overflow-hidden" style={{ aspectRatio: `${FW} / ${FH}` }}>
         <div className="absolute flex flex-col" style={{ left: pct(244, FW), top: pct(277, FH) }}>
           <h2
-            className="font-black italic tracking-[-0.03em] leading-[1.194] bg-clip-text text-transparent bg-gradient-to-r from-[#e6c5f7] to-[#6540fd] select-none"
+            className="font-black tracking-[-0.03em] leading-[1.194] bg-clip-text text-transparent bg-gradient-to-r from-[#e6c5f7] to-[#6540fd] select-none"
             style={{ fontSize: 'clamp(1.8rem, 5.91vw, 280px)' }}
           >PETS</h2>
           <h2
-            className="font-black italic tracking-[-0.03em] leading-[1.194] bg-clip-text text-transparent bg-gradient-to-r from-[#e573f0] to-[#7633f3] select-none"
+            className="font-black tracking-[-0.03em] leading-[1.194] bg-clip-text text-transparent bg-gradient-to-r from-[#e573f0] to-[#7633f3] select-none"
             style={{ fontSize: 'clamp(1.8rem, 5.91vw, 280px)' }}
           >PARADE</h2>
         </div>
 
         <div className="absolute select-none" style={{ left: pct(1387, FW), top: pct(638, FH) }}>
           <p
-            className="font-black italic leading-[1.194]"
+            className="font-black leading-[1.194]"
             style={{ fontSize: 'clamp(1.5rem, 5.91vw, 280px)', color: 'rgba(119, 59, 253, 0.8)' }}
           >IP设计</p>
         </div>

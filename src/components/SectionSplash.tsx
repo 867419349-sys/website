@@ -28,7 +28,7 @@ const PROJECT_CASES: ProjectCase[] = [
     subtitle: '面向智能座舱的 AIGC 视觉生产流程建构',
     desc: '在车机视觉项目中，我参与搭建面向智能座舱的 AI 视觉生产流程。项目初期，AI 生成结果存在风格随机、材质不稳定、车型还原度不足、难以批量交付等问题。我对流程进行系统化升级：通过 Prompt 结构化、LoRA 模型训练、垫图控制、风格迁移和 ComfyUI 节点搭建，极大提高了生成结果的可控性。最终形成了支持车型替换、光影重绘、材质迁移、构图优化的 AI 工作流。',
     tag: 'COMFYUI / LORA / SYSTEM',
-    image: '/src/assets/images/make_a_splash_can_1781774201107.jpg',
+    image: '/assets/make_a_splash_can_1781774201107.webp',
     likes: 4578,
     emoji: '⚙️',
     spec: '支持车型替换、光影重绘、材质迁移与构图批量可控生产',
@@ -40,7 +40,7 @@ const PROJECT_CASES: ProjectCase[] = [
     subtitle: '特定节点中关注惊喜与沉浸的多端体验设计',
     desc: '节日桌面项目关注用户在特定时间节点中的情绪体验。相比普通车机壁纸，节日视觉需要同时具备节日氛围、惊喜感、真实感和屏幕适配性。我从节日主题、情绪关键词、主体元素、背景空间和镜头语言出发，完成 Prompt Evolution，并通过多轮 AI 生成与控制实现画面的柔和氛围与一致性。',
     tag: 'PROMPT EVOLUTION / EMOTION',
-    image: '/src/assets/images/instagram_asset_bottle_1781774227848.jpg',
+    image: '/assets/instagram_asset_bottle_1781774227848.webp',
     likes: 3892,
     emoji: '🎁',
     spec: '兼备节日氛围、惊喜感、真实感和屏幕适配性的情绪桌面',
@@ -52,7 +52,7 @@ const PROJECT_CASES: ProjectCase[] = [
     subtitle: '深度物理使用场景下的视觉场景体验融合',
     desc: '情景模式围绕小憩、露营、影院、关怀等车内使用场景展开。设计目标是通过视觉氛围帮助用户快速进入舒适状态，使车机界面与车主情绪、空间物理环境产生强耦合。我将场景关键词转化为可被 AI 理解的视觉语言，进行持续材质光影打磨，使之不只是装饰画，而是功能体验的一环。',
     tag: 'SCENARIO UX / PERSISTENCE',
-    image: '/src/assets/images/yang_zhilin_avatar_1781774163978.jpg',
+    image: '/assets/yang_zhilin_avatar_1781774163978.webp',
     likes: 5120,
     emoji: '⛺',
     spec: '小憩/影院/深度露营氛围控制、多维度参数场景感重塑',
@@ -86,9 +86,9 @@ export default function SectionSplash() {
   const nextImageIndex = useRef(0);
 
   const TRAIL_SOURCE_IMAGES = [
-    { src: '/src/assets/images/instagram_asset_bottle_1781774227848.jpg', title: '智能座舱节日桌面适配' },
-    { src: '/src/assets/images/make_a_splash_can_1781774201107.jpg', title: 'AIGC 自动化视觉光能重构' },
-    { src: '/src/assets/images/yang_zhilin_avatar_1781774163978.jpg', title: '座舱人机交互人因学研究' },
+    { src: '/assets/instagram_asset_bottle_1781774227848.webp', title: '智能座舱节日桌面适配' },
+    { src: '/assets/make_a_splash_can_1781774201107.webp', title: 'AIGC 自动化视觉光能重构' },
+    { src: '/assets/yang_zhilin_avatar_1781774163978.webp', title: '座舱人机交互人因学研究' },
     { src: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=600&q=80', title: '4K 曲面车载一体屏适配' },
     { src: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=600&q=80', title: '物理表面皮质微绒打光渲染' },
     { src: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80', title: '高灵敏度智驾运动仪表流' },
@@ -373,7 +373,7 @@ export default function SectionSplash() {
                       <div className="flex items-center justify-between p-2">
                         <div className="flex items-center space-x-2">
                           <img 
-                            src="/src/assets/images/yang_zhilin_avatar_1781774163978.jpg" 
+                            src="/assets/yang_zhilin_avatar_1781774163978.webp" 
                             alt="Zhilin" 
                             className="w-7 h-7 rounded-full object-cover border border-neutral-150" 
                             referrerPolicy="no-referrer"
@@ -468,7 +468,7 @@ export default function SectionSplash() {
                 {/* Alternating image mock for design showcase */}
                 <div className="aspect-[4/3] w-full rounded-xl overflow-hidden border border-black/10 relative shadow-sm mb-3">
                   <img
-                    src={activeProject.id === 'case-1' ? '/src/assets/images/instagram_asset_bottle_1781774227848.jpg' : '/src/assets/images/make_a_splash_can_1781774201107.jpg'}
+                    src={activeProject.id === 'case-1' ? '/assets/instagram_asset_bottle_1781774227848.webp' : '/assets/make_a_splash_can_1781774201107.webp'}
                     alt="Instagram decoration"
                     className="w-full h-full object-cover select-none pointer-events-none"
                     referrerPolicy="no-referrer"

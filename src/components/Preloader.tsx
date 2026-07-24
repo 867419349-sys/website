@@ -51,8 +51,6 @@ const PRELOAD_IMAGES = [
   '/assets/portfolio-cases/popup/3D影音.webp',
 ];
 
-const MIN_DISPLAY_MS = 1500;
-
 export default function Preloader({ onComplete }: PreloaderProps) {
   const [progress, setProgress] = useState(0);
   const [keywordIndex, setKeywordIndex] = useState(0);
@@ -63,40 +61,29 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     if (completedRef.current) return;
     const total = PRELOAD_IMAGES.length;
     let loaded = 0;
-    const startTime = Date.now();
     let keywordTimer: ReturnType<typeof setInterval> | null = null;
 
     const finish = () => {
       if (completedRef.current) return;
       completedRef.current = true;
       if (keywordTimer) clearInterval(keywordTimer);
+      // 平滑过渡：到 100% → 短暂停留展示完成状态 → 退出
       setProgress(100);
-      setTimeout(() => {
-        setIsDone(true);
-        setTimeout(onComplete, 800);
-      }, 200);
+      setTimeout(() => setIsDone(true), 350);
+      setTimeout(() => onComplete(), 1000);
     };
 
-    const tryFinish = () => {
-      const elapsed = Date.now() - startTime;
-      if (loaded >= total && elapsed >= MIN_DISPLAY_MS) {
-        finish();
-      }
+    const onOneLoaded = () => {
+      loaded++;
+      setProgress(Math.round((loaded / total) * 100));
+      if (loaded >= total) finish();
     };
 
-    // 追踪每张图片加载
+    // 追踪每张图片实际加载
     PRELOAD_IMAGES.forEach(src => {
       const img = new Image();
-      img.onload = () => {
-        loaded++;
-        setProgress(Math.round((loaded / total) * 100));
-        tryFinish();
-      };
-      img.onerror = () => {
-        loaded++;
-        setProgress(Math.round((loaded / total) * 100));
-        tryFinish();
-      };
+      img.onload = onOneLoaded;
+      img.onerror = onOneLoaded;
       img.src = src;
     });
 
@@ -129,10 +116,12 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     <AnimatePresence>
       {!isDone && (
         <motion.div
-          initial={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)' }}
+          initial={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           exit={{
-            clipPath: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
-            transition: { duration: 0.75, ease: [0.76, 0, 0.24, 1] }
+            opacity: 0,
+            scale: 1.04,
+            filter: 'blur(8px)',
+            transition: { duration: 0.65, ease: [0.4, 0, 0.2, 1] }
           }}
           className="fixed inset-0 bg-[#0c0c0e] text-white z-[9999] flex flex-col justify-between p-8 md:p-16 select-none font-sans"
         >

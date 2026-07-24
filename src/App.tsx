@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef, lazy, Suspense } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { gsap } from 'gsap';
 import './gsap-setup';
 import Preloader from './components/Preloader';
@@ -137,111 +137,102 @@ export default function App() {
       {/* 2. Custom Magnetic Cursor */}
       <CustomCursor />
 
-      {/* Only render main app content once loading finishes */}
-      {loadingComplete && (
-        <div className="flex flex-col min-h-screen relative">
-          
-          {/* Navigation Bar */}
-          <Navigation activeTab={activeTab} setActiveTab={handleTabChange} />
+      {/* 主体内容始终渲染在 Preloader 下方，加载完成自然揭开 */}
+      <div className="flex flex-col min-h-screen relative">
 
-          {/* Main Interactive Screen with Stacked Smooth Reveal */}
-          <main className="flex-1 w-full flex flex-col relative pt-14">
+        {/* Navigation Bar - 自然淡入下滑 */}
+        <AnimatePresence>
+          {loadingComplete && (
             <motion.div
-              initial={{ 
-                clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
-                filter: 'blur(10px)',
-                opacity: 0 
-              }}
-              animate={{ 
-                clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-                filter: 'blur(0px)',
-                opacity: 1 
-              }}
-              transition={{ 
-                duration: 1.2, 
-                ease: [0.76, 0, 0.24, 1] 
-              }}
-              className="w-full flex flex-col"
+              className="w-full"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
             >
-              {/* 00 探索首页 */}
-              <div id="home" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <SectionHome />
-              </div>
-              {/* 01 个人简介 */}
-              <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <Suspense fallback={<SectionFallback />}><SectionAbout /></Suspense>
-              </div>
-              {/* 02 创意作品 */}
-              <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <Suspense fallback={<SectionFallback />}><SectionWorksGrid /></Suspense>
-                <Suspense fallback={<div style={{ minHeight: '60vh' }} />}><SectionIPVideos /></Suspense>
-                <Suspense fallback={<SectionFallback />}><SectionPortfolioCases /></Suspense>
-              </div>
-              {/* 03 设计工程 */}
-              <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <Suspense fallback={<SectionFallback />}><SectionDesignOps /></Suspense>
-              </div>
-              {/* 04 联络合作 */}
-              <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
-                <Suspense fallback={<SectionFallback />}><SectionContactNew /></Suspense>
-              </div>
+              <Navigation activeTab={activeTab} setActiveTab={handleTabChange} />
             </motion.div>
-          </main>
+          )}
+        </AnimatePresence>
 
-          {/* Footer view indicators (Mobile/UX helpful quick links) */}
-          <footer className="bg-neutral-950 border-t border-neutral-900/40 py-6 px-4 md:px-12 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-neutral-500 select-none z-20">
-            <div className="mb-4 sm:mb-0">
-              © 2026 YANG ZHILIN ● BRANDED EXPERIENCES & DESIGN RESEARCH
+        <main className="flex-1 w-full flex flex-col relative pt-14">
+          <div className="w-full flex flex-col">
+            {/* 00 探索首页 */}
+            <div id="home" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <SectionHome />
             </div>
-
-            {/* Quick tab jumper list */}
-            <div className="flex flex-wrap justify-center gap-4 text-[10px]">
-              <button 
-                onClick={() => handleTabChange('home')} 
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'home' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                00 探索首页
-              </button>
-              <span>|</span>
-              <button 
-                onClick={() => handleTabChange('profile')} 
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'profile' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                01 个人简介
-              </button>
-              <span>|</span>
-              <button
-                onClick={() => handleTabChange('splash')}
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'splash' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                02 创意作品
-              </button>
-              <span>|</span>
-              <button
-                onClick={() => handleTabChange('designops')}
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'designops' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                03 设计工程
-              </button>
-              <span>|</span>
-              <button
-                onClick={() => handleTabChange('sandbox')}
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'sandbox' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                04 AI实验室
-              </button>
-              <span>|</span>
-              <button
-                onClick={() => handleTabChange('contact')}
-                className={`hover:text-white transition-colors uppercase ${activeTab === 'contact' ? 'text-[#d2ff55] font-black' : ''}`}
-              >
-                05 联络合作
-              </button>
+            {/* 01 个人简介 */}
+            <div id="profile" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <Suspense fallback={<SectionFallback />}><SectionAbout /></Suspense>
             </div>
-          </footer>
+            {/* 02 创意作品 */}
+            <div id="splash" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <Suspense fallback={<SectionFallback />}><SectionWorksGrid /></Suspense>
+              <Suspense fallback={<div style={{ minHeight: '60vh' }} />}><SectionIPVideos /></Suspense>
+              <Suspense fallback={<SectionFallback />}><SectionPortfolioCases /></Suspense>
+            </div>
+            {/* 03 设计工程 */}
+            <div id="designops" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <Suspense fallback={<SectionFallback />}><SectionDesignOps /></Suspense>
+            </div>
+            {/* 04 联络合作 */}
+            <div id="contact" className="scroll-mt-14 md:scroll-mt-16 w-full">
+              <Suspense fallback={<SectionFallback />}><SectionContactNew /></Suspense>
+            </div>
+          </div>
+        </main>
 
-        </div>
-      )}
+        {/* Footer */}
+        <footer className="bg-neutral-950 border-t border-neutral-900/40 py-3 px-4 md:px-12 flex flex-col sm:flex-row justify-between items-center text-xs font-mono text-neutral-500 select-none z-20">
+          <div className="mb-4 sm:mb-0">
+            © 2026 YANG ZHILIN ● BRANDED EXPERIENCES & DESIGN RESEARCH
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-4 text-[10px]">
+            <button
+              onClick={() => handleTabChange('home')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'home' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              00 探索首页
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => handleTabChange('profile')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'profile' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              01 个人简介
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => handleTabChange('splash')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'splash' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              02 创意作品
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => handleTabChange('designops')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'designops' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              03 设计工程
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => handleTabChange('sandbox')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'sandbox' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              04 AI实验室
+            </button>
+            <span>|</span>
+            <button
+              onClick={() => handleTabChange('contact')}
+              className={`hover:text-white transition-colors uppercase ${activeTab === 'contact' ? 'text-[#d2ff55] font-black' : ''}`}
+            >
+              05 联络合作
+            </button>
+          </div>
+        </footer>
+
+      </div>
 
     </div>
   );

@@ -13,17 +13,17 @@ export default function AudioSynthesizer() {
   const handleToggle = () => {
     const nextMuted = sounds.toggleMute();
     setMuted(nextMuted);
-    
-    // Play a friendly greeting chime if unmuted, or a click if muted
     if (!nextMuted) {
       sounds.playChime();
-    } else {
-      sounds.playClick();
     }
   };
 
   useEffect(() => {
-    setMuted(sounds.getMuteStatus());
+    sounds.setMute(false);
+    setMuted(false);
+
+    // 主动尝试自动播放 —— 频繁访问本网站的用户浏览器可能已允许
+    sounds.tryAutoStart();
   }, []);
 
   return (

@@ -9,6 +9,14 @@
 class SoundSystem {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
+  private ctxReady: boolean = false;
+
+  constructor() {
+    // 模块加载时立即创建 AudioContext，利用浏览器可能已积累的媒体互动指数
+    if (typeof window !== 'undefined') {
+      this.initCtx();
+    }
+  }
 
   private initCtx() {
     if (!this.ctx && typeof window !== 'undefined') {
@@ -19,9 +27,41 @@ class SoundSystem {
         console.warn('Audio Context is not supported by your browser', e);
       }
     }
+    // 用户手势触发的同步恢复：hover/click 等事件处理器中调用时，resume 会成功
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().then(() => {
+        this.ctxReady = this.ctx.state === 'running';
+      });
     }
+  }
+
+  private async ensureCtx(): Promise<boolean> {
+    if (!this.ctx) this.initCtx();
+    if (!this.ctx) return false;
+    if (this.ctx.state === 'running') {
+      this.ctxReady = true;
+      return true;
+    }
+    try {
+      await this.ctx.resume();
+      this.ctxReady = this.ctx.state === 'running';
+      return this.ctxReady;
+    } catch {
+      return false;
+    }
+  }
+
+  public get isReady(): boolean {
+    return this.ctxReady;
+  }
+
+  /** 每次调用都会尝试恢复 AudioContext —— 适用于挂载及用户交互回退 */
+  public async tryAutoStart(): Promise<boolean> {
+    const ok = await this.ensureCtx();
+    if (ok && !this.isMuted) {
+      this.playChime();
+    }
+    return ok;
   }
 
   public setMute(val: boolean) {
@@ -64,10 +104,7 @@ class SoundSystem {
 
   /* ---- 导航标签切换 —— C 大调琶音，清脆高级（保留原始设计） ---- */
   public playChime() {
-    if (this.isMuted) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
+    if (this.isMuted || !this.ctx || this.ctx.state !== 'running') return;
     const now = this.ctx.currentTime;
     const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
 
@@ -268,3 +305,17 @@ class SoundSystem {
 }
 
 export const sounds = new SoundSystem();
+
+// 全局首次交互监听 —— JS 加载时立即生效，早于 React 渲染
+// 用户点击/触摸/按键页面任意位置即激活 AudioContext（浏览器自动播放策略回退）
+if (typeof document !== 'undefined') {
+  const resumeAudio = () => {
+    sounds.tryAutoStart();
+    document.removeEventListener('click', resumeAudio);
+    document.removeEventListener('touchstart', resumeAudio);
+    document.removeEventListener('keydown', resumeAudio);
+  };
+  document.addEventListener('click', resumeAudio);
+  document.addEventListener('touchstart', resumeAudio);
+  document.addEventListener('keydown', resumeAudio);
+}

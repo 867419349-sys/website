@@ -131,8 +131,8 @@ export default function SectionContactNew() {
   const qr = usePendulumDrag();
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden bg-white">
-      <div className="relative w-full overflow-visible" style={{ aspectRatio: `${FW} / ${FH}` }}>
+    <section ref={sectionRef} className="relative w-full">
+      <div className="relative w-full overflow-hidden bg-white" style={{ aspectRatio: `${FW} / ${FH}` }}>
 
         {/* 背景 */}
         <img src={`${A}/背景.webp`} alt="" className="absolute" draggable={false}
@@ -148,7 +148,7 @@ export default function SectionContactNew() {
           width: pct(1082, FW), height: pct(1622, FH),
           zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img ref={person.cardRef} src={`${A}/人物卡片.webp`} alt="" className="absolute" draggable={false}
+          <motion.img ref={person.cardRef} src={`${A}/人物卡片.png`} alt="" className="absolute" draggable={false}
             onPointerDown={person.onPointerDown}
             onPointerMove={person.onPointerMove}
             onPointerUp={person.onPointerUp}
@@ -179,7 +179,7 @@ export default function SectionContactNew() {
           width: pct(1087, FW), height: pct(1610, FH),
           zIndex: 2, pointerEvents: 'auto',
         }}>
-          <motion.img ref={qr.cardRef} src={`${A}/二维码卡片.webp`} alt="" className="absolute" draggable={false}
+          <motion.img ref={qr.cardRef} src={`${A}/二维码卡片.png`} alt="" className="absolute" draggable={false}
             onPointerDown={qr.onPointerDown}
             onPointerMove={qr.onPointerMove}
             onPointerUp={qr.onPointerUp}

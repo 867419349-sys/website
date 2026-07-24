@@ -1,0 +1,9 @@
+Total messages: 4 (Errors: 1, Warnings: 0)
+Returning 1 messages for level "error"
+
+TypeError: target?.closest is not a function
+    at onMouseMove (http://localhost:5173/src/components/CustomCursor.tsx:26:33)
+    at eval (eval at <anonymous> (eval at evaluate (:303:30)), <anonymous>:15:10)
+    at eval (eval at evaluate (:303:30), <anonymous>:4:50)
+    at UtilityScript.evaluate (<anonymous>:305:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)

@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html><body>
+<video id="v" src="/anim_preview/effect.mp4" controls autoplay loop style="max-width:100%"></video>
+<script>
+const v = document.getElementById('v');
+v.addEventListener('loadeddata', () => { v.currentTime = 0; v.play(); });
+</script>
+</body></html>

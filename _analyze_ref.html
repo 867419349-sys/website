@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html><body>
+<img id="ref" src="file:///d:/网站设计/设计思考/设计思考.png" crossorigin="anonymous" style="position:absolute;top:0;left:0;max-width:none">
+<canvas id="c"></canvas>
+<script>
+const img = document.getElementById('ref');
+img.onload = () => {
+  const w = img.width, h = img.height;
+  const canvas = document.getElementById('c');
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0);
+
+  const sample = (sx, sy, sw, sh) => {
+    const d = ctx.getImageData(sx, sy, sw, sh).data;
+    let r=0,g=0,b=0;
+    const n = d.length/4;
+    for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
+    return {r:Math.round(r/n),g:Math.round(g/n),b:Math.round(b/n)};
+  };
+
+  const results = [];
+  results.push(`尺寸: ${w}x${h}`);
+
+  // 行扫描
+  for(let y=0; y<h; y+=Math.max(1,Math.floor(h/40))) {
+    const c = sample(0, y, w, 10);
+    const bri = ((c.r+c.g+c.b)/3).toFixed(0);
+    const hex = '#'+[c.r,c.g,c.b].map(v=>v.toString(16).padStart(2,'0')).join('');
+    const yPct = (y/h*100).toFixed(0)+'%';
+    results.push(`y=${y}(${yPct}) bri=${bri} hex=${hex}`);
+  }
+
+  // 关键垂直位置的颜色
+  results.push('');
+  results.push('=== 垂直颜色条(中心线) ===');
+  for(let y=0; y<h; y+=Math.max(1,Math.floor(h/60))) {
+    const c = sample(Math.round(w*0.1), y, 10, 3);
+    const hex = '#'+[c.r,c.g,c.b].map(v=>v.toString(16).padStart(2,'0')).join('');
+    results.push(hex);
+  }
+
+  // 底部区域详细
+  results.push('');
+  results.push('=== 底部30%详细 ===');
+  for(let y=Math.floor(h*0.7); y<h; y+=Math.max(1,Math.floor(h/60))) {
+    const c = sample(0, y, w, 3);
+    results.push('#'+[c.r,c.g,c.b].map(v=>v.toString(16).padStart(2,'0')).join(''));
+  }
+
+  document.body.innerHTML = '<pre>'+results.join('\n')+'</pre>';
+};
+img.onerror = (e) => { document.body.innerHTML = 'LOAD ERROR: ' + JSON.stringify(e.message || 'unknown'); };
+</script>
+</body></html>

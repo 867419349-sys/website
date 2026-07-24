@@ -5,6 +5,8 @@ import TiltedCard from './TiltedCard';
 import BentoGlow from './BentoGlow';
 import AnimatedContent from './AnimatedContent';
 
+
+
 gsap.registerPlugin(ScrollTrigger);
 
 /*

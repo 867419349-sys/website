@@ -24,112 +24,25 @@ const BRAND_KEYWORDS = [
 ];
 
 const PRELOAD_IMAGES = [
-  '/assets/home/base-plate.webp',
-  '/assets/home/bottom-base.webp',
-  '/assets/home/bottom-bg.jpg',
-  '/assets/home/bottom-bg.webp',
-  '/assets/home/box/01卡片.webp',
-  '/assets/home/box/01卡片正面背景.webp',
-  '/assets/home/box/01按钮.webp',
-  '/assets/home/box/02.webp',
-  '/assets/home/box/02卡片.webp',
-  '/assets/home/box/02卡片_改.webp',
-  '/assets/home/box/02卡片正面_改.webp',
-  '/assets/home/box/02按钮.webp',
-  '/assets/home/box/03卡片.webp',
-  '/assets/home/box/03卡片_改.webp',
-  '/assets/home/box/03卡片正面.webp',
-  '/assets/home/box/03按钮.webp',
-  '/assets/home/box/04卡片.webp',
-  '/assets/home/box/04卡片正面.webp',
-  '/assets/home/box/04按钮.webp',
-  '/assets/home/box/bg-new.webp',
-  '/assets/home/box/bg.webp',
-  '/assets/home/box/box-front-new.webp',
-  '/assets/home/box/box-front.webp',
-  '/assets/home/box/box-new.webp',
-  '/assets/home/box/box.webp',
-  '/assets/home/box/card-front-01.webp',
-  '/assets/home/box/card-front-02.webp',
-  '/assets/home/box/card-front-03.webp',
-  '/assets/home/box/card-front-04.webp',
-  '/assets/home/box/card01-new.webp',
-  '/assets/home/box/card01.webp',
-  '/assets/home/box/card02-new.webp',
-  '/assets/home/box/card02.webp',
-  '/assets/home/box/card03-new.webp',
-  '/assets/home/box/card03.webp',
-  '/assets/home/box/card04-new.webp',
-  '/assets/home/box/card04-test.webp',
-  '/assets/home/box/card04.webp',
-  '/assets/home/box/figma-base.webp',
-  '/assets/home/box/figma-bg-new.webp',
-  '/assets/home/box/figma-bg.webp',
-  '/assets/home/box/figma-box-front-mask.webp',
-  '/assets/home/box/figma-box-front.webp',
-  '/assets/home/box/figma-box-new.webp',
-  '/assets/home/box/figma-box.webp',
-  '/assets/home/box/figma-card01-mask.webp',
-  '/assets/home/box/figma-card01.webp',
-  '/assets/home/box/figma-card02.webp',
-  '/assets/home/box/figma-card03.webp',
-  '/assets/home/box/figma-card04.webp',
-  '/assets/home/box/figma-front.webp',
-  '/assets/home/box/figma-full.webp',
-  '/assets/home/box/figma-glass-box-mask.webp',
-  '/assets/home/box/figma-glass-new.webp',
-  '/assets/home/box/figma-glass.webp',
-  '/assets/home/box/figma-text.webp',
-  '/assets/home/box/full-frame.webp',
-  '/assets/home/box/glass-box-new.webp',
-  '/assets/home/box/glass-box.webp',
-  '/assets/home/box/glass.webp',
-  '/assets/home/box/group1.webp',
-  '/assets/home/box/ps-bg.webp',
-  '/assets/home/box/ps-box-front.webp',
-  '/assets/home/box/ps-box.webp',
-  '/assets/home/box/ps-card01.webp',
-  '/assets/home/box/ps-card02.webp',
-  '/assets/home/box/ps-card03.webp',
-  '/assets/home/box/ps-card04.webp',
-  '/assets/home/box/ps-glass.webp',
-  '/assets/home/box/ps-text.webp',
+  // 首页核心图层 (SectionHome.tsx Layer 1-9)
   '/assets/home/box/ref-bg.webp',
-  '/assets/home/box/ref-full.webp',
-  '/assets/home/box/text-new.webp',
-  '/assets/home/box/前收纳盒.webp',
-  '/assets/home/box/前毛玻璃.webp',
-  '/assets/home/box/收纳盒.webp',
-  '/assets/home/box/收纳盒完整.webp',
-  '/assets/home/box/文字参考.webp',
-  '/assets/home/box/背景.webp',
-  '/assets/home/cards/ChatGPT Image 2026年6月12日 14_49_33.webp',
-  '/assets/home/cards/ChatGPT Image 2026年6月12日 14_52_35.webp',
-  '/assets/home/cards/ChatGPT Image 2026年6月12日 15_00_14.webp',
-  '/assets/home/cards/ChatGPT Image 2026年6月12日 15_05_22.webp',
-  '/assets/home/homepage-ref.webp',
-  '/assets/home/name-text-ref.webp',
-  '/assets/home/name-text.webp',
-  '/assets/home/stroke-ref.webp',
-  '/assets/home/title-text.webp',
-  '/assets/home/triggers/01.webp',
-  '/assets/home/triggers/02.webp',
-  '/assets/home/triggers/03.webp',
-  '/assets/home/triggers/04.webp',
-  '/assets/home/triggers/zone-01.webp',
-  '/assets/home/triggers/zone-02.webp',
-  '/assets/home/triggers/zone-03.webp',
-  '/assets/home/triggers/zone-04.webp',
-  '/assets/instagram_asset_bottle_1781774227848.webp',
-  '/assets/lanyard/lanyard.webp',
-  '/assets/make_a_splash_can_1781774201107.webp',
-  '/assets/yang_zhilin_avatar_1781774163978.webp'
-];
-
-// 视频也用 fetch 预加载到浏览器缓存
-const PRELOAD_VIDEOS = [
-  '/assets/home/final-effect.mp4',
-  '/assets/home/home-effect.mp4'
+  '/assets/home/box/figma-text.webp',
+  '/assets/home/box/ps-box.webp',
+  '/assets/home/box/04卡片.webp',
+  '/assets/home/box/03卡片_改.webp',
+  '/assets/home/box/02卡片_改.webp',
+  '/assets/home/box/ps-card01.webp',
+  '/assets/home/box/figma-glass.webp',
+  '/assets/home/box/figma-front.webp',
+  // 卡片弹出正面图 + 按钮 (SectionHome 卡片点击交互)
+  '/assets/home/box/01卡片正面背景.webp',
+  '/assets/home/box/02卡片正面_改.webp',
+  '/assets/home/box/03卡片正面.webp',
+  '/assets/home/box/04卡片正面.webp',
+  '/assets/home/box/01按钮.webp',
+  '/assets/home/box/02按钮.webp',
+  '/assets/home/box/03按钮.webp',
+  '/assets/home/box/04按钮.webp',
 ];
 
 export default function Preloader({ onComplete }: PreloaderProps) {
@@ -141,8 +54,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   useEffect(() => {
     if (completedRef.current) return;
     const imgCount = PRELOAD_IMAGES.length;
-    const vidCount = PRELOAD_VIDEOS.length;
-    const total = imgCount + vidCount;
+    const total = imgCount;
     let loaded = 0;
     let keywordTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -161,25 +73,27 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       if (loaded >= total) finish();
     };
 
-    // 追踪每张图片实际加载
-    PRELOAD_IMAGES.forEach(src => {
-      const img = new Image();
-      img.onload = onOneLoaded;
-      img.onerror = onOneLoaded;
-      img.src = src;
-    });
+    // 分批加载：每批 6 张间隔 16ms，防止缓存命中时 onload 同步触发被 React 18 批处理合并
+    const BATCH_SIZE = 6;
+    const BATCH_GAP = 16;
+    const loadImageBatch = (startIndex: number) => {
+      const end = Math.min(startIndex + BATCH_SIZE, imgCount);
+      for (let i = startIndex; i < end; i++) {
+        const img = new Image();
+        img.onload = onOneLoaded;
+        img.onerror = onOneLoaded;
+        img.src = PRELOAD_IMAGES[i];
+      }
+      if (end < imgCount) {
+        setTimeout(() => loadImageBatch(end), BATCH_GAP);
+      }
+    };
+    loadImageBatch(0);
 
-    // 追踪视频预加载
-    PRELOAD_VIDEOS.forEach(src => {
-      fetch(src, { mode: 'same-origin' })
-        .then(() => onOneLoaded())
-        .catch(() => onOneLoaded());
-    });
-
-    // 超过 20 秒强制结束（首页资源约 6MB，CDN 下通常 2-5 秒）
+    // 超过 10 秒强制结束（约 17 张图片，~1MB）
     const forceTimer = setTimeout(() => {
       if (!completedRef.current) finish();
-    }, 20000);
+    }, 10000);
 
     // 关键词轮换
     keywordTimer = setInterval(() => {

@@ -559,7 +559,13 @@ export default function SectionHome() {
             }}
           />
           <img src="/assets/home/box/figma-glass.webp" alt=""
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+            style={{
+              position: 'absolute', inset: 0, width: '100%', height: '100%',
+              maskImage: 'url(/assets/home/box/figma-glass.webp)',
+              WebkitMaskImage: 'url(/assets/home/box/figma-glass.webp)',
+              maskSize: '100% 100%',
+              WebkitMaskSize: '100% 100%',
+            }}
             loading="eager" draggable={false} onLoad={onAssetLoad} onError={onAssetError} />
         </div>
 

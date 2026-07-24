@@ -25,24 +25,24 @@ const BRAND_KEYWORDS = [
 
 const PRELOAD_IMAGES = [
   // 首页核心图层 (SectionHome.tsx Layer 1-9)
-  '/assets/home/box/ref-bg.webp',
-  '/assets/home/box/figma-text.webp',
-  '/assets/home/box/ps-box.webp',
-  '/assets/home/box/04卡片.webp',
-  '/assets/home/box/03卡片_改.webp',
-  '/assets/home/box/02卡片_改.webp',
-  '/assets/home/box/ps-card01.webp',
-  '/assets/home/box/figma-glass.webp',
-  '/assets/home/box/figma-front.webp',
+  '/assets/home/box/ref-bg.png',
+  '/assets/home/box/figma-text.png',
+  '/assets/home/box/ps-box.png',
+  '/assets/home/box/04卡片.png',
+  '/assets/home/box/03卡片_改.png',
+  '/assets/home/box/02卡片_改.png',
+  '/assets/home/box/ps-card01.png',
+  '/assets/home/box/figma-glass.png',
+  '/assets/home/box/figma-front.png',
   // 卡片弹出正面图 + 按钮 (SectionHome 卡片点击交互)
-  '/assets/home/box/01卡片正面背景.webp',
-  '/assets/home/box/02卡片正面_改.webp',
-  '/assets/home/box/03卡片正面.webp',
-  '/assets/home/box/04卡片正面.webp',
-  '/assets/home/box/01按钮.webp',
-  '/assets/home/box/02按钮.webp',
-  '/assets/home/box/03按钮.webp',
-  '/assets/home/box/04按钮.webp',
+  '/assets/home/box/01卡片正面背景.png',
+  '/assets/home/box/02卡片正面_改.png',
+  '/assets/home/box/03卡片正面.png',
+  '/assets/home/box/04卡片正面.png',
+  '/assets/home/box/01按钮.png',
+  '/assets/home/box/02按钮.png',
+  '/assets/home/box/03按钮.png',
+  '/assets/home/box/04按钮.png',
 ];
 
 export default function Preloader({ onComplete }: PreloaderProps) {

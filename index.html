@@ -70,7 +70,25 @@
         0%, 100% { opacity: 0.5; }
         50% { opacity: 1; }
       }
+      /* 全局图片平滑淡入，消除逐行加载的卡顿感 */
+      img {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+      img.is-loaded {
+        opacity: 1;
+      }
     </style>
+    <script>
+      (function() {
+        function mark(img) { img.classList.add('is-loaded'); }
+        addEventListener('load', function(e) { if (e.target.tagName === 'IMG') mark(e.target); }, true);
+        // 处理已缓存的图片（preload / 浏览器缓存）
+        addEventListener('DOMContentLoaded', function() {
+          document.querySelectorAll('img').forEach(function(img) { if (img.complete) mark(img); });
+        });
+      })();
+    </script>
   </head>
   <body style="overflow-y: scroll">
     <div id="html-preloader">

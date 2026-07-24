@@ -34,7 +34,7 @@ const PRELOAD_IMAGES = [
   '/assets/home/box/02卡片_改.webp',
   '/assets/home/box/03卡片_改.webp',
   '/assets/home/box/04卡片.webp',
-  // 创意作品第二页
+  // 创意作品第二页 - 卡片背景
   '/assets/portfolio-cases/PROJECT.webp',
   '/assets/portfolio-cases/精选作品.webp',
   '/assets/portfolio-cases/01.webp',
@@ -44,11 +44,33 @@ const PRELOAD_IMAGES = [
   '/assets/portfolio-cases/05.webp',
   '/assets/portfolio-cases/06.webp',
   '/assets/portfolio-cases/07.webp',
+  // 创意作品第二页 - 卡片子图
+  '/assets/portfolio-cases/01作品.webp',
+  '/assets/portfolio-cases/01文字.webp',
+  '/assets/portfolio-cases/02作品.webp',
+  '/assets/portfolio-cases/02字体.webp',
+  '/assets/portfolio-cases/03作品.webp',
+  '/assets/portfolio-cases/03字体.webp',
+  '/assets/portfolio-cases/04作品.webp',
+  '/assets/portfolio-cases/04字体.webp',
+  '/assets/portfolio-cases/05作品.webp',
+  '/assets/portfolio-cases/05字体.webp',
+  '/assets/portfolio-cases/06作品.webp',
+  '/assets/portfolio-cases/06字体.webp',
+  '/assets/portfolio-cases/07作品.webp',
+  '/assets/portfolio-cases/07字体.webp',
+  // 创意作品第二页 - 弹窗大图
   '/assets/portfolio-cases/popup/游戏制作.webp',
   '/assets/portfolio-cases/popup/Pats IP.webp',
   '/assets/portfolio-cases/popup/福灵仔.webp',
   '/assets/portfolio-cases/popup/3D作品.webp',
   '/assets/portfolio-cases/popup/3D影音.webp',
+];
+
+// 视频也用 fetch 预加载到浏览器缓存
+const PRELOAD_VIDEOS = [
+  '/assets/portfolio-cases/videos/节日彩蛋.mp4',
+  '/assets/portfolio-cases/videos/情景模式.mp4',
 ];
 
 export default function Preloader({ onComplete }: PreloaderProps) {
@@ -59,7 +81,9 @@ export default function Preloader({ onComplete }: PreloaderProps) {
 
   useEffect(() => {
     if (completedRef.current) return;
-    const total = PRELOAD_IMAGES.length;
+    const imgCount = PRELOAD_IMAGES.length;
+    const vidCount = PRELOAD_VIDEOS.length;
+    const total = imgCount + vidCount;
     let loaded = 0;
     let keywordTimer: ReturnType<typeof setInterval> | null = null;
 
@@ -67,7 +91,6 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       if (completedRef.current) return;
       completedRef.current = true;
       if (keywordTimer) clearInterval(keywordTimer);
-      // 平滑过渡：到 100% → 短暂停留展示完成状态 → 退出
       setProgress(100);
       setTimeout(() => setIsDone(true), 350);
       setTimeout(() => onComplete(), 1000);
@@ -87,10 +110,17 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       img.src = src;
     });
 
-    // 超过 8 秒强制结束
+    // 追踪视频预加载
+    PRELOAD_VIDEOS.forEach(src => {
+      fetch(src, { mode: 'same-origin' })
+        .then(() => onOneLoaded())
+        .catch(() => onOneLoaded());
+    });
+
+    // 超过 15 秒强制结束（视频较大需要更多时间）
     const forceTimer = setTimeout(() => {
       if (!completedRef.current) finish();
-    }, 8000);
+    }, 15000);
 
     // 关键词轮换
     keywordTimer = setInterval(() => {

@@ -104,6 +104,12 @@ export default function SectionAbout() {
   };
   const onAssetError = onAssetLoad;
 
+  // 超时保护：8 秒后无论加载状态如何都显示内容
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 8000);
+    return () => clearTimeout(t);
+  }, []);
+
 
   // 持续微浮动呼吸动画（不依赖图片加载状态）
   useEffect(() => {
@@ -212,7 +218,7 @@ export default function SectionAbout() {
               rotateAmplitude={8}
               scaleOnHover={1.05}
               altText={c.alt}
-              imgLoading="lazy"
+              imgLoading="eager"
               onLoad={onAssetLoad}
               onError={onAssetError}
             />

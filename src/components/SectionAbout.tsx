@@ -155,7 +155,11 @@ export default function SectionAbout() {
       <div
         ref={wrapperRef}
         className="relative overflow-hidden select-none w-full"
-        style={{ aspectRatio: `${REF_W} / ${REF_H}` }}
+        style={{
+            aspectRatio: `${REF_W} / ${REF_H}`,
+            opacity: loaded ? 1 : 0,
+            transition: 'opacity 0.5s ease',
+          }}
       >
         {LAYERS.map((a, i) => (
           <img
@@ -171,7 +175,6 @@ export default function SectionAbout() {
             src={a.src}
             alt=""
             className="absolute pointer-events-none"
-            loading="lazy"
             style={{
               left: a.cx,
               top: a.cy,

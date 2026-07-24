@@ -63,6 +63,10 @@
       <div class="sub">LOADING</div>
     </div>
     <div id="root"></div>
+    <!-- 静音音频预热器：绕过浏览器自动播放限制，让 AudioContext 更快激活 -->
+    <audio id="audio-warmup" autoplay muted loop playsinline
+           src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=">
+    </audio>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

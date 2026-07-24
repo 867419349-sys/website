@@ -307,9 +307,17 @@ class SoundSystem {
 export const sounds = new SoundSystem();
 
 // 全局首次交互监听 —— JS 加载时立即生效，早于 React 渲染
-// 用户点击/触摸/按键页面任意位置即激活 AudioContext（浏览器自动播放策略回退）
+// 同时利用静音预热器元素绕过浏览器自动播放限制：
+// HTML 中放置了 <audio autoplay muted loop>，无手势即可启动媒体管线，
+// 首次手势时取消静音并恢复 AudioContext，让后续悬浮声音立即可用。
 if (typeof document !== 'undefined') {
   const resumeAudio = () => {
+    const warm = document.getElementById('audio-warmup') as HTMLAudioElement | null;
+    if (warm) {
+      warm.muted = false;
+      warm.volume = 0; // 极低音量保持管线活跃
+      warm.play().catch(() => {});
+    }
     sounds.tryAutoStart();
     document.removeEventListener('click', resumeAudio);
     document.removeEventListener('touchstart', resumeAudio);

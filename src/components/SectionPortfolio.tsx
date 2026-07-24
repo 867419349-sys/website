@@ -1,10 +1,10 @@
 /**
  * SectionPortfolio - 个人简介五层合成页面
- * 底层: 自我介绍背景2.png
- * 第二层: DESIGN.png
- * 第三层: 自我介绍人物3.png
- * 第四层: icon.png (鼠标跟随 + 点击感)
- * 最上层: 自我介绍文字3.png (鼠标跟随 + 点击感)
+ * 底层: 自我介绍背景2.webp
+ * 第二层: DESIGN.webp
+ * 第三层: 自我介绍人物3.webp
+ * 第四层: icon.webp (鼠标跟随 + 点击感)
+ * 最上层: 自我介绍文字3.webp (鼠标跟随 + 点击感)
  * GSAP 动效：逐层入场 + 呼吸感 + 鼠标视差
  */
 
@@ -179,24 +179,24 @@ export default function SectionPortfolio() {
       ref={sectionRef}
       className="relative w-full min-h-screen overflow-hidden bg-black cursor-pointer"
     >
-      <img ref={bgRef} src="/assets/portfolio/bg2.png" alt=""
+      <img ref={bgRef} src="/assets/portfolio/bg2.webp" alt=""
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={imgStyle(bgReady)} onLoad={() => setBgReady(true)} />
 
-      <img ref={designRef} src="/assets/portfolio/design.png" alt=""
+      <img ref={designRef} src="/assets/portfolio/design.webp" alt=""
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={imgStyle(designReady)} onLoad={() => setDesignReady(true)} />
 
-      <img ref={charRef} src="/assets/portfolio/character3.png" alt=""
+      <img ref={charRef} src="/assets/portfolio/character3.webp" alt=""
         className="absolute inset-0 w-full h-full pointer-events-none"
         style={imgStyle(charReady)} onLoad={() => setCharReady(true)} />
 
-      <img ref={iconRef} src="/assets/portfolio/icon.png" alt=""
+      <img ref={iconRef} src="/assets/portfolio/icon.webp" alt=""
         className="absolute inset-0 w-full h-full"
         style={{ ...imgStyle(iconReady), cursor: 'pointer' }}
         onLoad={() => setIconReady(true)} />
 
-      <img ref={textRef} src="/assets/portfolio/text3.png" alt=""
+      <img ref={textRef} src="/assets/portfolio/text3.webp" alt=""
         className="absolute inset-0 w-full h-full"
         style={{ ...imgStyle(textReady), cursor: 'pointer' }}
         onLoad={() => setTextReady(true)} />

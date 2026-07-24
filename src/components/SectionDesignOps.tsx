@@ -4,24 +4,24 @@ import { motion, AnimatePresence, useMotionValue, useTransform, useSpring, anima
 import { sounds } from '../utils/audio';
 
 const CARD_IMAGES = [
-  '/assets/design-thinking/AI-selection.png',
-  '/assets/design-thinking/AI-ui.png',
-  '/assets/design-thinking/AI-operation.png',
-  '/assets/design-thinking/AI-gain.png',
-  '/assets/design-thinking/AI-operation-1.png',
-  '/assets/design-thinking/AI-gesture.png',
-  '/assets/design-thinking/AI-design-system.png',
+  '/assets/design-thinking/AI-selection.webp',
+  '/assets/design-thinking/AI-ui.webp',
+  '/assets/design-thinking/AI-operation.webp',
+  '/assets/design-thinking/AI-gain.webp',
+  '/assets/design-thinking/AI-operation-1.webp',
+  '/assets/design-thinking/AI-gesture.webp',
+  '/assets/design-thinking/AI-design-system.webp',
 ];
 
 /* 卡片缩略图 → 点击弹出的详情大图 */
 const POPUP_MAP: Record<string, string> = {
-  '/assets/design-thinking/AI-selection.png': 'download:/assets/design-thinking/AI工具分享.pdf',
-  '/assets/design-thinking/AI-gain.png': '/assets/design-thinking/content/01.png',        // 增益
-  '/assets/design-thinking/AI-operation-1.png': '/assets/design-thinking/content/02.png',  // 运营-1
-  '/assets/design-thinking/AI-design-system.png': '/assets/design-thinking/content/03.png',// 设计系统
-  '/assets/design-thinking/AI-gesture.png': '/assets/design-thinking/content/04.png',      // 手势
-  '/assets/design-thinking/AI-operation.png': '/assets/design-thinking/content/ip内容.png',    // IP
-  '/assets/design-thinking/AI-ui.png': '/assets/design-thinking/content/宠物IP内容.png',            // UI设计
+  '/assets/design-thinking/AI-selection.webp': 'download:/assets/design-thinking/AI工具分享.pdf',
+  '/assets/design-thinking/AI-gain.webp': '/assets/design-thinking/content/01.webp',        // 增益
+  '/assets/design-thinking/AI-operation-1.webp': '/assets/design-thinking/content/02.webp',  // 运营-1
+  '/assets/design-thinking/AI-design-system.webp': '/assets/design-thinking/content/03.webp',// 设计系统
+  '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/04.webp',      // 手势
+  '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/ip内容.png',    // IP
+  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/宠物IP内容.png',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
@@ -266,7 +266,7 @@ export default function SectionDesignOps() {
           }}
         >
           <img
-            src="/assets/design-thinking/circle.png"
+            src="/assets/design-thinking/circle.webp"
             alt=""
             className="w-full h-full object-contain opacity-30"
             draggable={false}
@@ -286,7 +286,7 @@ export default function SectionDesignOps() {
           }}
         >
           <img
-            src="/assets/design-thinking/design-thinking-font.png"
+            src="/assets/design-thinking/design-thinking-font.webp"
             alt="设计碎片与思考"
             className="w-full h-full object-contain object-left"
             draggable={false}

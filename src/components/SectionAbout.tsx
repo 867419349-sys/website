@@ -8,7 +8,7 @@ import AnimatedContent from './AnimatedContent';
 gsap.registerPlugin(ScrollTrigger);
 
 /*
- * 坐标系统匹配新背景 bg.png (4418×2066)
+ * 坐标系统匹配新背景 bg.webp (4418×2066)
  * Figma 原始 frame 坐标 (display:contents 穿透)
  */
 const REF_W = 4418;
@@ -27,49 +27,49 @@ interface Layer {
 }
 
 const LAYERS: Layer[] = [
-  { src: '/assets/about/bg.png',
+  { src: '/assets/about/bg.webp',
     cx: '0%', cy: '0%', cw: '100%', ch: '100%', z: 0 },
-  { src: '/assets/about/design.png',
+  { src: '/assets/about/design.webp',
     cx: pct(529, REF_W), cy: pct(83, REF_H),
     cw: pct(2726, REF_W), ch: pct(1462, REF_H),
     z: 1 },
-  { src: '/assets/about/character.png',
+  { src: '/assets/about/character.webp',
     cx: pct(427, REF_W), cy: pct(0, REF_H),
     cw: pct(3539, REF_W), ch: pct(2066, REF_H),
     z: 2, isCharacter: true },
-  { src: '/assets/about/hello.png',
+  { src: '/assets/about/hello.webp',
     cx: pct(586, REF_W), cy: pct(520, REF_H),
     cw: pct(485, REF_W), ch: pct(431, REF_H),
     z: 4, isText: true },
-  { src: '/assets/about/name.png',
+  { src: '/assets/about/name.webp',
     cx: pct(998, REF_W), cy: pct(758, REF_H),
     cw: pct(646, REF_W), ch: pct(200, REF_H),
     z: 4, isText: true },
-  { src: '/assets/about/title.png',
+  { src: '/assets/about/title.webp',
     cx: pct(715.5, REF_W), cy: pct(997.74, REF_H),
     cw: pct(651, REF_W), ch: pct(100, REF_H),
     z: 4 },
-  { src: '/assets/about/description.png',
+  { src: '/assets/about/description.webp',
     cx: pct(609, REF_W), cy: pct(1300, REF_H),
     cw: pct(728, REF_W), ch: pct(186, REF_H),
     z: 4 },
-  { src: '/assets/about/ai-deco.png',
+  { src: '/assets/about/ai-deco.webp',
     cx: pct(2344.61, REF_W), cy: pct(695.74, REF_H),
     cw: pct(378, REF_W), ch: pct(242, REF_H),
     z: 5 },
-  { src: '/assets/about/icon-edu.png',
+  { src: '/assets/about/icon-edu.webp',
     cx: pct(2820, REF_W), cy: pct(390, REF_H),
     cw: pct(104, REF_W), ch: pct(104, REF_H),
     z: 6 },
-  { src: '/assets/about/icon-work.png',
+  { src: '/assets/about/icon-work.webp',
     cx: pct(2820, REF_W), cy: pct(808, REF_H),
     cw: pct(104, REF_W), ch: pct(104, REF_H),
     z: 6 },
-  { src: '/assets/about/icon-skills.png',
+  { src: '/assets/about/icon-skills.webp',
     cx: pct(2779, REF_W), cy: pct(1336, REF_H),
     cw: pct(104, REF_W), ch: pct(104, REF_H),
     z: 6 },
-  { src: '/assets/about/icon-tools.png',
+  { src: '/assets/about/icon-tools.webp',
     cx: pct(3299, REF_W), cy: pct(1336, REF_H),
     cw: pct(104, REF_W), ch: pct(104, REF_H),
     z: 6 },
@@ -78,10 +78,10 @@ const LAYERS: Layer[] = [
 const TOTAL = LAYERS.length + 4; // 12 图层 + 4 张 TiltedCard 图片
 
 const CARD_WRAPPERS = [
-  { src: '/assets/about/education.png', x: 2772, y: 342, w: 1046, h: 389, alt: '教育背景' },
-  { src: '/assets/about/work.png', x: 2772, y: 759, w: 1093, h: 515, alt: '工作经历' },
-  { src: '/assets/about/skills.png', x: 2733, y: 1296, w: 503, h: 483, alt: '技能' },
-  { src: '/assets/about/tools.png', x: 3266, y: 1296, w: 552, h: 483, alt: '工具' },
+  { src: '/assets/about/education.webp', x: 2772, y: 342, w: 1046, h: 389, alt: '教育背景' },
+  { src: '/assets/about/work.webp', x: 2772, y: 759, w: 1093, h: 515, alt: '工作经历' },
+  { src: '/assets/about/skills.webp', x: 2733, y: 1296, w: 503, h: 483, alt: '技能' },
+  { src: '/assets/about/tools.webp', x: 3266, y: 1296, w: 552, h: 483, alt: '工具' },
 ];
 
 export default function SectionAbout() {
@@ -164,9 +164,9 @@ export default function SectionAbout() {
               if (a.isCharacter) characterRef.current = el;
               else if (a.isText && a.src.includes('hello')) helloRef.current = el;
               else if (a.isText && a.src.includes('name')) nameRef.current = el;
-              else if (a.src.includes('title.png')) titleRef.current = el;
-              else if (a.src.includes('description.png')) descRef.current = el;
-              else if (a.src.includes('ai-deco.png')) aiDecoRef.current = el;
+              else if (a.src.includes('title.webp')) titleRef.current = el;
+              else if (a.src.includes('description.webp')) descRef.current = el;
+              else if (a.src.includes('ai-deco.webp')) aiDecoRef.current = el;
             }}
             src={a.src}
             alt=""

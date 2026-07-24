@@ -64,7 +64,7 @@ export default function AudioSynthesizer() {
       <span className={`text-[10px] tracking-wider uppercase font-bold select-none transition-colors ${
         muted ? 'text-neutral-500 group-hover:text-neutral-300' : 'text-[#d2ff55]'
       }`}>
-        {muted ? 'SFX OFF' : 'SFX ON'}
+        {muted ? '音效关闭' : '音效开启'}
       </span>
     </button>
   );

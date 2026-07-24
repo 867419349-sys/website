@@ -35,7 +35,7 @@ export default function Navigation({ activeTab, setActiveTab }: NavigationProps)
         className="flex items-baseline space-x-2 cursor-pointer group active:scale-95 transition-transform"
       >
         <span className="font-mono text-xs font-bold text-white tracking-widest uppercase">
-          YANG ZHILIN
+          杨芷琳
         </span>
         <span className="text-[10px] text-[#d2ff55] font-mono leading-none font-bold">
           v2.0

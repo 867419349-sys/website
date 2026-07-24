@@ -29,10 +29,23 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
+    /* 后台预加载首页关键图片，利用预加载等待时间提前下载 */
+    const HOME_IMAGES = [
+      '/assets/home/box/ref-bg.webp',
+      '/assets/home/box/ps-box.webp',
+      '/assets/home/box/figma-text.webp',
+      '/assets/home/box/figma-glass.webp',
+      '/assets/home/box/figma-front.webp',
+      '/assets/home/box/ps-card01.webp',
+      '/assets/home/box/02卡片_改.webp',
+      '/assets/home/box/03卡片_改.webp',
+      '/assets/home/box/04卡片.webp',
+    ];
+    HOME_IMAGES.forEach(src => { const img = new Image(); img.src = src; });
+
     // Ticker progress count
     let count = 0;
     const interval = setInterval(() => {
-      // Random quick increments
       const inc = Math.floor(Math.random() * 8) + 2;
       count = Math.min(count + inc, 100);
       setProgress(count);
@@ -46,10 +59,10 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         clearInterval(interval);
         setTimeout(() => {
           setIsDone(true);
-          setTimeout(onComplete, 800); // Allow time for exit animations
+          setTimeout(onComplete, 800);
         }, 300);
       }
-    }, 45);
+    }, 80);
 
     return () => clearInterval(interval);
   }, [onComplete]);

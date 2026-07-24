@@ -19,26 +19,26 @@ interface Card {
 
 const CARDS: Card[] = [
   { id:'01', iw:1065, ih:1287, x:136, y:764,
-    works:[{ file:'01作品.webp', iw:790, ih:576, cx:617.88, cy:1639.32 }],
-    texts:[{ file:'01文字.webp', iw:718, ih:189, cx:649.12, cy:1216.09 }] },
+    works:[{ file:'01作品.png', iw:790, ih:576, cx:617.88, cy:1639.32 }],
+    texts:[{ file:'01文字.png', iw:718, ih:189, cx:649.12, cy:1216.09 }] },
   { id:'02', iw:1186, ih:1377, x:520, y:941,
-    works:[{ file:'02作品.webp', iw:762, ih:618, cx:1140.77, cy:1883.94 }],
-    texts:[{ file:'02字体.webp', iw:724, ih:392, cx:1077.94, cy:1450.63 }] },
+    works:[{ file:'02作品.png', iw:762, ih:618, cx:1140.77, cy:1883.94 }],
+    texts:[{ file:'02字体.png', iw:724, ih:392, cx:1077.94, cy:1450.63 }] },
   { id:'03', iw:1021, ih:1378, x:1177, y:372,
-    works:[{ file:'03作品.webp', iw:721, ih:546, cx:1706.24, cy:1356.93 }],
-    texts:[{ file:'03字体.webp', iw:726, ih:359, cx:1673.73, cy:878.77 }] },
+    works:[{ file:'03作品.png', iw:721, ih:546, cx:1706.24, cy:1356.93 }],
+    texts:[{ file:'03字体.png', iw:726, ih:359, cx:1673.73, cy:878.77 }] },
   { id:'04', iw:1024, ih:1279, x:1572, y:972,
-    works:[{ file:'04作品.webp', iw:710, ih:514, cx:2055.85, cy:1882.62 }],
-    texts:[{ file:'04字体.webp', iw:701, ih:484, cx:2110.67, cy:1411.33 }] },
+    works:[{ file:'04作品.png', iw:710, ih:514, cx:2055.85, cy:1882.62 }],
+    texts:[{ file:'04字体.png', iw:701, ih:484, cx:2110.67, cy:1411.33 }] },
   { id:'05', iw:1172, ih:1418, x:2198.13, y:518.96,
-    works:[{ file:'05作品.webp', iw:688, ih:487, cx:2755.69, cy:1488.57 }],
-    texts:[{ file:'05字体.webp', iw:691, ih:424, cx:2760.21, cy:1047.96 }] },
+    works:[{ file:'05作品.png', iw:688, ih:487, cx:2755.69, cy:1488.57 }],
+    texts:[{ file:'05字体.png', iw:691, ih:424, cx:2760.21, cy:1047.96 }] },
   { id:'06', iw:1160, ih:1333, x:2663, y:972,
-    works:[{ file:'06作品.webp', iw:813, ih:635, cx:3273.04, cy:1867.46 }],
-    texts:[{ file:'06字体.webp', iw:663, ih:332, cx:3192.38, cy:1418.98 }] },
+    works:[{ file:'06作品.png', iw:813, ih:635, cx:3273.04, cy:1867.46 }],
+    texts:[{ file:'06字体.png', iw:663, ih:332, cx:3192.38, cy:1418.98 }] },
   { id:'07', iw:1108, ih:1378, x:3243, y:552,
-    works:[{ file:'07作品.webp', iw:697, ih:523, cx:3738.36, cy:1537.75 }],
-    texts:[{ file:'07字体.webp', iw:725, ih:614, cx:3741.95, cy:1084.96 }] },
+    works:[{ file:'07作品.png', iw:697, ih:523, cx:3738.36, cy:1537.75 }],
+    texts:[{ file:'07字体.png', iw:725, ih:614, cx:3741.95, cy:1084.96 }] },
 ];
 
 export default function SectionPortfolioCases() {
@@ -57,11 +57,11 @@ export default function SectionPortfolioCases() {
   /* 预加载弹窗大图：组件挂载时就开始加载，点击时直接显示 */
   useEffect(() => {
     const popupImages = [
-      `${A}/popup/游戏制作.webp`,
-      `${A}/popup/Pats IP.webp`,
-      `${A}/popup/福灵仔.webp`,
-      `${A}/popup/3D作品.webp`,
-      `${A}/popup/3D影音.webp`,
+      `${A}/popup/游戏制作.png`,
+      `${A}/popup/Pats IP.png`,
+      `${A}/popup/福灵仔.png`,
+      `${A}/popup/3D作品.png`,
+      `${A}/popup/3D影音.png`,
     ];
     popupImages.forEach(src => { const img = new Image(); img.src = src; });
   }, []);
@@ -193,27 +193,27 @@ export default function SectionPortfolioCases() {
         }}
         onMouseLeave={resetCards}
       >
-        <img src={`${A}/PROJECT.webp`} alt="" className="absolute"
+        <img src={`${A}/PROJECT.png`} alt="" className="absolute"
           style={{ left:pct(104.5,FW), top:pct(201,FH), width:pct(2396,FW), height:pct(369,FH) }}
           draggable={false} />
-        <img src={`${A}/精选作品.webp`} alt="精选作品" className="absolute"
+        <img src={`${A}/精选作品.png`} alt="精选作品" className="absolute"
           style={{ left:pct(228.5,FW), top:pct(294.5,FH), width:pct(1257,FW), height:pct(309,FH) }}
           draggable={false} />
 
         {CARDS.map((c, i) => (
           <div key={c.id} ref={el => { cardRefs.current[i] = el; }} className="absolute"
             style={{ left:pct(c.x,FW), top:pct(c.y,FH), width:pct(c.iw,FW), height:pct(c.ih,FH) }}>
-            <img src={`${A}/${c.id}.webp`} alt="" className="absolute inset-0 w-full h-full"
+            <img src={`${A}/${c.id}.png`} alt="" className="absolute inset-0 w-full h-full"
               onMouseEnter={() => { if (dropDone.current) { sounds.playHoverPortfolio(); scatterFrom(i); } }}
               onClick={() => {
                 sounds.playPop();
-                if (c.id === '01') openMedia(`${A}/popup/游戏制作.webp`);
+                if (c.id === '01') openMedia(`${A}/popup/游戏制作.png`);
                 if (c.id === '02') openMedia(`${A}/videos/节日彩蛋.mp4`);
-                if (c.id === '03') openMedia(`${A}/popup/Pats IP.webp`);
+                if (c.id === '03') openMedia(`${A}/popup/Pats IP.png`);
                 if (c.id === '04') openMedia(`${A}/videos/情景模式.mp4`);
-                if (c.id === '05') openMedia(`${A}/popup/福灵仔.webp`);
-                if (c.id === '06') openMedia(`${A}/popup/3D作品.webp`);
-                if (c.id === '07') openMedia(`${A}/popup/3D影音.webp`);
+                if (c.id === '05') openMedia(`${A}/popup/福灵仔.png`);
+                if (c.id === '06') openMedia(`${A}/popup/3D作品.png`);
+                if (c.id === '07') openMedia(`${A}/popup/3D影音.png`);
               }}
               style={{ cursor: 'pointer' }}
               draggable={false} />

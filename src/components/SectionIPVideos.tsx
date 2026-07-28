@@ -9,7 +9,7 @@ const VIDEOS = [
   { src: '/assets/ip-page/小黄鸭.mp4', label: '小黄鸭', x: 228, y: 1110, w: 1051, h: 1401 },
   { src: '/assets/ip-page/大鹅.mp4', label: '大鹅', x: 1308, y: 1110, w: 1121, h: 1401 },
   { src: '/assets/ip-page/小狗.mp4', label: '小狗', x: 2468, y: 1110, w: 1051, h: 1401 },
-  { src: '/assets/ip-page/大象.mp4', label: '大象', x: 3554, y: 1110, w: 1107, h: 1395 },
+  { src: '/assets/ip-page/大象2.mov', label: '大象', x: 3554, y: 1110, w: 1107, h: 1395 },
 ];
 
 function VideoCard({

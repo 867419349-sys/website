@@ -15,13 +15,13 @@ const CARD_IMAGES = [
 
 /* 卡片缩略图 → 点击弹出的详情大图 */
 const POPUP_MAP: Record<string, string> = {
-  '/assets/design-thinking/AI-selection.webp': 'download:/assets/design-thinking/AI工具分享.pdf',
+  '/assets/design-thinking/AI-selection.webp': '/assets/design-thinking/content/设计风格提取内容.png',
   '/assets/design-thinking/AI-gain.webp': '/assets/design-thinking/content/01.webp',        // 增益
   '/assets/design-thinking/AI-operation-1.webp': '/assets/design-thinking/content/02.webp',  // 运营-1
   '/assets/design-thinking/AI-design-system.webp': '/assets/design-thinking/content/03.webp',// 设计系统
   '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/04.webp',      // 手势
   '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/ip内容.png',    // IP
-  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/宠物IP内容.png',            // UI设计
+  '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/壁纸内容.png',            // UI设计
 };
 
 /* 椭圆轨道参数 — 中心对齐 Figma 圆圈，半径匹配 Figma 卡片分布范围 */
@@ -212,7 +212,7 @@ export default function SectionDesignOps() {
 
   /* 预加载弹窗大图：组件挂载时就开始加载，点击时直接显示 */
   useEffect(() => {
-    const imgs = Object.values(POPUP_MAP).filter(v => !v.startsWith('download:'));
+    const imgs = Object.values(POPUP_MAP);
     imgs.forEach(src => { const img = new Image(); img.src = src; });
   }, []);
 

@@ -210,11 +210,6 @@ export default function SectionDesignOps() {
   const openPopup = (src: string) => { setImgLoaded(false); setPopup(src); };
   const closePopup = () => { setPopup(null); setImgLoaded(false); };
 
-  /* 预加载弹窗大图：组件挂载时就开始加载，点击时直接显示 */
-  useEffect(() => {
-    const imgs = Object.values(POPUP_MAP);
-    imgs.forEach(src => { const img = new Image(); img.src = src; });
-  }, []);
 
   const hoverCount = useRef(0);
   const resumeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);

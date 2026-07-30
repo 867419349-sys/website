@@ -54,18 +54,6 @@ export default function SectionPortfolioCases() {
   const openMedia = (src: string) => { setImgLoaded(false); setMediaSrc(src); };
   const closeMedia = () => { setMediaSrc(null); setImgLoaded(false); };
 
-  /* 预加载弹窗大图：组件挂载时就开始加载，点击时直接显示 */
-  useEffect(() => {
-    const popupImages = [
-      `${A}/popup/游戏制作.webp`,
-      `${A}/popup/Pats IP.webp`,
-      `${A}/popup/福灵仔.webp`,
-      `${A}/popup/3D作品.webp`,
-      `${A}/popup/3D影音.webp`,
-    ];
-    popupImages.forEach(src => { const img = new Image(); img.src = src; });
-  }, []);
-
   // 弹窗打开时锁定滚动 + Esc 关闭（参考 SectionDesignOps）
   useEffect(() => {
     if (!mediaSrc) return;

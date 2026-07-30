@@ -53,6 +53,7 @@ function VideoCard({
     const v = videoRef.current;
     if (!v) return;
     v.muted = false;
+    v.volume = 0.3;
     v.currentTime = 0;
     // 浏览器可能阻止非静音自动播放，失败则回退静音继续播
     v.play().catch(() => {

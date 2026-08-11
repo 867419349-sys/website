@@ -367,11 +367,12 @@ export default function SectionHome() {
         const s = SPREAD[id] || { x: 0, y: 0 };
         const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
 
+        gsap.killTweensOf(el);
         gsap.to(el, {
           x: isTarget ? 0 : s.x * spreadD * spreadEase,
           y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
           scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
-          duration: 0.15,
+          duration: 0.35,
           ease: 'power2.out',
           overwrite: 'auto',
         });

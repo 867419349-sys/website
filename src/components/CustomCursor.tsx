@@ -8,16 +8,16 @@ import { motion, useMotionValue, useSpring } from 'motion/react';
 
 export default function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
-  const [cursorText, setCursorText] = useState('');
-  const [cursorType, setCursorType] = useState<'normal' | 'magnetic' | 'drag' | 'sound' | 'expand'>('normal');
+  const [cursorState, setCursorState] = useState({ text: '', type: 'normal' as const });
   const [isClicking, setIsClicking] = useState(false);
+  const cursorStateRef = useRef(cursorState);
+  cursorStateRef.current = cursorState;
 
-  // Position of mouse
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Smooth springs for high-end feel
-  const springConfig = { damping: 25, stiffness: 250, mass: 0.6 };
+  // 更轻量的弹簧参数，减少滞后感
+  const springConfig = { damping: 35, stiffness: 400, mass: 0.3 };
   const cursorX = useSpring(mouseX, springConfig);
   const cursorY = useSpring(mouseY, springConfig);
 
@@ -27,21 +27,14 @@ export default function CustomCursor() {
       mouseY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
 
-      // Find if we are hovering over custom interactive elements
       const target = e.target as HTMLElement;
-      const hoverText = target?.closest('[data-cursor-text]')?.getAttribute('data-cursor-text');
-      const hoverType = target?.closest('[data-cursor-type]')?.getAttribute('data-cursor-type');
+      const hoverText = target?.closest('[data-cursor-text]')?.getAttribute('data-cursor-text') || '';
+      const hoverType = (target?.closest('[data-cursor-type]')?.getAttribute('data-cursor-type') || 'normal') as 'normal' | 'magnetic' | 'drag' | 'sound' | 'expand';
 
-      if (hoverText) {
-        setCursorText(hoverText);
-      } else {
-        setCursorText('');
-      }
-
-      if (hoverType) {
-        setCursorType(hoverType as any);
-      } else {
-        setCursorType('normal');
+      // 只在值实际变化时才更新 state，避免每帧触发 React 重渲染
+      const prev = cursorStateRef.current;
+      if (hoverText !== prev.text || hoverType !== prev.type) {
+        setCursorState({ text: hoverText, type: hoverType });
       }
     };
 
@@ -65,12 +58,14 @@ export default function CustomCursor() {
     };
   }, [mouseX, mouseY, isVisible]);
 
+  const { text: cursorText, type: cursorType } = cursorState;
+
   if (!isVisible) return null;
 
   // Render variations
   let width = 16;
   let height = 16;
-  let bgClass = 'bg-[#d2ff55] mix-blend-difference';
+  let bgClass = 'bg-[#d2ff55] opacity-90';
   let scale = isClicking ? 0.8 : 1;
 
   if (cursorText || cursorType === 'drag' || cursorType === 'sound') {

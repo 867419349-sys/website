@@ -103,10 +103,20 @@ export default function SectionHome() {
     return () => { textIdleTween.current?.kill(); };
   }, [textReady]);
 
+  const CARD_TRANSITION = 'transform 0.35s cubic-bezier(0.33, 1, 0.68, 1)';
+
   const startBreathing = useCallback(() => {
     if (idleTween.current) idleTween.current.kill();
     const mobile = window.innerWidth < 768;
     const MULT = mobile ? 4 : 8;
+
+    // 移除 CSS transition，让 GSAP 无干扰接管（缓存已由 hover 时的 gsap.set 同步）
+    CARD_ORDER.forEach((id) => {
+      const el = cardRefs.current[id];
+      if (!el) return;
+      el.style.transition = 'none';
+    });
+
     const tl = gsap.timeline({ repeat: -1, yoyo: true });
     const durations = [2.8, 3.2, 3.0, 3.5];
     CARD_ORDER.forEach((id, i) => {
@@ -355,6 +365,7 @@ export default function SectionHome() {
       }
       if (!best) prevHoveredRef.current = null;
 
+      /* 电脑端用原始值，手机端按 wrapper 宽度等比缩放 */
       const mobile = rect.width < 768;
       const hoverScale = mobile ? Math.max(rect.width / REF_W, 0.28) : 1;
       const rise = RISE * hoverScale;
@@ -367,15 +378,12 @@ export default function SectionHome() {
         const s = SPREAD[id] || { x: 0, y: 0 };
         const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
 
-        gsap.killTweensOf(el);
-        gsap.to(el, {
-          x: isTarget ? 0 : s.x * spreadD * spreadEase,
-          y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
-          scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
-          duration: 0.35,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
+        const tx = isTarget ? 0 : s.x * spreadD * spreadEase;
+        const ty = isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase;
+        const sc = isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1;
+
+        el.style.transition = CARD_TRANSITION;
+        gsap.set(el, { x: tx, y: ty, scale: sc });
       }
 
       if (anyReacting) {
@@ -397,7 +405,7 @@ export default function SectionHome() {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [startBreathing, selectedCard]);
+  }, [startBreathing, selectedCard, handleCardClick]);
 
   const handleWrapperClick = (e: React.MouseEvent) => {
     const wrapper = wrapperRef.current;

@@ -323,28 +323,68 @@ export default function SectionHome() {
     };
   }, []);
 
-  const rafRef = useRef(0);
-  const lastMouseRef = useRef<{ rx: number; ry: number } | null>(null);
-
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (selectedCard) return;
+
       const wrapper = wrapperRef.current;
       if (!wrapper) return;
       const rect = wrapper.getBoundingClientRect();
-      lastMouseRef.current = {
-        rx: (e.clientX - rect.left) / rect.width * 100,
-        ry: (e.clientY - rect.top) / rect.height * 100,
-      };
-      if (rafRef.current) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = 0;
-        applyCardEffect();
-      });
+      const rx = (e.clientX - rect.left) / rect.width * 100;
+      const ry = (e.clientY - rect.top) / rect.height * 100;
+
+      let best: CardId | null = null;
+      let bestDist = Infinity;
+      const eases: Partial<Record<CardId, number>> = {};
+      for (const id of CARD_ORDER) {
+        const c = CARD[id];
+        const cx = (c.x + c.w / 2) / REF_W * 100;
+        const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
+        const dist = Math.hypot(rx - cx, ry - cy);
+        const t = Math.max(0, 1 - dist / INFLUENCE);
+        eases[id] = t * t * (3 - 2 * t);
+        if (dist < bestDist) { bestDist = dist; best = id; }
+      }
+      const targetEase = best ? (eases[best] || 0) : 0;
+      const anyReacting = targetEase > 0.03;
+
+      bestCardRef.current = best;
+      if (best && best !== prevHoveredRef.current) {
+        sounds.playHover();
+        prevHoveredRef.current = best;
+      }
+      if (!best) prevHoveredRef.current = null;
+
+      const mobile = rect.width < 768;
+      const hoverScale = mobile ? Math.max(rect.width / REF_W, 0.28) : 1;
+      const rise = RISE * hoverScale;
+      const spreadD = SPREAD_D * hoverScale;
+
+      for (const id of CARD_ORDER) {
+        const el = cardRefs.current[id];
+        if (!el) continue;
+        const isTarget = id === best;
+        const s = SPREAD[id] || { x: 0, y: 0 };
+        const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
+
+        gsap.to(el, {
+          x: isTarget ? 0 : s.x * spreadD * spreadEase,
+          y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
+          scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
+          duration: 0.15,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        });
+      }
+
+      if (anyReacting) {
+        idleTween.current?.pause();
+      } else if (idleTween.current && !idleTween.current.isActive()) {
+        startBreathing();
+      }
     };
 
     const handleMouseLeave = () => {
-      lastMouseRef.current = null;
       if (idleTween.current && !idleTween.current.isActive()) {
         startBreathing();
       }
@@ -355,69 +395,8 @@ export default function SectionHome() {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, [startBreathing, selectedCard]);
-
-  const applyCardEffect = useCallback(() => {
-    const mouse = lastMouseRef.current;
-    if (!mouse) return;
-
-    const wrapper = wrapperRef.current;
-    if (!wrapper) return;
-    const rect = wrapper.getBoundingClientRect();
-    const { rx, ry } = mouse;
-
-    let best: CardId | null = null;
-    let bestDist = Infinity;
-    const eases: Partial<Record<CardId, number>> = {};
-    for (const id of CARD_ORDER) {
-      const c = CARD[id];
-      const cx = (c.x + c.w / 2) / REF_W * 100;
-      const cy = (c.y + c.h * FOCUS_Y) / REF_H * 100;
-      const dist = Math.hypot(rx - cx, ry - cy);
-      const t = Math.max(0, 1 - dist / INFLUENCE);
-      eases[id] = t * t * (3 - 2 * t);
-      if (dist < bestDist) { bestDist = dist; best = id; }
-    }
-    const targetEase = best ? (eases[best] || 0) : 0;
-    const anyReacting = targetEase > 0.03;
-
-    bestCardRef.current = best;
-    if (best && best !== prevHoveredRef.current) {
-      sounds.playHover();
-      prevHoveredRef.current = best;
-    }
-    if (!best) prevHoveredRef.current = null;
-
-    const mobile = rect.width < 768;
-    const hoverScale = mobile ? Math.max(rect.width / REF_W, 0.28) : 1;
-    const rise = RISE * hoverScale;
-    const spreadD = SPREAD_D * hoverScale;
-
-    for (const id of CARD_ORDER) {
-      const el = cardRefs.current[id];
-      if (!el) continue;
-      const isTarget = id === best;
-      const s = SPREAD[id] || { x: 0, y: 0 };
-      const spreadEase = isTarget ? 0 : (eases[id] || 0) * 0.5;
-
-      gsap.to(el, {
-        x: isTarget ? 0 : s.x * spreadD * spreadEase,
-        y: isTarget ? rise * (eases[id] || 0) : s.y * spreadD * spreadEase,
-        scale: isTarget ? 1 + (SCALE - 1) * (eases[id] || 0) : 1,
-        duration: 0.3,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    }
-
-    if (anyReacting) {
-      idleTween.current?.pause();
-    } else if (idleTween.current && !idleTween.current.isActive()) {
-      startBreathing();
-    }
-  }, [startBreathing]);
 
   const handleWrapperClick = (e: React.MouseEvent) => {
     const wrapper = wrapperRef.current;

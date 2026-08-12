@@ -262,11 +262,11 @@ export default function SectionPortfolioCases() {
                       onLoad={() => setImgLoaded(true)}
                       onClick={(e) => e.stopPropagation()}
                       className="rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
-                      style={{
-                        maxWidth: 'min(90vw, 750px)',
-                        width: 'auto',
-                        height: 'auto',
-                      }}
+                      style={
+                        mediaSrc?.includes('Pats IP') || mediaSrc?.includes('福灵仔')
+                          ? { maxWidth: 'min(85vw, 500px)', width: 'auto', height: 'auto' }
+                          : {}
+                      }
                     />
                   </div>
                 </div>

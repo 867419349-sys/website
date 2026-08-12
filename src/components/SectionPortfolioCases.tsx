@@ -264,7 +264,7 @@ export default function SectionPortfolioCases() {
                       className="rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
                       style={
                         mediaSrc?.includes('Pats IP') || mediaSrc?.includes('福灵仔')
-                          ? { maxWidth: 'min(85vw, 500px)', width: 'auto', height: 'auto' }
+                          ? { maxWidth: 'min(85vw, 620px)', width: 'auto', height: 'auto' }
                           : {}
                       }
                     />

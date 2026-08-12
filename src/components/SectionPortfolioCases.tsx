@@ -246,23 +246,29 @@ export default function SectionPortfolioCases() {
               ) : (
                 <div className="min-h-full flex items-start justify-center px-2 py-8 md:py-12">
                   {!imgLoaded && (
-                    <div className="flex items-center justify-center" style={{ width: 'min(94vw,1500px)', minHeight: 300 }}>
+                    <div className="flex items-center justify-center" style={{ minHeight: 300 }}>
                       <div className="w-10 h-10 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                     </div>
                   )}
-                  <motion.img
-                    src={mediaSrc}
-                    alt="作品详情"
-                    draggable={false}
-                    initial={{ scale: 0.92, opacity: 0, y: 20 }}
-                    animate={imgLoaded ? { scale: 1, opacity: 1, y: 0 } : {}}
-                    exit={{ scale: 0.92, opacity: 0, y: 12 }}
-                    transition={{ type: 'spring', stiffness: 220, damping: 22 }}
-                    onLoad={() => setImgLoaded(true)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-[min(94vw,1500px)] h-auto rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
-                    style={{ display: imgLoaded ? 'block' : 'none' }}
-                  />
+                  <div style={{ display: imgLoaded ? 'block' : 'none' }}>
+                    <motion.img
+                      src={mediaSrc}
+                      alt="作品详情"
+                      draggable={false}
+                      initial={{ scale: 0.92, opacity: 0, y: 20 }}
+                      animate={imgLoaded ? { scale: 1, opacity: 1, y: 0 } : {}}
+                      exit={{ scale: 0.92, opacity: 0, y: 12 }}
+                      transition={{ type: 'spring', stiffness: 220, damping: 22 }}
+                      onLoad={() => setImgLoaded(true)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.6)]"
+                      style={{
+                        maxWidth: 'min(90vw, 750px)',
+                        width: 'auto',
+                        height: 'auto',
+                      }}
+                    />
+                  </div>
                 </div>
               )}
               <button

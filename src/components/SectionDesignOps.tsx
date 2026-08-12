@@ -19,7 +19,7 @@ const POPUP_MAP: Record<string, string> = {
   '/assets/design-thinking/AI-gain.webp': '/assets/design-thinking/content/01.webp',        // 增益
   '/assets/design-thinking/AI-operation-1.webp': '/assets/design-thinking/content/02.webp',  // 运营-1
   '/assets/design-thinking/AI-design-system.webp': '/assets/design-thinking/content/03.webp',// 设计系统
-  '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/04.webp',      // 手势
+  '/assets/design-thinking/AI-gesture.webp': '/assets/design-thinking/content/手势替换.webp',      // 手势
   '/assets/design-thinking/AI-operation.webp': '/assets/design-thinking/content/ip内容.webp',    // IP
   '/assets/design-thinking/AI-ui.webp': '/assets/design-thinking/content/宠物IP内容.webp',            // UI设计
 };
